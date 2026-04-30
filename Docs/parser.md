@@ -4,12 +4,12 @@
 
 ## 태그 파서
 
-`iixml::parser::tag_parser`는 하나의 태그 쌍을 읽어 `tag_name`과 `value`를 반환한다.
+`iiXml::parser::tag_parser`는 하나의 태그 쌍을 읽어 `tag_name`과 `value`를 반환한다.
 
 ```cpp
 #include "iiXml.h"
 
-iixml::parser::tag_parser parser;
+iiXml::parser::tag_parser parser;
 auto parsed = parser.parse("<number>숫자</number>");
 
 if (parsed.has_value()) {

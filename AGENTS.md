@@ -2,12 +2,12 @@
 
 ## Project Structure & Module Organization
 
-이 저장소는 C++20 기반의 `iixml` 공유 라이브러리입니다. 현재 모듈은 최상위의 `iiXml.h` 공개 헤더와 `iiXml.cpp` 구현 파일로 구성됩니다. 빌드 설정은 `CMakeLists.txt`에만 둡니다. 새 모듈을 추가할 때는 디렉터리 구조를 앱 아키텍처의 청사진으로 보고, 기능 단위로 파일과 폴더를 배치하십시오. 테스트가 추가되면 `tests/` 아래에 모듈별로 배치하고, 문서는 `docs/` 또는 최상위 Markdown 파일에 둡니다.
+이 저장소는 C++20 기반의 `iiXml` 공유 라이브러리입니다. 현재 모듈은 최상위의 `iiXml.h` 공개 헤더와 `iiXml.cpp` 구현 파일로 구성됩니다. 빌드 설정은 `CMakeLists.txt`에만 둡니다. 새 모듈을 추가할 때는 디렉터리 구조를 앱 아키텍처의 청사진으로 보고, 기능 단위로 파일과 폴더를 배치하십시오. 테스트가 추가되면 `Test/` 아래에 모듈별로 배치하고, 문서는 `Docs/` 또는 최상위 Markdown 파일에 둡니다.
 
 ## Build, Test, and Development Commands
 
 - `cmake -S . -B build`: 표준 빌드 디렉터리 `build/`를 생성하고 구성합니다.
-- `cmake --build build`: `iixml` 공유 라이브러리를 빌드합니다.
+- `cmake --build build`: `iiXml` 공유 라이브러리를 빌드합니다.
 - `ctest --test-dir build --output-on-failure`: 등록된 테스트를 실행합니다.
 - `rm -rf build && cmake -S . -B build && cmake --build build`: 깨끗한 상태에서 재구성 및 빌드합니다.
 

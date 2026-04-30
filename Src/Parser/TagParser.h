@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace iixml::parser {
+namespace iiXml::parser {
 
 struct tag_value {
     std::string tag_name;
@@ -17,6 +17,6 @@ public:
     [[nodiscard]] std::optional<tag_value> parse(std::string_view input) const;
 };
 
-} // namespace iixml::parser
+} // namespace iiXml::parser
 
 #endif // IIXML_PARSER_TAG_PARSER_H

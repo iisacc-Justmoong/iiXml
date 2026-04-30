@@ -57,7 +57,7 @@ bool is_valid_tag_name(std::string_view tag_name) {
 
 } // namespace
 
-namespace iixml::parser {
+namespace iiXml::parser {
 
 std::optional<tag_value> tag_parser::parse(std::string_view input) const {
     input = trim_outer(input);
@@ -93,4 +93,4 @@ std::optional<tag_value> tag_parser::parse(std::string_view input) const {
     };
 }
 
-} // namespace iixml::parser
+} // namespace iiXml::parser

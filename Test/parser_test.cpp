@@ -16,9 +16,9 @@ void expect(bool condition, const char* message) {
 }
 
 void parses_basic_tag() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
-    const std::optional<iixml::parser::tag_value> parsed = parser.parse("<number>123</number>");
+    const std::optional<iiXml::parser::tag_value> parsed = parser.parse("<number>123</number>");
 
     expect(parsed.has_value(), "number tag should parse");
     if (!parsed.has_value()) {
@@ -30,9 +30,9 @@ void parses_basic_tag() {
 }
 
 void parses_utf8_value() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
-    const std::optional<iixml::parser::tag_value> parsed = parser.parse("<number>숫자</number>");
+    const std::optional<iiXml::parser::tag_value> parsed = parser.parse("<number>숫자</number>");
 
     expect(parsed.has_value(), "utf8 value tag should parse");
     if (!parsed.has_value()) {
@@ -44,9 +44,9 @@ void parses_utf8_value() {
 }
 
 void preserves_inner_whitespace() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
-    const std::optional<iixml::parser::tag_value> parsed = parser.parse(" \n<number> 123 </number>\t");
+    const std::optional<iiXml::parser::tag_value> parsed = parser.parse(" \n<number> 123 </number>\t");
 
     expect(parsed.has_value(), "outer whitespace should be ignored");
     if (!parsed.has_value()) {
@@ -57,19 +57,19 @@ void preserves_inner_whitespace() {
 }
 
 void rejects_missing_close_tag() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
     expect(!parser.parse("<number>123").has_value(), "missing close tag should fail");
 }
 
 void rejects_mismatched_close_tag() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
     expect(!parser.parse("<number>123</text>").has_value(), "mismatched close tag should fail");
 }
 
 void rejects_invalid_tag_name() {
-    const iixml::parser::tag_parser parser;
+    const iiXml::parser::tag_parser parser;
 
     expect(!parser.parse("<1number>123</1number>").has_value(), "invalid tag name should fail");
 }
