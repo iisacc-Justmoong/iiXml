@@ -6,7 +6,8 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 
 - Qt 6.8.3 `Core` 모듈을 기준으로 빌드한다.
 - CMake는 `~/Qt/6.8.3/macos`를 Qt 탐색 경로 앞에 추가한다.
-- 기존 동기 반환 API는 유지하고, Qt 슬롯/시그널 API를 추가 제공한다.
+- 동기 API와 Qt 슬롯/시그널 API를 함께 제공한다. 검증/입력 API의 실패는 상태와 비어 있지 않은 사유 문자열로 반환하거나 방출한다.
+- 모든 라이브러리 객체 생성자와 public 메서드는 `QDebug`/`qDebug()`로 디버깅 로그를 출력한다.
 
 ## TagParser
 
@@ -60,9 +61,46 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 시그널:
 
 - `validationFinished(InputValidator::ValidationExit result)`
+- `validationFailed(InputValidator::ValidationExit result, const QString& reason)`
 - `validXml()`
 - `invalidXmlFile()`
 - `invalidTagClosure()`
+- `exceptionThrown()`
+
+## GetFile
+
+`iiXml::writer::GetFile`은 `QObject`를 상속한다.
+
+슬롯:
+
+- `readFile(const QString& file_path)`
+- `readXml(const QString& input)`
+
+시그널:
+
+- `parsed(const QString& tag_name, const QString& value)`
+- `failed(GetFile::Status status, const QString& reason)`
+- `fileReadFailed()`
+- `invalidXmlFile()`
+- `invalidTagClosure()`
+- `parserRejected()`
+- `exceptionThrown()`
+
+## GetStringToken
+
+`iiXml::writer::GetStringToken`은 `QObject`를 상속한다.
+
+`QString` 문자열을 입력으로 받지만, 태그 파서에 바로 넘기지는 않는다. `DOCTYPE` 판정과 `InputValidator` 전체 XML 검증을 통과한 뒤 루트 태그를 파서로 전달한다.
+
+슬롯:
+
+- `readString(const QString& input)`
+
+시그널:
+
+- `parsed(const QString& tag_name, const QString& value)`
+- `failed(GetStringToken::Status status, const QString& reason)`
+- `parseFailed(const QString& reason)`
 
 ## 사용 예
 

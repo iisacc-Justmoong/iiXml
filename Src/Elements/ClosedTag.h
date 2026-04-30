@@ -5,4 +5,6 @@
 #pragma once
 
 class ClosedTag {
+public:
+    ClosedTag();
 };

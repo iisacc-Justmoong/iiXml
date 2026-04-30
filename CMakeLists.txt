@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 4.1)
-project(iiXml LANGUAGES CXX)
+project(iiXml VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 if(EXISTS "$ENV{HOME}/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
     list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.8.3/macos")
@@ -13,26 +16,74 @@ find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 
 add_library(iiXml SHARED
     iiXml.cpp
+    Src/Elements/ClosedTag.cpp
+    Src/Elements/ClosedTag.h
     Src/Elements/DOCTYPE.cpp
     Src/Elements/DOCTYPE.h
+    Src/Elements/InlineProperties.cpp
+    Src/Elements/InlineProperties.h
+    Src/Elements/OpenTag.cpp
+    Src/Elements/OpenTag.h
     Src/Parser/FileParser.cpp
     Src/Parser/FileParser.h
     Src/Parser/TagParser.cpp
     Src/Parser/TagParser.h
-    Src/Writer/InputValidator.cpp
-    Src/Writer/InputValidator.h
-        Src/Writer/GetFile.cpp
-        Src/Writer/GetFile.h
-        Src/Writer/GetStringToken.cpp
-        Src/Writer/GetStringToken.h
+    Src/Input/GetFile.cpp
+    Src/Input/GetFile.h
+    Src/Input/GetStringToken.cpp
+    Src/Input/GetStringToken.h
+    Src/Input/InputValidator.cpp
+    Src/Input/InputValidator.h
 )
 
 target_include_directories(iiXml PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/iiXml>
 )
 
 target_link_libraries(iiXml PUBLIC
     Qt6::Core
+)
+
+install(TARGETS iiXml
+    EXPORT iiXmlTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(FILES iiXml.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXml
+)
+
+install(DIRECTORY Src/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXml/Src
+    FILES_MATCHING PATTERN "*.h"
+)
+
+install(EXPORT iiXmlTargets
+    FILE iiXmlTargets.cmake
+    NAMESPACE iiXml::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXml
+)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/iiXmlConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXml
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXml
 )
 
 enable_testing()
@@ -69,6 +120,22 @@ target_link_libraries(input_validator_test PRIVATE iiXml)
 
 add_test(NAME input_validator_test COMMAND input_validator_test)
 
+add_executable(get_file_test
+    Test/get_file_test.cpp
+)
+
+target_link_libraries(get_file_test PRIVATE iiXml)
+
+add_test(NAME get_file_test COMMAND get_file_test)
+
+add_executable(get_string_token_test
+    Test/get_string_token_test.cpp
+)
+
+target_link_libraries(get_string_token_test PRIVATE iiXml)
+
+add_test(NAME get_string_token_test COMMAND get_string_token_test)
+
 add_executable(qt_object_signal_test
     Test/qt_object_signal_test.cpp
 )
@@ -76,6 +143,24 @@ add_executable(qt_object_signal_test
 target_link_libraries(qt_object_signal_test PRIVATE iiXml)
 
 add_test(NAME qt_object_signal_test COMMAND qt_object_signal_test)
+
+add_executable(debug_log_test
+    Test/debug_log_test.cpp
+)
+
+target_link_libraries(debug_log_test PRIVATE iiXml)
+
+add_test(NAME debug_log_test COMMAND debug_log_test)
+
+add_executable(install_layout_test
+    Test/install_layout_test.cpp
+)
+
+target_compile_definitions(install_layout_test PRIVATE
+    IIXML_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
+add_test(NAME install_layout_test COMMAND install_layout_test)
 
 add_executable(project_policy_test
     Test/project_policy_test.cpp

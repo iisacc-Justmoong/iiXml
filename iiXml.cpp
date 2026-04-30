@@ -1,7 +1,19 @@
 #include "iiXml.h"
 
-#include <iostream>
+#include <QDebug>
 
-void hello() {
-    std::cout << "Hello, World!" << std::endl;
+#include <exception>
+
+void launch() {
+    qDebug() << "iiXml::launch begin";
+    try {
+        qDebug() << "iiXml::launch library launch";
+        qDebug() << "iiXml::launch finished";
+    } catch (const std::exception& exception) {
+        qDebug() << "iiXml::launch exception"
+                 << "what=" << exception.what();
+    } catch (...) {
+        qDebug() << "iiXml::launch exception"
+                 << "what=unknown";
+    }
 }

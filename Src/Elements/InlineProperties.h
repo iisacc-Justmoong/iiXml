@@ -4,5 +4,7 @@
 
 #pragma once
 
-class GetStringToken {
+class InlineProperties {
+public:
+    InlineProperties();
 };

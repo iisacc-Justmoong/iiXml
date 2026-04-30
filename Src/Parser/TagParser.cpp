@@ -1,9 +1,11 @@
 #include "TagParser.h"
 
 #include <QByteArray>
+#include <QDebug>
 #include <QString>
 
 #include <cstddef>
+#include <exception>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -58,59 +60,114 @@ bool is_valid_tag_name(std::string_view tag_name) {
     return true;
 }
 
+std::string_view read_opening_tag_name(std::string_view opening_tag) {
+    opening_tag = trim_outer(opening_tag);
+    std::size_t end = 0;
+    while (end < opening_tag.size() && !is_space(opening_tag[end])) {
+        ++end;
+    }
+
+    return opening_tag.substr(0, end);
+}
+
 } // namespace
 
 namespace iiXml::parser {
 
 tag_parser::tag_parser(QObject* parent)
     : QObject(parent) {
+    qDebug() << "iiXml::parser::tag_parser::tag_parser constructed";
 }
 
 std::optional<tag_value> tag_parser::parse(std::string_view input) const {
-    input = trim_outer(input);
-    if (input.empty() || input.front() != '<') {
+    qDebug() << "iiXml::parser::tag_parser::parse begin"
+             << "input_size=" << input.size();
+    try {
+        input = trim_outer(input);
+        if (input.empty() || input.front() != '<') {
+            qDebug() << "iiXml::parser::tag_parser::parse failed"
+                     << "reason=missing opening bracket";
+            return std::nullopt;
+        }
+
+        const std::size_t opening_end = input.find('>');
+        if (opening_end == std::string_view::npos) {
+            qDebug() << "iiXml::parser::tag_parser::parse failed"
+                     << "reason=opening tag not closed";
+            return std::nullopt;
+        }
+
+        const std::string_view tag_name = read_opening_tag_name(input.substr(1, opening_end - 1));
+        if (!is_valid_tag_name(tag_name)) {
+            qDebug() << "iiXml::parser::tag_parser::parse failed"
+                     << "reason=invalid tag name";
+            return std::nullopt;
+        }
+
+        const std::string closing_tag = "</" + std::string(tag_name) + ">";
+        if (input.size() < opening_end + 1 + closing_tag.size()) {
+            qDebug() << "iiXml::parser::tag_parser::parse failed"
+                     << "reason=input shorter than closing tag";
+            return std::nullopt;
+        }
+
+        const std::size_t closing_start = input.size() - closing_tag.size();
+        if (input.compare(closing_start, closing_tag.size(), closing_tag) != 0) {
+            qDebug() << "iiXml::parser::tag_parser::parse failed"
+                     << "reason=closing tag mismatch";
+            return std::nullopt;
+        }
+
+        const std::size_t value_start = opening_end + 1;
+        const std::size_t value_size = closing_start - value_start;
+        qDebug() << "iiXml::parser::tag_parser::parse parsed"
+                 << "tag=" << QString::fromStdString(std::string(tag_name))
+                 << "value_size=" << value_size;
+        return tag_value{
+            std::string(tag_name),
+            std::string(input.substr(value_start, value_size))
+        };
+    } catch (const std::exception& exception) {
+        qDebug() << "iiXml::parser::tag_parser::parse exception"
+                 << "what=" << exception.what();
+        return std::nullopt;
+    } catch (...) {
+        qDebug() << "iiXml::parser::tag_parser::parse exception"
+                 << "what=unknown";
         return std::nullopt;
     }
-
-    const std::size_t opening_end = input.find('>');
-    if (opening_end == std::string_view::npos) {
-        return std::nullopt;
-    }
-
-    const std::string_view tag_name = input.substr(1, opening_end - 1);
-    if (!is_valid_tag_name(tag_name)) {
-        return std::nullopt;
-    }
-
-    const std::string closing_tag = "</" + std::string(tag_name) + ">";
-    if (input.size() < opening_end + 1 + closing_tag.size()) {
-        return std::nullopt;
-    }
-
-    const std::size_t closing_start = input.size() - closing_tag.size();
-    if (input.compare(closing_start, closing_tag.size(), closing_tag) != 0) {
-        return std::nullopt;
-    }
-
-    const std::size_t value_start = opening_end + 1;
-    const std::size_t value_size = closing_start - value_start;
-    return tag_value{
-        std::string(tag_name),
-        std::string(input.substr(value_start, value_size))
-    };
 }
 
 void tag_parser::parseTag(const QString& input) {
-    const QByteArray utf8 = input.toUtf8();
-    const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
-    const std::optional<tag_value> parsed = parse(std::string_view(bytes.data(), bytes.size()));
+    qDebug() << "iiXml::parser::tag_parser::parseTag begin"
+             << "input_size=" << input.size();
+    try {
+        const QByteArray utf8 = input.toUtf8();
+        const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+        const std::optional<tag_value> parsed = parse(std::string_view(bytes.data(), bytes.size()));
 
-    if (!parsed.has_value()) {
-        emit parseFailed("tag parse failed");
-        return;
+        if (!parsed.has_value()) {
+            qDebug() << "iiXml::parser::tag_parser::parseTag failed"
+                     << "reason=tag parse failed";
+            emit parseFailed("tag parse failed");
+            return;
+        }
+
+        qDebug() << "iiXml::parser::tag_parser::parseTag parsed"
+                 << "tag=" << QString::fromStdString(parsed->tag_name)
+                 << "value_size=" << parsed->value.size();
+        emit tagParsed(QString::fromStdString(parsed->tag_name), QString::fromStdString(parsed->value));
+    } catch (const std::exception& exception) {
+        qDebug() << "iiXml::parser::tag_parser::parseTag exception"
+                 << "what=" << exception.what();
+        emit parseFailed(QString::fromStdString(
+            std::string("tag parse exception: ") + exception.what()
+        ));
+    } catch (...) {
+        qDebug() << "iiXml::parser::tag_parser::parseTag exception"
+                 << "what=unknown";
+        emit parseFailed("tag parse exception: unknown");
     }
-
-    emit tagParsed(QString::fromStdString(parsed->tag_name), QString::fromStdString(parsed->value));
 }
 
 } // namespace iiXml::parser

@@ -1,6 +1,6 @@
 # InputValidator
 
-`Src/Writer/InputValidator.h`와 `Src/Writer/InputValidator.cpp`는 XML 입력의 종료 상태를 판정한다.
+`Src/Input/InputValidator.h`와 `Src/Input/InputValidator.cpp`는 XML 입력의 종료 상태를 판정한다.
 
 ## 반환 상태
 
@@ -14,6 +14,11 @@
 - `valid`: 유효한 입력이다.
 - `invalid_xml_file`: `DOCTYPE` 객체를 통과하지 못한 입력이다.
 - `invalid_tag_closure`: `InputValidator`의 태그 종료 검증을 통과하지 못한 입력이다.
+- `exception_thrown`: 검증 중 예외가 발생했다.
+
+실패 사유가 필요한 경우 `validate_result()`를 사용한다. 반환값은 `iiXml::writer::validation_result`이며, `exit`와 비어 있지 않은 `reason`을 포함한다.
+
+생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패, 예외 로그를 출력한다.
 
 ## 사용 예
 
@@ -22,9 +27,14 @@
 
 iiXml::writer::InputValidator validator;
 auto result = validator.validate("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
+auto detailed = validator.validate_result("<XML><number>1</number></XML>");
 
 if (result == iiXml::writer::validation_exit::invalid_xml_file) {
     // 유효하지 않은 XML 파일
+}
+
+if (detailed.exit == iiXml::writer::validation_exit::invalid_xml_file) {
+    // detailed.reason에 실패 사유가 들어 있다.
 }
 
 if (result == iiXml::writer::validation_exit::invalid_tag_closure) {

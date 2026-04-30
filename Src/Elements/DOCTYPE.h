@@ -14,9 +14,24 @@ enum class doctype_kind {
     doctype_declaration
 };
 
+enum class doctype_status {
+    matched,
+    empty_input,
+    no_top_declaration,
+    malformed_xml_declaration,
+    malformed_doctype_declaration,
+    exception_thrown
+};
+
 struct doctype_match {
     doctype_kind kind;
     std::string raw;
+};
+
+struct doctype_result {
+    doctype_status status;
+    std::optional<doctype_match> match;
+    std::string reason;
 };
 
 class DOCTYPE : public QObject {
@@ -31,7 +46,9 @@ public:
 
     explicit DOCTYPE(QObject* parent = nullptr);
 
-    [[nodiscard]] std::optional<doctype_match> match_top(std::string_view input) const;
+    [[nodiscard]] doctype_result match_top(std::string_view input) const;
+    [[nodiscard]] doctype_result match_top_result(std::string_view input) const;
+    [[nodiscard]] std::optional<doctype_match> match_top_match(std::string_view input) const;
     [[nodiscard]] bool is_top_doctype(std::string_view input) const;
     [[nodiscard]] bool is_top_xml_declaration(std::string_view input) const;
 

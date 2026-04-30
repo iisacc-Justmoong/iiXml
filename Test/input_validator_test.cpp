@@ -18,9 +18,14 @@ void returns_valid_for_valid_document() {
 
     const iiXml::writer::validation_exit result =
         validator.validate("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
+    const iiXml::writer::validation_result detailed =
+        validator.validate_result("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
 
     expect(result == iiXml::writer::validation_exit::valid,
         "valid document should return valid");
+    expect(detailed.exit == iiXml::writer::validation_exit::valid,
+        "valid document should return detailed valid exit");
+    expect(!detailed.reason.empty(), "valid document should return non-empty reason");
 }
 
 void returns_invalid_xml_file_when_doctype_fails() {
@@ -28,9 +33,14 @@ void returns_invalid_xml_file_when_doctype_fails() {
 
     const iiXml::writer::validation_exit result =
         validator.validate("<XML><number>1</number></XML>");
+    const iiXml::writer::validation_result detailed =
+        validator.validate_result("<XML><number>1</number></XML>");
 
     expect(result == iiXml::writer::validation_exit::invalid_xml_file,
         "document without top DOCTYPE/XML declaration should return invalid_xml_file");
+    expect(detailed.exit == iiXml::writer::validation_exit::invalid_xml_file,
+        "document without top DOCTYPE/XML declaration should return detailed invalid_xml_file");
+    expect(!detailed.reason.empty(), "invalid XML file should return non-empty reason");
 }
 
 void returns_invalid_tag_closure_when_tag_closure_fails() {
@@ -38,9 +48,14 @@ void returns_invalid_tag_closure_when_tag_closure_fails() {
 
     const iiXml::writer::validation_exit result =
         validator.validate("<!DOCTYPE XML>\n<XML><number>1</XML>");
+    const iiXml::writer::validation_result detailed =
+        validator.validate_result("<!DOCTYPE XML>\n<XML><number>1</XML>");
 
     expect(result == iiXml::writer::validation_exit::invalid_tag_closure,
         "mismatched close tag should return invalid_tag_closure");
+    expect(detailed.exit == iiXml::writer::validation_exit::invalid_tag_closure,
+        "mismatched close tag should return detailed invalid_tag_closure");
+    expect(!detailed.reason.empty(), "invalid tag closure should return non-empty reason");
 }
 
 void returns_invalid_tag_closure_for_unclosed_tag() {
@@ -48,9 +63,14 @@ void returns_invalid_tag_closure_for_unclosed_tag() {
 
     const iiXml::writer::validation_exit result =
         validator.validate("<!DOCTYPE XML>\n<XML><number>1</number>");
+    const iiXml::writer::validation_result detailed =
+        validator.validate_result("<!DOCTYPE XML>\n<XML><number>1</number>");
 
     expect(result == iiXml::writer::validation_exit::invalid_tag_closure,
         "unclosed tag should return invalid_tag_closure");
+    expect(detailed.exit == iiXml::writer::validation_exit::invalid_tag_closure,
+        "unclosed tag should return detailed invalid_tag_closure");
+    expect(!detailed.reason.empty(), "unclosed tag should return non-empty reason");
 }
 
 void validates_self_closing_tags() {

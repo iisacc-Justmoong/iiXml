@@ -12,6 +12,8 @@ std::optional<iiXml::parser::tag_value>
 
 파일을 열 수 없거나 파일 내용이 태그 파서를 통과하지 못하면 `std::nullopt`를 반환한다.
 
+생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패 로그를 출력한다.
+
 ## 사용 예
 
 ```cpp

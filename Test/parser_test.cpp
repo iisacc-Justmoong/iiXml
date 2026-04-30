@@ -43,6 +43,21 @@ void parses_utf8_value() {
     expect(parsed->value == "숫자", "utf8 value should be preserved");
 }
 
+void parses_opening_tag_with_attributes() {
+    const iiXml::parser::tag_parser parser;
+
+    const std::optional<iiXml::parser::tag_value> parsed =
+        parser.parse("<number type=\"int\">42</number>");
+
+    expect(parsed.has_value(), "tag with attributes should parse");
+    if (!parsed.has_value()) {
+        return;
+    }
+
+    expect(parsed->tag_name == "number", "tag name should ignore attributes");
+    expect(parsed->value == "42", "tag value with attributes should be preserved");
+}
+
 void preserves_inner_whitespace() {
     const iiXml::parser::tag_parser parser;
 
@@ -79,6 +94,7 @@ void rejects_invalid_tag_name() {
 int main() {
     parses_basic_tag();
     parses_utf8_value();
+    parses_opening_tag_with_attributes();
     preserves_inner_whitespace();
     rejects_missing_close_tag();
     rejects_mismatched_close_tag();
