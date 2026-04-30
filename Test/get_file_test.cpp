@@ -129,6 +129,25 @@ void parses_non_xml_extension_file_after_validation() {
     expect(result.token->value == "<number>77</number>", "non-xml extension file root value should parse");
 }
 
+void parses_cross_nested_tags_after_validation() {
+    const iiXml::writer::GetFile input;
+
+    const iiXml::writer::get_file_result result =
+        input.parse_xml("<!DOCTYPE XML>\n<XML><a><b></a></b></XML>");
+
+    expect(result.status == iiXml::writer::get_file_status::parsed,
+        "cross nested tags should parse after validation");
+    expect(!result.reason.empty(), "cross nested tag input should return non-empty reason");
+    expect(result.token.has_value(), "cross nested tag input should return token");
+    if (!result.token.has_value()) {
+        return;
+    }
+
+    expect(result.token->tag_name == "XML", "cross nested tag input should preserve root tag");
+    expect(result.token->value == "<a><b></a></b>",
+        "cross nested tag input should preserve raw root value");
+}
+
 void returns_invalid_xml_file_when_doctype_fails() {
     const iiXml::writer::GetFile input;
 
@@ -172,6 +191,7 @@ int main() {
     parses_xml_declaration_then_arbitrary_doctype_text();
     parses_file_after_validation();
     parses_non_xml_extension_file_after_validation();
+    parses_cross_nested_tags_after_validation();
     returns_invalid_xml_file_when_doctype_fails();
     returns_invalid_tag_closure_when_validator_fails();
     returns_file_read_failed_for_missing_file();

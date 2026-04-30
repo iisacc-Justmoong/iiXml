@@ -1,5 +1,7 @@
 #include "TagParser.h"
 
+#include "Src/Elements/OpenTag.h"
+
 #include <QByteArray>
 #include <QDebug>
 #include <QString>
@@ -9,6 +11,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace {
 
@@ -125,7 +128,8 @@ std::optional<tag_value> tag_parser::parse(std::string_view input) const {
                  << "value_size=" << value_size;
         return tag_value{
             std::string(tag_name),
-            std::string(input.substr(value_start, value_size))
+            std::string(input.substr(value_start, value_size)),
+            std::string(input)
         };
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::parser::tag_parser::parse exception"
@@ -133,6 +137,43 @@ std::optional<tag_value> tag_parser::parse(std::string_view input) const {
         return std::nullopt;
     } catch (...) {
         qDebug() << "iiXml::parser::tag_parser::parse exception"
+                 << "what=unknown";
+        return std::nullopt;
+    }
+}
+
+std::optional<std::vector<tag_value>> tag_parser::parse_all(std::string_view input) const {
+    qDebug() << "iiXml::parser::tag_parser::parse_all begin"
+             << "input_size=" << input.size();
+    try {
+        const iiXml::elements::OpenTag open_tag;
+        const std::optional<std::vector<iiXml::elements::open_tag_value>> parsed =
+            open_tag.parse_open_tags(input);
+        if (!parsed.has_value()) {
+            qDebug() << "iiXml::parser::tag_parser::parse_all failed"
+                     << "reason=open tag parser rejected input";
+            return std::nullopt;
+        }
+
+        std::vector<tag_value> result;
+        result.reserve(parsed->size());
+        for (const iiXml::elements::open_tag_value& tag : *parsed) {
+            result.push_back(tag_value{
+                tag.tag_name,
+                tag.value,
+                tag.raw
+            });
+        }
+
+        qDebug() << "iiXml::parser::tag_parser::parse_all parsed"
+                 << "tag_count=" << result.size();
+        return result;
+    } catch (const std::exception& exception) {
+        qDebug() << "iiXml::parser::tag_parser::parse_all exception"
+                 << "what=" << exception.what();
+        return std::nullopt;
+    } catch (...) {
+        qDebug() << "iiXml::parser::tag_parser::parse_all exception"
                  << "what=unknown";
         return std::nullopt;
     }

@@ -1,6 +1,7 @@
 #include "InputValidator.h"
 
 #include "Src/Elements/DOCTYPE.h"
+#include "Src/Elements/OpenTag.h"
 
 #include <QByteArray>
 #include <QDebug>
@@ -236,6 +237,7 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
              << "input_size=" << input.size();
     try {
         input = trim_outer(input);
+        const iiXml::elements::OpenTag open_tag;
         std::vector<std::string> open_tags;
         bool saw_element = false;
 
@@ -306,13 +308,11 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
 
             if (markup[1] == '/') {
                 const std::optional<std::string> tag_name = read_tag_name(markup, 2);
-                if (!tag_name.has_value() || open_tags.empty() || open_tags.back() != *tag_name) {
+                if (!tag_name.has_value() || !open_tag.close_open_tag(open_tags, *tag_name)) {
                     qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
                              << "reason=closing tag mismatch";
                     return false;
                 }
-
-                open_tags.pop_back();
             } else {
                 const std::optional<std::string> tag_name = read_tag_name(markup, 1);
                 if (!tag_name.has_value()) {

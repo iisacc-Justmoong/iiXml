@@ -112,6 +112,14 @@ target_link_libraries(doctype_test PRIVATE iiXml)
 
 add_test(NAME doctype_test COMMAND doctype_test)
 
+add_executable(open_tag_test
+    Test/open_tag_test.cpp
+)
+
+target_link_libraries(open_tag_test PRIVATE iiXml)
+
+add_test(NAME open_tag_test COMMAND open_tag_test)
+
 add_executable(input_validator_test
     Test/input_validator_test.cpp
 )

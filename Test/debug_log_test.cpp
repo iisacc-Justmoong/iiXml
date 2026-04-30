@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace {
 
@@ -56,11 +57,15 @@ void exercises_debug_logged_objects() {
     write_file(validated_file, "<!DOCTYPE XML>\n<XML><number>42</number></XML>");
 
     OpenTag open_tag;
+    std::vector<std::string> open_tags{"a", "b"};
+    const bool closed_cross_tag = open_tag.close_open_tag(open_tags, "a");
+    const auto preserved_open_tags = open_tag.parse_open_tags("<a><b></a></b>");
     ClosedTag closed_tag;
     InlineProperties inline_properties;
 
     iiXml::parser::tag_parser parser;
     const auto parsed_tag = parser.parse("<number>42</number>");
+    const auto parsed_tags = parser.parse_all("<a><b></a></b>");
     parser.parseTag("<number>42</number>");
 
     iiXml::parser::FileParser file_parser;
@@ -128,6 +133,12 @@ void exercises_debug_logged_objects() {
     launch();
 
     expect(parsed_tag.has_value(), "tag parser should parse in debug log test");
+    expect(parsed_tags.has_value(), "tag parser should parse all tags in debug log test");
+    expect(parsed_tags.has_value() && parsed_tags->size() == 2,
+        "tag parser should preserve both cross nested tags in debug log test");
+    expect(closed_cross_tag, "OpenTag should close cross nested tag in debug log test");
+    expect(preserved_open_tags.has_value(),
+        "OpenTag should preserve cross nested tags in debug log test");
     expect(parsed_file.has_value(), "file parser should parse in debug log test");
     expect(doctype_result.match.has_value(), "doctype should match in debug log test");
     expect(explicit_doctype_result.match.has_value(), "doctype result should match in debug log test");
@@ -174,6 +185,10 @@ int main() {
     qInstallMessageHandler(previous_handler);
 
     expect(saw("OpenTag::OpenTag"), "OpenTag constructor should log with qDebug");
+    expect(saw("iiXml::elements::OpenTag::close_open_tag"),
+        "OpenTag::close_open_tag should log with qDebug");
+    expect(saw("iiXml::elements::OpenTag::parse_open_tags"),
+        "OpenTag::parse_open_tags should log with qDebug");
     expect(saw("ClosedTag::ClosedTag"), "ClosedTag constructor should log with qDebug");
     expect(saw("InlineProperties::InlineProperties"),
         "InlineProperties constructor should log with qDebug");
@@ -181,6 +196,8 @@ int main() {
         "tag_parser constructor should log with qDebug");
     expect(saw("iiXml::parser::tag_parser::parse"),
         "tag_parser::parse should log with qDebug");
+    expect(saw("iiXml::parser::tag_parser::parse_all"),
+        "tag_parser::parse_all should log with qDebug");
     expect(saw("iiXml::parser::tag_parser::parse failed"),
         "tag_parser::parse failure should log with qDebug");
     expect(saw("iiXml::parser::FileParser::FileParser"),

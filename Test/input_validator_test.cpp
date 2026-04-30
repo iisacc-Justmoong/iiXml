@@ -80,6 +80,30 @@ void validates_self_closing_tags() {
         "self-closing tags should not require a close tag");
 }
 
+void validates_cross_nested_tags() {
+    const iiXml::writer::InputValidator validator;
+
+    expect(validator.has_valid_tag_closure("<a><b></a></b>"),
+        "cross nested tags should be accepted by the open tag policy");
+
+    const iiXml::writer::validation_result detailed =
+        validator.validate_result("<!DOCTYPE XML>\n<XML><a><b></a></b></XML>");
+
+    expect(detailed.exit == iiXml::writer::validation_exit::valid,
+        "document with cross nested tags should validate");
+}
+
+void validates_many_cross_nested_tags() {
+    const iiXml::writer::InputValidator validator;
+
+    const iiXml::writer::validation_result detailed = validator.validate_result(
+        "<!DOCTYPE XML>\n<XML><p><bold><italic>text</p><p>really</bold> useful</italic></p></XML>"
+    );
+
+    expect(detailed.exit == iiXml::writer::validation_exit::valid,
+        "document with many cross nested tags should validate");
+}
+
 } // namespace
 
 int main() {
@@ -88,6 +112,8 @@ int main() {
     returns_invalid_tag_closure_when_tag_closure_fails();
     returns_invalid_tag_closure_for_unclosed_tag();
     validates_self_closing_tags();
+    validates_cross_nested_tags();
+    validates_many_cross_nested_tags();
 
     return failures == 0 ? 0 : 1;
 }

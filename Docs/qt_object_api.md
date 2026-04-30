@@ -17,6 +17,13 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 
 - `parseTag(const QString& input)`
 
+동기 API:
+
+- `parse(std::string_view input)`
+- `parse_all(std::string_view input)`
+
+`parse_all()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다.
+
 시그널:
 
 - `tagParsed(const QString& tag_name, const QString& value)`
@@ -49,6 +56,17 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 - `doctypeRejected(const QString& reason)`
 - `xmlDeclarationMatched(const QString& raw)`
 - `doctypeDeclarationMatched(const QString& raw)`
+
+## OpenTag
+
+`iiXml::elements::OpenTag`는 `QObject`를 상속한다.
+
+동기 API:
+
+- `close_open_tag(std::vector<std::string>& open_tags, std::string_view closing_tag_name)`
+- `parse_open_tags(std::string_view input)`
+
+`close_open_tag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `parse_open_tags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `raw`에 원본 범위를 보존한다.
 
 ## InputValidator
 

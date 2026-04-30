@@ -7,12 +7,14 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace iiXml::parser {
 
 struct tag_value {
     std::string tag_name;
     std::string value;
+    std::string raw;
 };
 
 class tag_parser : public QObject {
@@ -22,6 +24,7 @@ public:
     explicit tag_parser(QObject* parent = nullptr);
 
     [[nodiscard]] std::optional<tag_value> parse(std::string_view input) const;
+    [[nodiscard]] std::optional<std::vector<tag_value>> parse_all(std::string_view input) const;
 
 public slots:
     void parseTag(const QString& input);
