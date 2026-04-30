@@ -2,6 +2,10 @@
 
 #include "Src/Elements/DOCTYPE.h"
 
+#include <QByteArray>
+#include <QMetaType>
+#include <QString>
+
 #include <cstddef>
 #include <optional>
 #include <string>
@@ -129,6 +133,29 @@ bool is_self_closing_markup(std::string_view markup) {
 
 namespace iiXml::writer {
 
+namespace {
+
+InputValidator::ValidationExit to_qt_exit(validation_exit result) {
+    switch (result) {
+        case validation_exit::valid:
+            return InputValidator::ValidationExit::Valid;
+        case validation_exit::invalid_xml_file:
+            return InputValidator::ValidationExit::InvalidXmlFile;
+        case validation_exit::invalid_tag_closure:
+            return InputValidator::ValidationExit::InvalidTagClosure;
+    }
+
+    return InputValidator::ValidationExit::InvalidXmlFile;
+}
+
+} // namespace
+
+InputValidator::InputValidator(QObject* parent)
+    : QObject(parent) {
+    qRegisterMetaType<InputValidator::ValidationExit>(
+        "iiXml::writer::InputValidator::ValidationExit");
+}
+
 validation_exit InputValidator::validate(std::string_view input) const {
     const iiXml::elements::DOCTYPE doctype;
     const std::optional<iiXml::elements::doctype_match> matched = doctype.match_top(input);
@@ -224,6 +251,26 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
     }
 
     return saw_element && open_tags.empty();
+}
+
+void InputValidator::validateInput(const QString& input) {
+    const QByteArray utf8 = input.toUtf8();
+    const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+    const ValidationExit result = to_qt_exit(validate(std::string_view(bytes.data(), bytes.size())));
+
+    emit validationFinished(result);
+
+    switch (result) {
+        case ValidationExit::Valid:
+            emit validXml();
+            return;
+        case ValidationExit::InvalidXmlFile:
+            emit invalidXmlFile();
+            return;
+        case ValidationExit::InvalidTagClosure:
+            emit invalidTagClosure();
+            return;
+    }
 }
 
 } // namespace iiXml::writer

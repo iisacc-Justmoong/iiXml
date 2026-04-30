@@ -2,6 +2,7 @@
 #define IIXML_LIBRARY_H
 
 #include "Src/Elements/DOCTYPE.h"
+#include "Src/Parser/FileParser.h"
 #include "Src/Parser/TagParser.h"
 #include "Src/Writer/InputValidator.h"
 

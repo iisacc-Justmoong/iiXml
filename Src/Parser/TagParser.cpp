@@ -1,5 +1,8 @@
 #include "TagParser.h"
 
+#include <QByteArray>
+#include <QString>
+
 #include <cstddef>
 #include <optional>
 #include <string>
@@ -59,6 +62,10 @@ bool is_valid_tag_name(std::string_view tag_name) {
 
 namespace iiXml::parser {
 
+tag_parser::tag_parser(QObject* parent)
+    : QObject(parent) {
+}
+
 std::optional<tag_value> tag_parser::parse(std::string_view input) const {
     input = trim_outer(input);
     if (input.empty() || input.front() != '<') {
@@ -91,6 +98,19 @@ std::optional<tag_value> tag_parser::parse(std::string_view input) const {
         std::string(tag_name),
         std::string(input.substr(value_start, value_size))
     };
+}
+
+void tag_parser::parseTag(const QString& input) {
+    const QByteArray utf8 = input.toUtf8();
+    const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+    const std::optional<tag_value> parsed = parse(std::string_view(bytes.data(), bytes.size()));
+
+    if (!parsed.has_value()) {
+        emit parseFailed("tag parse failed");
+        return;
+    }
+
+    emit tagParsed(QString::fromStdString(parsed->tag_name), QString::fromStdString(parsed->value));
 }
 
 } // namespace iiXml::parser

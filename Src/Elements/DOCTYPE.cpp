@@ -1,5 +1,9 @@
 #include "DOCTYPE.h"
 
+#include <QByteArray>
+#include <QMetaType>
+#include <QString>
+
 #include <cstddef>
 #include <optional>
 #include <string>
@@ -133,6 +137,26 @@ bool has_doctype_name(std::string_view declaration) {
 
 namespace iiXml::elements {
 
+namespace {
+
+DOCTYPE::Kind to_qt_kind(doctype_kind kind) {
+    switch (kind) {
+        case doctype_kind::xml_declaration:
+            return DOCTYPE::Kind::XmlDeclaration;
+        case doctype_kind::doctype_declaration:
+            return DOCTYPE::Kind::DoctypeDeclaration;
+    }
+
+    return DOCTYPE::Kind::DoctypeDeclaration;
+}
+
+} // namespace
+
+DOCTYPE::DOCTYPE(QObject* parent)
+    : QObject(parent) {
+    qRegisterMetaType<DOCTYPE::Kind>("iiXml::elements::DOCTYPE::Kind");
+}
+
 std::optional<doctype_match> DOCTYPE::match_top(std::string_view input) const {
     input = trim_top(input);
 
@@ -181,6 +205,28 @@ bool DOCTYPE::is_top_doctype(std::string_view input) const {
 bool DOCTYPE::is_top_xml_declaration(std::string_view input) const {
     const std::optional<doctype_match> matched = match_top(input);
     return matched.has_value() && matched->kind == doctype_kind::xml_declaration;
+}
+
+void DOCTYPE::matchTop(const QString& input) {
+    const QByteArray utf8 = input.toUtf8();
+    const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+    const std::optional<doctype_match> matched = match_top(std::string_view(bytes.data(), bytes.size()));
+
+    if (!matched.has_value()) {
+        emit doctypeRejected("DOCTYPE match failed");
+        return;
+    }
+
+    const QString raw = QString::fromStdString(matched->raw);
+    const Kind kind = to_qt_kind(matched->kind);
+    emit doctypeMatched(kind, raw);
+
+    if (kind == Kind::XmlDeclaration) {
+        emit xmlDeclarationMatched(raw);
+        return;
+    }
+
+    emit doctypeDeclarationMatched(raw);
 }
 
 } // namespace iiXml::elements
