@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 
+#include <cstddef>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -17,6 +18,14 @@ struct tag_value {
     std::string raw;
 };
 
+struct tag_range {
+    std::string tag_name;
+    std::size_t raw_begin;
+    std::size_t value_begin;
+    std::size_t value_end;
+    std::size_t raw_end;
+};
+
 class tag_parser : public QObject {
     Q_OBJECT
 
@@ -24,7 +33,7 @@ public:
     explicit tag_parser(QObject* parent = nullptr);
 
     [[nodiscard]] std::optional<tag_value> parse(std::string_view input) const;
-    [[nodiscard]] std::optional<std::vector<tag_value>> parse_all(std::string_view input) const;
+    [[nodiscard]] std::optional<std::vector<tag_range>> parse_all(std::string_view input) const;
 
 public slots:
     void parseTag(const QString& input);

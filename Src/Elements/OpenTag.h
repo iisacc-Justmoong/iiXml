@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+#include <cstddef>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -9,10 +10,12 @@
 
 namespace iiXml::elements {
 
-struct open_tag_value {
+struct open_tag_range {
     std::string tag_name;
-    std::string value;
-    std::string raw;
+    std::size_t raw_begin;
+    std::size_t value_begin;
+    std::size_t value_end;
+    std::size_t raw_end;
 };
 
 class OpenTag : public QObject {
@@ -26,7 +29,7 @@ public:
         std::string_view closing_tag_name
     ) const;
 
-    [[nodiscard]] std::optional<std::vector<open_tag_value>> parse_open_tags(
+    [[nodiscard]] std::optional<std::vector<open_tag_range>> parse_open_tags(
         std::string_view input
     ) const;
 };

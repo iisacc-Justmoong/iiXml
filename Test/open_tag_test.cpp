@@ -3,6 +3,7 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -14,6 +15,14 @@ void expect(bool condition, const char* message) {
         std::cerr << message << '\n';
         ++failures;
     }
+}
+
+std::string_view raw_view(std::string_view input, const iiXml::elements::open_tag_range& range) {
+    return input.substr(range.raw_begin, range.raw_end - range.raw_begin);
+}
+
+std::string_view value_view(std::string_view input, const iiXml::elements::open_tag_range& range) {
+    return input.substr(range.value_begin, range.value_end - range.value_begin);
 }
 
 void closes_stack_top_tag() {
@@ -64,7 +73,7 @@ void parses_cross_nested_tags_without_rewriting() {
     const iiXml::elements::OpenTag open_tag;
     const std::string input = "<a>\n    <b>\n</a>\n    </b>";
 
-    const std::optional<std::vector<iiXml::elements::open_tag_value>> parsed =
+    const std::optional<std::vector<iiXml::elements::open_tag_range>> parsed =
         open_tag.parse_open_tags(input);
 
     expect(parsed.has_value(), "cross nested tags should parse");
@@ -78,19 +87,23 @@ void parses_cross_nested_tags_without_rewriting() {
     }
 
     expect((*parsed)[0].tag_name == "a", "first preserved tag should be a");
-    expect((*parsed)[0].value == "\n    <b>\n", "a value should preserve b opening markup");
-    expect((*parsed)[0].raw == "<a>\n    <b>\n</a>", "a raw text should preserve original a span");
+    expect(value_view(input, (*parsed)[0]) == "\n    <b>\n",
+        "a value range should preserve b opening markup");
+    expect(raw_view(input, (*parsed)[0]) == "<a>\n    <b>\n</a>",
+        "a raw range should preserve original a span");
 
     expect((*parsed)[1].tag_name == "b", "second preserved tag should be b");
-    expect((*parsed)[1].value == "\n</a>\n    ", "b value should preserve a closing markup");
-    expect((*parsed)[1].raw == "<b>\n</a>\n    </b>", "b raw text should preserve original b span");
+    expect(value_view(input, (*parsed)[1]) == "\n</a>\n    ",
+        "b value range should preserve a closing markup");
+    expect(raw_view(input, (*parsed)[1]) == "<b>\n</a>\n    </b>",
+        "b raw range should preserve original b span");
 }
 
 void parses_many_cross_nested_tags_without_rewriting() {
     const iiXml::elements::OpenTag open_tag;
     const std::string input = "<p><bold><italic>text</p><p>really</bold> useful</italic></p>";
 
-    const std::optional<std::vector<iiXml::elements::open_tag_value>> parsed =
+    const std::optional<std::vector<iiXml::elements::open_tag_range>> parsed =
         open_tag.parse_open_tags(input);
 
     expect(parsed.has_value(), "many cross nested tags should parse");
@@ -104,34 +117,64 @@ void parses_many_cross_nested_tags_without_rewriting() {
     }
 
     expect((*parsed)[0].tag_name == "p", "first preserved tag should be first p");
-    expect((*parsed)[0].value == "<bold><italic>text",
-        "first p value should be fixed only at its matching close tag");
-    expect((*parsed)[0].raw == "<p><bold><italic>text</p>",
-        "first p raw text should preserve original span");
+    expect(value_view(input, (*parsed)[0]) == "<bold><italic>text",
+        "first p value range should be fixed only at its matching close tag");
+    expect(raw_view(input, (*parsed)[0]) == "<p><bold><italic>text</p>",
+        "first p raw range should preserve original span");
 
     expect((*parsed)[1].tag_name == "bold", "second preserved tag should be bold");
-    expect((*parsed)[1].value == "<italic>text</p><p>really",
-        "bold value should be fixed only at its matching close tag");
-    expect((*parsed)[1].raw == "<bold><italic>text</p><p>really</bold>",
-        "bold raw text should cross both p tags");
+    expect(value_view(input, (*parsed)[1]) == "<italic>text</p><p>really",
+        "bold value range should be fixed only at its matching close tag");
+    expect(raw_view(input, (*parsed)[1]) == "<bold><italic>text</p><p>really</bold>",
+        "bold raw range should cross both p tags");
 
     expect((*parsed)[2].tag_name == "italic", "third preserved tag should be italic");
-    expect((*parsed)[2].value == "text</p><p>really</bold> useful",
-        "italic value should be fixed only at its matching close tag");
-    expect((*parsed)[2].raw == "<italic>text</p><p>really</bold> useful</italic>",
-        "italic raw text should preserve its full crossing span");
+    expect(value_view(input, (*parsed)[2]) == "text</p><p>really</bold> useful",
+        "italic value range should be fixed only at its matching close tag");
+    expect(raw_view(input, (*parsed)[2]) == "<italic>text</p><p>really</bold> useful</italic>",
+        "italic raw range should preserve its full crossing span");
 
     expect((*parsed)[3].tag_name == "p", "fourth preserved tag should be second p");
-    expect((*parsed)[3].value == "really</bold> useful</italic>",
-        "second p value should be fixed only at its matching close tag");
-    expect((*parsed)[3].raw == "<p>really</bold> useful</italic></p>",
-        "second p raw text should preserve original span");
+    expect(value_view(input, (*parsed)[3]) == "really</bold> useful</italic>",
+        "second p value range should be fixed only at its matching close tag");
+    expect(raw_view(input, (*parsed)[3]) == "<p>really</bold> useful</italic></p>",
+        "second p raw range should preserve original span");
+}
+
+void matches_repeated_tag_names_by_latest_open_tag() {
+    const iiXml::elements::OpenTag open_tag;
+    const std::string input = "<p><p>inner</p>outer</p>";
+
+    const std::optional<std::vector<iiXml::elements::open_tag_range>> parsed =
+        open_tag.parse_open_tags(input);
+
+    expect(parsed.has_value(), "repeated tag names should parse");
+    if (!parsed.has_value()) {
+        return;
+    }
+
+    expect(parsed->size() == 2, "repeated tag names should preserve both p tags");
+    if (parsed->size() != 2) {
+        return;
+    }
+
+    expect((*parsed)[0].tag_name == "p", "outer p should remain first by open order");
+    expect(value_view(input, (*parsed)[0]) == "<p>inner</p>outer",
+        "outer p value range should stay alive until its own closing tag");
+    expect(raw_view(input, (*parsed)[0]) == "<p><p>inner</p>outer</p>",
+        "outer p raw range should include the inner p");
+
+    expect((*parsed)[1].tag_name == "p", "inner p should also survive as a p tag");
+    expect(value_view(input, (*parsed)[1]) == "inner",
+        "inner p value range should close at the first p close tag");
+    expect(raw_view(input, (*parsed)[1]) == "<p>inner</p>",
+        "inner p raw range should be preserved");
 }
 
 void rejects_unclosed_preserved_tag() {
     const iiXml::elements::OpenTag open_tag;
 
-    const std::optional<std::vector<iiXml::elements::open_tag_value>> parsed =
+    const std::optional<std::vector<iiXml::elements::open_tag_range>> parsed =
         open_tag.parse_open_tags("<a><b></a>");
 
     expect(!parsed.has_value(), "unclosed preserved tag should fail");
@@ -146,6 +189,7 @@ int main() {
     rejects_empty_closing_tag();
     parses_cross_nested_tags_without_rewriting();
     parses_many_cross_nested_tags_without_rewriting();
+    matches_repeated_tag_names_by_latest_open_tag();
     rejects_unclosed_preserved_tag();
 
     return failures == 0 ? 0 : 1;

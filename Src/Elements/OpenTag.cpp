@@ -9,10 +9,13 @@
 #include <cstddef>
 #include <exception>
 #include <iterator>
+#include <list>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 namespace iiXml::elements {
 
@@ -25,10 +28,14 @@ struct active_open_tag {
     std::size_t sequence;
 };
 
-struct indexed_open_tag_value {
+struct indexed_open_tag_range {
     std::size_t sequence;
-    open_tag_value value;
+    open_tag_range range;
 };
+
+using active_open_tag_list = std::list<active_open_tag>;
+using active_open_tag_iterator = active_open_tag_list::iterator;
+using active_open_tag_index = std::unordered_map<std::string, std::vector<active_open_tag_iterator>>;
 
 bool is_space(char value) {
     return value == ' ' || value == '\n' || value == '\r' || value == '\t';
@@ -140,10 +147,12 @@ bool OpenTag::close_open_tag(
             return false;
         }
 
-        const auto matched = std::find(
+        const auto matched = std::find_if(
             open_tags.rbegin(),
             open_tags.rend(),
-            std::string(closing_tag_name)
+            [&](const std::string& tag_name) {
+                return tag_name == closing_tag_name;
+            }
         );
         if (matched == open_tags.rend()) {
             qDebug() << "iiXml::elements::OpenTag::close_open_tag failed"
@@ -169,12 +178,13 @@ bool OpenTag::close_open_tag(
     }
 }
 
-std::optional<std::vector<open_tag_value>> OpenTag::parse_open_tags(std::string_view input) const {
+std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_view input) const {
     qDebug() << "iiXml::elements::OpenTag::parse_open_tags begin"
              << "input_size=" << input.size();
     try {
-        std::vector<active_open_tag> active_tags;
-        std::vector<indexed_open_tag_value> parsed_tags;
+        active_open_tag_list active_tags;
+        active_open_tag_index active_tags_by_name;
+        std::vector<indexed_open_tag_range> parsed_tags;
         std::size_t sequence = 0;
 
         for (std::size_t index = 0; index < input.size();) {
@@ -250,35 +260,30 @@ std::optional<std::vector<open_tag_value>> OpenTag::parse_open_tags(std::string_
                     return std::nullopt;
                 }
 
-                const auto matched = std::find_if(
-                    active_tags.rbegin(),
-                    active_tags.rend(),
-                    [&](const active_open_tag& tag) {
-                        return tag.name == *tag_name;
-                    }
-                );
-                if (matched == active_tags.rend()) {
+                const auto indexed_tags = active_tags_by_name.find(*tag_name);
+                if (indexed_tags == active_tags_by_name.end() || indexed_tags->second.empty()) {
                     qDebug() << "iiXml::elements::OpenTag::parse_open_tags failed"
                              << "reason=no matching open tag";
                     return std::nullopt;
                 }
 
-                active_open_tag closed = *matched;
-                active_tags.erase(std::next(matched).base());
+                active_open_tag_iterator matched = indexed_tags->second.back();
+                active_open_tag closed = std::move(*matched);
+                active_tags.erase(matched);
+                indexed_tags->second.pop_back();
+                if (indexed_tags->second.empty()) {
+                    active_tags_by_name.erase(indexed_tags);
+                }
 
                 const std::size_t close_end = *tag_end + 1;
-                parsed_tags.push_back(indexed_open_tag_value{
+                parsed_tags.push_back(indexed_open_tag_range{
                     closed.sequence,
-                    open_tag_value{
+                    open_tag_range{
                         std::move(closed.name),
-                        std::string(input.substr(
-                            closed.value_begin,
-                            tag_start - closed.value_begin
-                        )),
-                        std::string(input.substr(
-                            closed.open_begin,
-                            close_end - closed.open_begin
-                        ))
+                        closed.open_begin,
+                        closed.value_begin,
+                        tag_start,
+                        close_end
                     }
                 });
             } else {
@@ -290,12 +295,14 @@ std::optional<std::vector<open_tag_value>> OpenTag::parse_open_tags(std::string_
                 }
 
                 if (is_self_closing_markup(markup)) {
-                    parsed_tags.push_back(indexed_open_tag_value{
+                    parsed_tags.push_back(indexed_open_tag_range{
                         sequence,
-                        open_tag_value{
+                        open_tag_range{
                             *tag_name,
-                            "",
-                            std::string(markup)
+                            tag_start,
+                            *tag_end + 1,
+                            *tag_end + 1,
+                            *tag_end + 1
                         }
                     });
                     ++sequence;
@@ -306,6 +313,8 @@ std::optional<std::vector<open_tag_value>> OpenTag::parse_open_tags(std::string_
                         *tag_end + 1,
                         sequence
                     });
+                    active_open_tag_iterator opened = std::prev(active_tags.end());
+                    active_tags_by_name[opened->name].push_back(opened);
                     ++sequence;
                 }
             }
@@ -323,15 +332,15 @@ std::optional<std::vector<open_tag_value>> OpenTag::parse_open_tags(std::string_
         std::sort(
             parsed_tags.begin(),
             parsed_tags.end(),
-            [](const indexed_open_tag_value& left, const indexed_open_tag_value& right) {
+            [](const indexed_open_tag_range& left, const indexed_open_tag_range& right) {
                 return left.sequence < right.sequence;
             }
         );
 
-        std::vector<open_tag_value> result;
+        std::vector<open_tag_range> result;
         result.reserve(parsed_tags.size());
-        for (indexed_open_tag_value& parsed : parsed_tags) {
-            result.push_back(std::move(parsed.value));
+        for (indexed_open_tag_range& parsed : parsed_tags) {
+            result.push_back(std::move(parsed.range));
         }
 
         qDebug() << "iiXml::elements::OpenTag::parse_open_tags parsed"

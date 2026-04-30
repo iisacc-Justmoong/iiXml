@@ -17,23 +17,28 @@
 
 위 입력은 열린 태그 스택이 `a, b`인 상태에서 `</a>`가 먼저 들어와도 `a`를 찾아 닫고, 이후 `</b>`로 남은 `b`를 닫는다. 이 규칙은 두 태그에 한정되지 않으며, 열린 태그가 몇 개든 각 태그는 자기 이름의 닫기 태그가 나올 때까지 독립 범위로 생존한다.
 
+태그 매칭은 반드시 태그 이름으로 진행한다. 같은 이름의 태그가 여러 번 열려 있으면 그 이름으로 열린 가장 최근 태그가 먼저 닫힌다.
+
 ## 태그 보존 파싱
 
-`parse_open_tags()`는 입력 안의 모든 태그 쌍을 열림 순서대로 반환한다. 반환 항목은 `tag_name`, `value`, `raw`를 가진다.
+`parse_open_tags()`는 입력 안의 모든 태그 쌍을 열림 순서대로 반환한다. 반환 항목은 `tag_name`, `raw_begin`, `value_begin`, `value_end`, `raw_end`를 가진다. `value`와 `raw` 문자열은 즉시 복사하지 않고, 원본 입력에 대한 offset 범위로 보존한다.
 
 ```cpp
 iiXml::elements::OpenTag open_tag;
-auto parsed = open_tag.parse_open_tags("<a><b></a></b>");
+std::string_view input = "<a><b></a></b>";
+auto parsed = open_tag.parse_open_tags(input);
 
 if (parsed.has_value()) {
     // (*parsed)[0].tag_name == "a"
-    // (*parsed)[0].raw == "<a><b></a>"
+    // input.substr((*parsed)[0].raw_begin,
+    //     (*parsed)[0].raw_end - (*parsed)[0].raw_begin) == "<a><b></a>"
     // (*parsed)[1].tag_name == "b"
-    // (*parsed)[1].raw == "<b></a></b>"
+    // input.substr((*parsed)[1].raw_begin,
+    //     (*parsed)[1].raw_end - (*parsed)[1].raw_begin) == "<b></a></b>"
 }
 ```
 
-교차 종료 구조에서는 한 태그의 `raw`나 `value` 안에 다른 태그의 시작 또는 종료 마크업이 그대로 남을 수 있다. 이 동작은 입력을 자동으로 재배열하거나 정상 중첩 구조로 고치지 않고, 각 열린 태그가 자기 이름의 닫기 태그를 만날 때까지 전진해서 보존하기 위한 것이다. 열린 태그 프로세스는 짝이 되는 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `tag_name`, `value`, `raw` 필드가 확정된다.
+교차 종료 구조에서는 한 태그의 `raw`나 `value` 범위 안에 다른 태그의 시작 또는 종료 마크업이 그대로 남을 수 있다. 이 동작은 입력을 자동으로 재배열하거나 정상 중첩 구조로 고치지 않고, 각 열린 태그가 자기 이름의 닫기 태그를 만날 때까지 전진해서 보존하기 위한 것이다. 열린 태그 프로세스는 짝이 되는 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `tag_name`과 offset 필드가 확정된다.
 
 예를 들어 다음 입력은 `p`, `bold`, `italic`, 두 번째 `p`를 모두 별도 항목으로 보존한다.
 

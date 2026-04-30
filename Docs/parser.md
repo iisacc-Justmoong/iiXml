@@ -18,25 +18,29 @@ if (parsed.has_value()) {
 }
 ```
 
-`parse_all()`은 입력 안의 태그 쌍을 모두 읽어 `std::vector<tag_value>`로 반환한다. 이 API는 `iiXml::elements::OpenTag`의 완화된 교차 종료 규칙을 사용하므로, `<a><b></a></b>`에서도 `a`와 `b`를 모두 보존한다. 태그 수는 두 개로 제한하지 않으며, 여러 스타일 태그와 문단 태그가 교차해도 열린 순서대로 모든 태그를 반환한다.
+`parse_all()`은 입력 안의 태그 쌍을 모두 읽어 `std::vector<tag_range>`로 반환한다. 이 API는 `iiXml::elements::OpenTag`의 완화된 교차 종료 규칙을 사용하므로, `<a><b></a></b>`에서도 `a`와 `b`를 모두 보존한다. 태그 수는 두 개로 제한하지 않으며, 여러 스타일 태그와 문단 태그가 교차해도 열린 순서대로 모든 태그를 반환한다.
 
 ```cpp
 iiXml::parser::tag_parser parser;
-auto parsed = parser.parse_all("<a><b></a></b>");
+std::string_view input = "<a><b></a></b>";
+auto parsed = parser.parse_all(input);
 
 if (parsed.has_value()) {
     // (*parsed)[0].tag_name == "a"
-    // (*parsed)[0].raw == "<a><b></a>"
+    // input.substr((*parsed)[0].raw_begin,
+    //     (*parsed)[0].raw_end - (*parsed)[0].raw_begin) == "<a><b></a>"
     // (*parsed)[1].tag_name == "b"
-    // (*parsed)[1].raw == "<b></a></b>"
+    // input.substr((*parsed)[1].raw_begin,
+    //     (*parsed)[1].raw_end - (*parsed)[1].raw_begin) == "<b></a></b>"
 }
 ```
 
 ## 현재 계약
 
 - `parse()` 입력은 `<tag>value</tag>` 형태의 단일 태그 쌍이어야 한다.
-- `parse_all()`은 여러 태그를 열림 순서대로 모두 반환하고, 각 항목의 `value`와 `raw`에는 자기 닫기 태그까지 전진한 원본 범위를 보존한다.
-- 열린 태그 프로세스는 짝 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `tag_value` 필드가 확정된다.
+- `parse_all()`은 여러 태그를 열림 순서대로 모두 반환하고, 각 항목의 `value_begin/value_end`와 `raw_begin/raw_end`에는 자기 닫기 태그까지 전진한 원본 offset 범위를 보존한다.
+- 열린 태그 프로세스는 짝 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `tag_range` 필드가 확정된다.
+- 태그 매칭은 태그 이름 기준이며, 같은 이름이 여러 번 열려 있으면 가장 최근에 열린 같은 이름 태그가 먼저 닫힌다.
 - 태그 이름은 영문자 또는 `_`로 시작하고, 이후에는 영문자, 숫자, `_`, `-`, `.`, `:`를 사용할 수 있다.
 - 입력 문자열의 바깥쪽 공백은 무시하지만, 태그 내부 값의 공백은 보존한다.
 - 닫는 태그가 없거나 여는 태그와 닫는 태그 이름이 다르면 `std::nullopt`를 반환한다.

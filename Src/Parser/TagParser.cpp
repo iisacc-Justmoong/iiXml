@@ -11,6 +11,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -142,12 +143,12 @@ std::optional<tag_value> tag_parser::parse(std::string_view input) const {
     }
 }
 
-std::optional<std::vector<tag_value>> tag_parser::parse_all(std::string_view input) const {
+std::optional<std::vector<tag_range>> tag_parser::parse_all(std::string_view input) const {
     qDebug() << "iiXml::parser::tag_parser::parse_all begin"
              << "input_size=" << input.size();
     try {
         const iiXml::elements::OpenTag open_tag;
-        const std::optional<std::vector<iiXml::elements::open_tag_value>> parsed =
+        std::optional<std::vector<iiXml::elements::open_tag_range>> parsed =
             open_tag.parse_open_tags(input);
         if (!parsed.has_value()) {
             qDebug() << "iiXml::parser::tag_parser::parse_all failed"
@@ -155,13 +156,15 @@ std::optional<std::vector<tag_value>> tag_parser::parse_all(std::string_view inp
             return std::nullopt;
         }
 
-        std::vector<tag_value> result;
+        std::vector<tag_range> result;
         result.reserve(parsed->size());
-        for (const iiXml::elements::open_tag_value& tag : *parsed) {
-            result.push_back(tag_value{
-                tag.tag_name,
-                tag.value,
-                tag.raw
+        for (iiXml::elements::open_tag_range& tag : *parsed) {
+            result.push_back(tag_range{
+                std::move(tag.tag_name),
+                tag.raw_begin,
+                tag.value_begin,
+                tag.value_end,
+                tag.raw_end
             });
         }
 
