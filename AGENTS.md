@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-이 저장소는 C++20 기반의 `iixml` 공유 라이브러리입니다. 현재 모듈은 최상위의 `iixml.h` 공개 헤더와 `iixml.cpp` 구현 파일로 구성됩니다. 빌드 설정은 `CMakeLists.txt`에만 둡니다. 새 모듈을 추가할 때는 디렉터리 구조를 앱 아키텍처의 청사진으로 보고, 기능 단위로 파일과 폴더를 배치하십시오. 테스트가 추가되면 `tests/` 아래에 모듈별로 배치하고, 문서는 `docs/` 또는 최상위 Markdown 파일에 둡니다.
+이 저장소는 C++20 기반의 `iixml` 공유 라이브러리입니다. 현재 모듈은 최상위의 `iiXml.h` 공개 헤더와 `iiXml.cpp` 구현 파일로 구성됩니다. 빌드 설정은 `CMakeLists.txt`에만 둡니다. 새 모듈을 추가할 때는 디렉터리 구조를 앱 아키텍처의 청사진으로 보고, 기능 단위로 파일과 폴더를 배치하십시오. 테스트가 추가되면 `tests/` 아래에 모듈별로 배치하고, 문서는 `docs/` 또는 최상위 Markdown 파일에 둡니다.
 
 ## Build, Test, and Development Commands
 
@@ -13,13 +13,18 @@
 
 빌드 디렉터리는 항상 `build/`만 사용하십시오. `cmake-build-debug/` 같은 대체 디렉터리를 새로 만들거나 확장하지 마십시오.
 
+## Platform & Framework Policy
+
+프로젝트에서 Qt를 사용하는 모든 빌드 설정, C++ 코드, QML UI는 Qt 6.8.3을 기준으로 작성하고 검증하십시오. 다른 Qt 버전으로 변경해야 하는 경우 이 정책 문서와 관련 빌드 및 테스트 문서를 먼저 갱신하십시오.
+Qt 설치 경로는 사용자 홈의 `~/Qt` 하위 디렉터리를 기준으로 인식하십시오. Qt 경로를 문서화하거나 CMake 설정 예시를 작성할 때도 `~/Qt` 아래의 Qt 6.8.3 설치를 기준으로 설명하십시오.
+
 ## Coding Style & Naming Conventions
 
-C++ 코드는 4칸 들여쓰기를 사용하고, 헤더에는 공개 API만 노출하십시오. 파일명은 현재 패턴처럼 소문자 모듈명(`iixml.cpp`, `iixml.h`)을 사용합니다. 함수와 변수는 프로젝트에 이미 있는 단순한 `lower_snake_case` 또는 기존 스타일을 우선합니다. QML UI를 작성하는 경우 반드시 `~/.local/LVRS`의 LV API를 사용하고, 누락된 컴포넌트가 있으면 우회하지 말고 보고하십시오.
+C++ 코드는 4칸 들여쓰기를 사용하고, 헤더에는 공개 API만 노출하십시오. 
 
 ## Testing Guidelines
 
-새 동작에는 빌드 가능한 실행 테스트를 함께 추가하십시오. 테스트 파일은 `tests/<module>_test.cpp`처럼 대상 모듈명을 포함해 명명합니다. 테스트 프레임워크를 도입할 때는 CMake에 `enable_testing()`과 `add_test()`를 함께 등록해 `ctest --test-dir build`로 실행되게 하십시오. 에러는 건너뛰거나 숨기지 말고 재현 테스트와 함께 해결합니다.
+새 동작에는 빌드 가능한 실행 테스트를 함께 추가하십시오. 테스트 파일은 `Test/<module>_test.cpp`처럼 대상 모듈명을 포함해 명명합니다. 테스트 프레임워크를 도입할 때는 CMake에 `enable_testing()`과 `add_test()`를 함께 등록해 `ctest --test-dir build`로 실행되게 하십시오. 에러는 건너뛰거나 숨기지 말고 재현 테스트와 함께 해결합니다.
 
 ## Documentation & Change Requirements
 

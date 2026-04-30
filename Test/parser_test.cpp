@@ -21,6 +21,10 @@ void parses_basic_tag() {
     const std::optional<iixml::parser::tag_value> parsed = parser.parse("<number>123</number>");
 
     expect(parsed.has_value(), "number tag should parse");
+    if (!parsed.has_value()) {
+        return;
+    }
+
     expect(parsed->tag_name == "number", "tag name should be number");
     expect(parsed->value == "123", "tag value should be 123");
 }
@@ -31,6 +35,10 @@ void parses_utf8_value() {
     const std::optional<iixml::parser::tag_value> parsed = parser.parse("<number>숫자</number>");
 
     expect(parsed.has_value(), "utf8 value tag should parse");
+    if (!parsed.has_value()) {
+        return;
+    }
+
     expect(parsed->tag_name == "number", "utf8 value tag name should be number");
     expect(parsed->value == "숫자", "utf8 value should be preserved");
 }
@@ -41,6 +49,10 @@ void preserves_inner_whitespace() {
     const std::optional<iixml::parser::tag_value> parsed = parser.parse(" \n<number> 123 </number>\t");
 
     expect(parsed.has_value(), "outer whitespace should be ignored");
+    if (!parsed.has_value()) {
+        return;
+    }
+
     expect(parsed->value == " 123 ", "inner whitespace should be preserved");
 }
 

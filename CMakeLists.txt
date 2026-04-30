@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(iixml SHARED
     iiXml.cpp
-    Parser/tag_parser.cpp
+    Src/Parser/TagParser.cpp
 )
 
 target_include_directories(iixml PUBLIC
@@ -22,3 +22,13 @@ add_executable(parser_test
 target_link_libraries(parser_test PRIVATE iixml)
 
 add_test(NAME parser_test COMMAND parser_test)
+
+add_executable(project_policy_test
+    tests/project_policy_test.cpp
+)
+
+target_compile_definitions(project_policy_test PRIVATE
+    IIXML_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
+add_test(NAME project_policy_test COMMAND project_policy_test)
