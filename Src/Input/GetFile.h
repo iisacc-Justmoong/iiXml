@@ -10,21 +10,21 @@
 #include <string>
 #include <string_view>
 
-namespace iiXml::writer {
+namespace iiXml::Writer {
 
-enum class get_file_status {
-    parsed,
-    file_read_failed,
-    invalid_xml_file,
-    invalid_tag_closure,
-    parser_rejected,
-    exception_thrown
+enum class GetFileStatus {
+    Parsed,
+    FileReadFailed,
+    InvalidXmlFile,
+    InvalidTagClosure,
+    ParserRejected,
+    ExceptionThrown
 };
 
-struct get_file_result {
-    get_file_status status;
-    std::optional<iiXml::parser::tag_value> token;
-    std::string reason;
+struct GetFileResult {
+    GetFileStatus Status;
+    std::optional<iiXml::Parser::TagValue> Token;
+    std::string Reason;
 };
 
 class GetFile : public QObject {
@@ -43,23 +43,23 @@ public:
 
     explicit GetFile(QObject* parent = nullptr);
 
-    [[nodiscard]] get_file_result parse_file(const std::filesystem::path& file_path) const;
-    [[nodiscard]] get_file_result parse_xml(std::string_view input) const;
+    [[nodiscard]] GetFileResult ParseFile(const std::filesystem::path& FilePath) const;
+    [[nodiscard]] GetFileResult ParseXml(std::string_view Input) const;
 
 public slots:
-    void readFile(const QString& file_path);
-    void readXml(const QString& input);
+    void ReadFile(const QString& FilePath);
+    void ReadXml(const QString& Input);
 
 signals:
-    void parsed(const QString& tag_name, const QString& value);
-    void failed(iiXml::writer::GetFile::Status status, const QString& reason);
-    void fileReadFailed();
-    void invalidXmlFile();
-    void invalidTagClosure();
-    void parserRejected();
-    void exceptionThrown();
+    void Parsed(const QString& TagName, const QString& Value);
+    void Failed(iiXml::Writer::GetFile::Status Status, const QString& Reason);
+    void FileReadFailed();
+    void InvalidXmlFile();
+    void InvalidTagClosure();
+    void ParserRejected();
+    void ExceptionThrown();
 };
 
-} // namespace iiXml::writer
+} // namespace iiXml::Writer
 
-Q_DECLARE_METATYPE(iiXml::writer::GetFile::Status)
+Q_DECLARE_METATYPE(iiXml::Writer::GetFile::Status)

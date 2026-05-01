@@ -4,48 +4,48 @@
 #include <string>
 #include <string_view>
 
-namespace iiXml::logging {
+namespace iiXml::Logging {
 
-struct source_position {
-    std::size_t offset;
-    std::size_t line;
-    std::size_t column;
+struct SourcePosition {
+    std::size_t Offset;
+    std::size_t Line;
+    std::size_t Column;
 };
 
-[[nodiscard]] source_position locate_source_position(
-    std::string_view input,
-    std::size_t offset
+[[nodiscard]] SourcePosition LocateSourcePosition(
+    std::string_view Input,
+    std::size_t Offset
 );
 
-[[nodiscard]] std::string source_context(
-    std::string_view input,
-    std::size_t offset,
-    std::size_t radius = 32
+[[nodiscard]] std::string SourceContext(
+    std::string_view Input,
+    std::size_t Offset,
+    std::size_t Radius = 32
 );
 
-void log_input_summary(
-    const char* scope,
-    std::string_view input
+void LogInputSummary(
+    const char* Scope,
+    std::string_view Input
 );
 
-void log_parse_event(
-    const char* scope,
-    std::string_view event,
-    std::string_view input,
-    std::size_t offset
+void LogParseEvent(
+    const char* Scope,
+    std::string_view Event,
+    std::string_view Input,
+    std::size_t Offset
 );
 
-void log_output_summary(
-    const char* scope,
-    std::string_view status,
-    std::string_view summary
+void LogOutputSummary(
+    const char* Scope,
+    std::string_view Status,
+    std::string_view Summary
 );
 
-void log_parse_failure(
-    const char* scope,
-    std::string_view reason,
-    std::string_view input,
-    std::size_t offset
+void LogParseFailure(
+    const char* Scope,
+    std::string_view Reason,
+    std::string_view Input,
+    std::size_t Offset
 );
 
-} // namespace iiXml::logging
+} // namespace iiXml::Logging

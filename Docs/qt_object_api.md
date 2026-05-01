@@ -11,154 +11,162 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 
 ## TagParser
 
-`iiXml::parser::tag_parser`는 `QObject`를 상속한다.
+`iiXml::Parser::TagParser`는 `QObject`를 상속한다.
 
 슬롯:
 
-- `parseTag(const QString& input)`
+- `ParseTag(const QString& input)`
 
 동기 API:
 
-- `parse(std::string_view input)`
-- `parse_all(std::string_view input)`
+- `Parse(std::string_view Input)`
+- `ParseResult(std::string_view Input)`
+- `ParseAll(std::string_view Input)`
+- `ParseAllResult(std::string_view Input)`
+- `ParseAllDocument(std::string_view Input)`
+- `ParseAllDocumentResult(std::string_view Input)`
 
-`parse_all()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다. 반환 타입은 `std::vector<tag_node>`이며, 각 노드는 `range`, `fields`, `children`을 가진다. `value/raw` 문자열과 field 값은 복사하지 않고 원본 입력의 offset 범위로 제공한다.
+`ParseAll()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다. 반환 타입은 `std::vector<TagNode>`이며, 각 노드는 `Range`, `Fields`, `Children`을 가진다. `Value/Raw` 문자열과 field 값은 복사하지 않고 원본 입력의 offset 범위로 제공한다.
+
+Result API는 `TagParseResult`와 `TagTreeParseResult`를 반환한다. 각 Result는 `Status`, 성공 payload(`Token` 또는 `Nodes`), 실패 위치를 담은 `Diagnostic`을 가진다.
+
+`ParseAllDocument()`와 `ParseAllDocumentResult()`는 range 기반 결과를 `TagDocument`로 감싼다. `TagDocument`는 입력 원문을 `Source`에 한 번만 소유하고 `Nodes`에 range 트리를 담기 때문에, 다른 프로젝트의 도메인 객체에 통째로 멤버로 보관할 수 있다. 값 접근은 `RawView()`, `ValueView()`, `FieldNameView()`, `FieldValueView()`로 수행한다.
 
 시그널:
 
-- `tagParsed(const QString& tag_name, const QString& value)`
-- `parseFailed(const QString& reason)`
+- `TagParsed(const QString& TagName, const QString& Value)`
+- `ParseFailed(const QString& Reason)`
 
 ## FileParser
 
-`iiXml::parser::FileParser`는 `QObject`를 상속한다.
+`iiXml::Parser::FileParser`는 `QObject`를 상속한다.
 
 슬롯:
 
-- `parseFile(const QString& file_path)`
+- `ParseFileInput(const QString& FilePath)`
 
 시그널:
 
-- `tagParsed(const QString& tag_name, const QString& value)`
-- `parseFailed(const QString& reason)`
+- `TagParsed(const QString& TagName, const QString& Value)`
+- `ParseFailed(const QString& Reason)`
 
-## DOCTYPE
+## Doctype
 
-`iiXml::elements::DOCTYPE`는 `QObject`를 상속한다.
+`iiXml::Elements::Doctype`는 `QObject`를 상속한다.
 
 슬롯:
 
-- `matchTop(const QString& input)`
+- `MatchTopInput(const QString& input)`
 
 시그널:
 
-- `doctypeMatched(DOCTYPE::Kind kind, const QString& raw)`
-- `doctypeRejected(const QString& reason)`
-- `xmlDeclarationMatched(const QString& raw)`
-- `doctypeDeclarationMatched(const QString& raw)`
+- `DoctypeMatched(Doctype::Kind Kind, const QString& Raw)`
+- `DoctypeRejected(const QString& Reason)`
+- `XmlDeclarationMatched(const QString& Raw)`
+- `DoctypeDeclarationMatched(const QString& Raw)`
 
 ## OpenTag
 
-`iiXml::elements::OpenTag`는 `QObject`를 상속한다.
+`iiXml::Elements::OpenTag`는 `QObject`를 상속한다.
 
 동기 API:
 
-- `close_open_tag(std::vector<std::string>& open_tags, std::string_view closing_tag_name)`
-- `parse_open_tags(std::string_view input)`
+- `CloseOpenTag(std::vector<std::string>& OpenTags, std::string_view ClosingTagName)`
+- `ParseOpenTags(std::string_view Input)`
 
-`close_open_tag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `parse_open_tags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `raw_begin/value_begin/value_end/raw_end`에 원본 offset 범위를 보존한다.
+`CloseOpenTag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `ParseOpenTags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `RawBegin/ValueBegin/ValueEnd/RawEnd`에 원본 offset 범위를 보존한다.
 
 ## InlineProperties
 
-`iiXml::elements::InlineProperties`는 `QObject`를 상속한다.
+`iiXml::Elements::InlineProperties`는 `QObject`를 상속한다.
 
 동기 API:
 
-- `parse(std::string_view opening_tag, std::size_t source_offset = 0)`
+- `Parse(std::string_view opening_tag, std::size_t source_offset = 0)`
 
-`parse()`는 여는 태그 안의 다중 attribute를 읽고, 각 속성의 이름 범위, 값 범위, `string_type`/`int_type`/`float_type`/`bool_type` 타입 정보를 반환한다.
+`Parse()`는 여는 태그 안의 다중 attribute를 읽고, 각 속성의 이름 범위, 값 범위, `StringType`/`IntType`/`FloatType`/`BoolType` 타입 정보를 반환한다.
 
 ## InputValidator
 
-`iiXml::writer::InputValidator`는 `QObject`를 상속한다.
+`iiXml::Writer::InputValidator`는 `QObject`를 상속한다.
 
 슬롯:
 
-- `validateInput(const QString& input)`
+- `ValidateInput(const QString& input)`
 
 시그널:
 
-- `validationFinished(InputValidator::ValidationExit result)`
-- `validationFailed(InputValidator::ValidationExit result, const QString& reason)`
-- `validXml()`
-- `invalidXmlFile()`
-- `invalidTagClosure()`
-- `exceptionThrown()`
+- `ValidationFinished(InputValidator::ValidationExit Result)`
+- `ValidationFailed(InputValidator::ValidationExit Result, const QString& Reason)`
+- `ValidXml()`
+- `InvalidXmlFile()`
+- `InvalidTagClosure()`
+- `ExceptionThrown()`
 
 ## GetFile
 
-`iiXml::writer::GetFile`은 `QObject`를 상속한다.
+`iiXml::Writer::GetFile`은 `QObject`를 상속한다.
 
 슬롯:
 
-- `readFile(const QString& file_path)`
-- `readXml(const QString& input)`
+- `ReadFile(const QString& FilePath)`
+- `ReadXml(const QString& Input)`
 
 시그널:
 
-- `parsed(const QString& tag_name, const QString& value)`
-- `failed(GetFile::Status status, const QString& reason)`
-- `fileReadFailed()`
-- `invalidXmlFile()`
-- `invalidTagClosure()`
-- `parserRejected()`
-- `exceptionThrown()`
+- `Parsed(const QString& TagName, const QString& Value)`
+- `Failed(GetFile::Status Status, const QString& Reason)`
+- `FileReadFailed()`
+- `InvalidXmlFile()`
+- `InvalidTagClosure()`
+- `ParserRejected()`
+- `ExceptionThrown()`
 
 ## GetStringToken
 
-`iiXml::writer::GetStringToken`은 `QObject`를 상속한다.
+`iiXml::Writer::GetStringToken`은 `QObject`를 상속한다.
 
-`QString` 문자열을 입력으로 받지만, 태그 파서에 바로 넘기지는 않는다. `DOCTYPE` 판정과 `InputValidator` 전체 XML 검증을 통과한 뒤 루트 태그를 파서로 전달한다.
+`QString` 문자열을 입력으로 받지만, 태그 파서에 바로 넘기지는 않는다. `Doctype` 판정과 `InputValidator` 전체 XML 검증을 통과한 뒤 루트 태그를 파서로 전달한다.
 
 슬롯:
 
-- `readString(const QString& input)`
+- `ReadString(const QString& input)`
 
 시그널:
 
-- `parsed(const QString& tag_name, const QString& value)`
-- `failed(GetStringToken::Status status, const QString& reason)`
-- `parseFailed(const QString& reason)`
+- `Parsed(const QString& TagName, const QString& Value)`
+- `Failed(GetStringToken::Status Status, const QString& Reason)`
+- `ParseFailed(const QString& Reason)`
 
 ## 사용 예
 
 ```cpp
-#include "iiXml.h"
+#include <iiXml>
 
-iiXml::parser::tag_parser parser;
+iiXml::Parser::TagParser parser;
 
-QObject::connect(&parser, &iiXml::parser::tag_parser::tagParsed,
-    [](const QString& tag_name, const QString& value) {
-        // tag_name, value 사용
+QObject::connect(&parser, &iiXml::Parser::TagParser::TagParsed,
+    [](const QString& TagName, const QString& Value) {
+        // TagName, Value 사용
     });
 
-parser.parseTag("<number>숫자</number>");
+parser.ParseTag("<number>숫자</number>");
 ```
 
 ```cpp
-iiXml::writer::InputValidator validator;
+iiXml::Writer::InputValidator validator;
 
-QObject::connect(&validator, &iiXml::writer::InputValidator::invalidXmlFile,
+QObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidXmlFile,
     []() {
         // 유효하지 않은 XML 파일
     });
 
-QObject::connect(&validator, &iiXml::writer::InputValidator::invalidTagClosure,
+QObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidTagClosure,
     []() {
         // 올바르지 않은 태그 종료
     });
 
-validator.validateInput("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
+validator.ValidateInput("<!Doctype XML>\n<XML><number>1</number></XML>");
 ```
 
 ## 검증

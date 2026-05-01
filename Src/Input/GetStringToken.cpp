@@ -27,207 +27,207 @@ QString from_utf8_string(const std::string& value) {
     return QString::fromUtf8(value.data(), static_cast<qsizetype>(value.size()));
 }
 
-QString reason_for_status(iiXml::writer::get_file_status status) {
+QString reason_for_status(iiXml::Writer::GetFileStatus status) {
     switch (status) {
-        case iiXml::writer::get_file_status::parsed:
+        case iiXml::Writer::GetFileStatus::Parsed:
             return "parsed";
-        case iiXml::writer::get_file_status::file_read_failed:
+        case iiXml::Writer::GetFileStatus::FileReadFailed:
             return "file read failed";
-        case iiXml::writer::get_file_status::invalid_xml_file:
+        case iiXml::Writer::GetFileStatus::InvalidXmlFile:
             return "invalid xml file";
-        case iiXml::writer::get_file_status::invalid_tag_closure:
+        case iiXml::Writer::GetFileStatus::InvalidTagClosure:
             return "invalid tag closure";
-        case iiXml::writer::get_file_status::parser_rejected:
+        case iiXml::Writer::GetFileStatus::ParserRejected:
             return "parser rejected input";
-        case iiXml::writer::get_file_status::exception_thrown:
+        case iiXml::Writer::GetFileStatus::ExceptionThrown:
             return "exception thrown";
     }
 
     return "unknown failure";
 }
 
-iiXml::writer::get_string_token_status to_string_status(iiXml::writer::get_file_status status) {
+iiXml::Writer::GetStringTokenStatus to_string_status(iiXml::Writer::GetFileStatus status) {
     switch (status) {
-        case iiXml::writer::get_file_status::parsed:
-            return iiXml::writer::get_string_token_status::parsed;
-        case iiXml::writer::get_file_status::invalid_xml_file:
-            return iiXml::writer::get_string_token_status::invalid_xml_file;
-        case iiXml::writer::get_file_status::invalid_tag_closure:
-            return iiXml::writer::get_string_token_status::invalid_tag_closure;
-        case iiXml::writer::get_file_status::parser_rejected:
-            return iiXml::writer::get_string_token_status::parser_rejected;
-        case iiXml::writer::get_file_status::file_read_failed:
-        case iiXml::writer::get_file_status::exception_thrown:
-            return iiXml::writer::get_string_token_status::exception_thrown;
+        case iiXml::Writer::GetFileStatus::Parsed:
+            return iiXml::Writer::GetStringTokenStatus::Parsed;
+        case iiXml::Writer::GetFileStatus::InvalidXmlFile:
+            return iiXml::Writer::GetStringTokenStatus::InvalidXmlFile;
+        case iiXml::Writer::GetFileStatus::InvalidTagClosure:
+            return iiXml::Writer::GetStringTokenStatus::InvalidTagClosure;
+        case iiXml::Writer::GetFileStatus::ParserRejected:
+            return iiXml::Writer::GetStringTokenStatus::ParserRejected;
+        case iiXml::Writer::GetFileStatus::FileReadFailed:
+        case iiXml::Writer::GetFileStatus::ExceptionThrown:
+            return iiXml::Writer::GetStringTokenStatus::ExceptionThrown;
     }
 
-    return iiXml::writer::get_string_token_status::exception_thrown;
+    return iiXml::Writer::GetStringTokenStatus::ExceptionThrown;
 }
 
-iiXml::writer::GetStringToken::Status to_qt_status(
-    iiXml::writer::get_string_token_status status
+iiXml::Writer::GetStringToken::Status to_qt_status(
+    iiXml::Writer::GetStringTokenStatus status
 ) {
     switch (status) {
-        case iiXml::writer::get_string_token_status::parsed:
-            return iiXml::writer::GetStringToken::Status::Parsed;
-        case iiXml::writer::get_string_token_status::invalid_xml_file:
-            return iiXml::writer::GetStringToken::Status::InvalidXmlFile;
-        case iiXml::writer::get_string_token_status::invalid_tag_closure:
-            return iiXml::writer::GetStringToken::Status::InvalidTagClosure;
-        case iiXml::writer::get_string_token_status::parser_rejected:
-            return iiXml::writer::GetStringToken::Status::ParserRejected;
-        case iiXml::writer::get_string_token_status::exception_thrown:
-            return iiXml::writer::GetStringToken::Status::ExceptionThrown;
+        case iiXml::Writer::GetStringTokenStatus::Parsed:
+            return iiXml::Writer::GetStringToken::Status::Parsed;
+        case iiXml::Writer::GetStringTokenStatus::InvalidXmlFile:
+            return iiXml::Writer::GetStringToken::Status::InvalidXmlFile;
+        case iiXml::Writer::GetStringTokenStatus::InvalidTagClosure:
+            return iiXml::Writer::GetStringToken::Status::InvalidTagClosure;
+        case iiXml::Writer::GetStringTokenStatus::ParserRejected:
+            return iiXml::Writer::GetStringToken::Status::ParserRejected;
+        case iiXml::Writer::GetStringTokenStatus::ExceptionThrown:
+            return iiXml::Writer::GetStringToken::Status::ExceptionThrown;
     }
 
-    return iiXml::writer::GetStringToken::Status::ExceptionThrown;
+    return iiXml::Writer::GetStringToken::Status::ExceptionThrown;
 }
 
-const char* status_name(iiXml::writer::get_string_token_status status) {
+const char* status_name(iiXml::Writer::GetStringTokenStatus status) {
     switch (status) {
-        case iiXml::writer::get_string_token_status::parsed:
+        case iiXml::Writer::GetStringTokenStatus::Parsed:
             return "parsed";
-        case iiXml::writer::get_string_token_status::invalid_xml_file:
+        case iiXml::Writer::GetStringTokenStatus::InvalidXmlFile:
             return "invalid_xml_file";
-        case iiXml::writer::get_string_token_status::invalid_tag_closure:
+        case iiXml::Writer::GetStringTokenStatus::InvalidTagClosure:
             return "invalid_tag_closure";
-        case iiXml::writer::get_string_token_status::parser_rejected:
+        case iiXml::Writer::GetStringTokenStatus::ParserRejected:
             return "parser_rejected";
-        case iiXml::writer::get_string_token_status::exception_thrown:
+        case iiXml::Writer::GetStringTokenStatus::ExceptionThrown:
             return "exception_thrown";
     }
 
     return "unknown";
 }
 
-iiXml::writer::get_string_token_result make_string_result(
-    iiXml::writer::get_string_token_status status,
-    std::optional<iiXml::parser::tag_value> token,
+iiXml::Writer::GetStringTokenResult make_string_result(
+    iiXml::Writer::GetStringTokenStatus status,
+    std::optional<iiXml::Parser::TagValue> token,
     std::string reason
 ) {
     if (reason.empty()) {
         reason = "string token parse failed";
     }
 
-    return iiXml::writer::get_string_token_result{status, std::move(token), std::move(reason)};
+    return iiXml::Writer::GetStringTokenResult{status, std::move(token), std::move(reason)};
 }
 
-iiXml::writer::get_string_token_result from_get_file_result(
-    const iiXml::writer::get_file_result& result
+iiXml::Writer::GetStringTokenResult from_get_file_result(
+    const iiXml::Writer::GetFileResult& result
 ) {
-    std::string reason = result.reason;
+    std::string reason = result.Reason;
     if (reason.empty()) {
-        reason = reason_for_status(result.status).toStdString();
+        reason = reason_for_status(result.Status).toStdString();
     }
 
-    return make_string_result(to_string_status(result.status), result.token, reason);
+    return make_string_result(to_string_status(result.Status), result.Token, reason);
 }
 
 } // namespace
 
-namespace iiXml::writer {
+namespace iiXml::Writer {
 
 GetStringToken::GetStringToken(QObject* parent)
     : QObject(parent) {
-    qRegisterMetaType<GetStringToken::Status>("iiXml::writer::GetStringToken::Status");
-    qDebug() << "iiXml::writer::GetStringToken::GetStringToken constructed";
+    qRegisterMetaType<GetStringToken::Status>("iiXml::Writer::GetStringToken::Status");
+    qDebug() << "iiXml::Writer::GetStringToken::GetStringToken constructed";
 }
 
-get_string_token_result GetStringToken::parse_string(const QString& input) const {
-    qDebug() << "iiXml::writer::GetStringToken::parse_string begin"
+GetStringTokenResult GetStringToken::ParseString(const QString& input) const {
+    qDebug() << "iiXml::Writer::GetStringToken::ParseString begin"
              << "input_size=" << input.size();
     try {
         const std::string bytes = to_utf8_string(input);
-        iiXml::logging::log_input_summary(
-            "iiXml::writer::GetStringToken::parse_string",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Writer::GetStringToken::ParseString",
             std::string_view(bytes.data(), bytes.size())
         );
         const GetFile validated_input;
-        const get_file_result result =
-            validated_input.parse_xml(std::string_view(bytes.data(), bytes.size()));
-        const get_string_token_result converted = from_get_file_result(result);
-        qDebug() << "iiXml::writer::GetStringToken::parse_string"
-                 << (converted.status == get_string_token_status::parsed ? "parsed" : "failed")
-                 << "status=" << status_name(converted.status)
-                 << "has_token=" << converted.token.has_value();
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetStringToken::parse_string",
-            status_name(converted.status),
-            converted.token.has_value()
-                ? std::string("tag=") + converted.token->tag_name
-                    + " value_size=" + std::to_string(converted.token->value.size())
-                : converted.reason
+        const GetFileResult result =
+            validated_input.ParseXml(std::string_view(bytes.data(), bytes.size()));
+        const GetStringTokenResult converted = from_get_file_result(result);
+        qDebug() << "iiXml::Writer::GetStringToken::ParseString"
+                 << (converted.Status == GetStringTokenStatus::Parsed ? "parsed" : "failed")
+                 << "status=" << status_name(converted.Status)
+                 << "has_token=" << converted.Token.has_value();
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetStringToken::ParseString",
+            status_name(converted.Status),
+            converted.Token.has_value()
+                ? std::string("tag=") + converted.Token->TagName
+                    + " value_size=" + std::to_string(converted.Token->Value.size())
+                : converted.Reason
         );
         return converted;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetStringToken::parse_string exception"
+        qDebug() << "iiXml::Writer::GetStringToken::ParseString exception"
                  << "what=" << exception.what();
         return make_string_result(
-            get_string_token_status::exception_thrown,
+            GetStringTokenStatus::ExceptionThrown,
             std::nullopt,
             std::string("QString token input exception: ") + exception.what()
         );
     } catch (...) {
-        qDebug() << "iiXml::writer::GetStringToken::parse_string exception"
+        qDebug() << "iiXml::Writer::GetStringToken::ParseString exception"
                  << "what=unknown";
         return make_string_result(
-            get_string_token_status::exception_thrown,
+            GetStringTokenStatus::ExceptionThrown,
             std::nullopt,
             "QString token input exception: unknown"
         );
     }
 }
 
-void GetStringToken::readString(const QString& input) {
-    qDebug() << "iiXml::writer::GetStringToken::readString begin"
+void GetStringToken::ReadString(const QString& input) {
+    qDebug() << "iiXml::Writer::GetStringToken::ReadString begin"
              << "input_size=" << input.size();
     try {
         const std::string bytes = to_utf8_string(input);
-        iiXml::logging::log_input_summary(
-            "iiXml::writer::GetStringToken::readString",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Writer::GetStringToken::ReadString",
             std::string_view(bytes.data(), bytes.size())
         );
-        const get_string_token_result result = parse_string(input);
-        if (result.status != get_string_token_status::parsed || !result.token.has_value()) {
-            const QString reason = from_utf8_string(result.reason);
-            qDebug() << "iiXml::writer::GetStringToken::readString failed"
-                     << "status=" << status_name(result.status)
+        const GetStringTokenResult result = ParseString(input);
+        if (result.Status != GetStringTokenStatus::Parsed || !result.Token.has_value()) {
+            const QString reason = from_utf8_string(result.Reason);
+            qDebug() << "iiXml::Writer::GetStringToken::ReadString failed"
+                     << "status=" << status_name(result.Status)
                      << "reason=" << reason;
-            iiXml::logging::log_output_summary(
-                "iiXml::writer::GetStringToken::readString",
-                status_name(result.status),
-                result.reason
+            iiXml::Logging::LogOutputSummary(
+                "iiXml::Writer::GetStringToken::ReadString",
+                status_name(result.Status),
+                result.Reason
             );
-            emit failed(to_qt_status(result.status), reason);
-            emit parseFailed(reason);
+            emit Failed(to_qt_status(result.Status), reason);
+            emit ParseFailed(reason);
             return;
         }
 
-        qDebug() << "iiXml::writer::GetStringToken::readString parsed"
-                 << "tag=" << from_utf8_string(result.token->tag_name)
-                 << "value_size=" << result.token->value.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetStringToken::readString",
+        qDebug() << "iiXml::Writer::GetStringToken::ReadString parsed"
+                 << "tag=" << from_utf8_string(result.Token->TagName)
+                 << "value_size=" << result.Token->Value.size();
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetStringToken::ReadString",
             "parsed",
-            std::string("tag=") + result.token->tag_name
-                + " value_size=" + std::to_string(result.token->value.size())
+            std::string("tag=") + result.Token->TagName
+                + " value_size=" + std::to_string(result.Token->Value.size())
         );
-        emit parsed(from_utf8_string(result.token->tag_name), from_utf8_string(result.token->value));
+        emit Parsed(from_utf8_string(result.Token->TagName), from_utf8_string(result.Token->Value));
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetStringToken::readString exception"
+        qDebug() << "iiXml::Writer::GetStringToken::ReadString exception"
                  << "what=" << exception.what();
         const QString reason = QString::fromStdString(
             std::string("QString token slot exception: ") + exception.what()
         );
-        emit failed(Status::ExceptionThrown, reason);
-        emit parseFailed(reason);
+        emit Failed(Status::ExceptionThrown, reason);
+        emit ParseFailed(reason);
     } catch (...) {
-        qDebug() << "iiXml::writer::GetStringToken::readString exception"
+        qDebug() << "iiXml::Writer::GetStringToken::ReadString exception"
                  << "what=unknown";
         const QString reason = "QString token slot exception: unknown";
-        emit failed(Status::ExceptionThrown, reason);
-        emit parseFailed(reason);
+        emit Failed(Status::ExceptionThrown, reason);
+        emit ParseFailed(reason);
     }
 }
 
-} // namespace iiXml::writer
+} // namespace iiXml::Writer

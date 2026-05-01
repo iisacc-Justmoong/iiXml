@@ -4,16 +4,16 @@
 
 #include <exception>
 
-void launch() {
-    qDebug() << "iiXml::launch begin";
+void Launch() {
+    qDebug() << "iiXml::Launch begin";
     try {
-        qDebug() << "iiXml::launch library launch";
-        qDebug() << "iiXml::launch finished";
+        qDebug() << "iiXml::Launch library Launch";
+        qDebug() << "iiXml::Launch finished";
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::launch exception"
+        qDebug() << "iiXml::Launch exception"
                  << "what=" << exception.what();
     } catch (...) {
-        qDebug() << "iiXml::launch exception"
+        qDebug() << "iiXml::Launch exception"
                  << "what=unknown";
     }
 }

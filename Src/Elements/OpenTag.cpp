@@ -1,7 +1,7 @@
 #include "OpenTag.h"
 
 #include "Src/Logging/XmlLog.h"
-#include "Src/Elements/DOCTYPE.h"
+#include "Src/Elements/Doctype.h"
 
 #include <QDebug>
 #include <QString>
@@ -18,20 +18,20 @@
 #include <utility>
 #include <vector>
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
 namespace {
 
 struct active_open_tag {
-    std::string name;
-    std::size_t open_begin;
-    std::size_t value_begin;
-    std::size_t sequence;
+    std::string Name;
+    std::size_t OpenBegin;
+    std::size_t ValueBegin;
+    std::size_t Sequence;
 };
 
 struct indexed_open_tag_range {
-    std::size_t sequence;
-    open_tag_range range;
+    std::size_t Sequence;
+    OpenTagRange Range;
 };
 
 using active_open_tag_list = std::list<active_open_tag>;
@@ -131,19 +131,19 @@ bool is_self_closing_markup(std::string_view markup) {
 
 OpenTag::OpenTag(QObject* parent)
     : QObject(parent) {
-    qDebug() << "iiXml::elements::OpenTag::OpenTag constructed";
+    qDebug() << "iiXml::Elements::OpenTag::OpenTag constructed";
 }
 
-bool OpenTag::close_open_tag(
+bool OpenTag::CloseOpenTag(
     std::vector<std::string>& open_tags,
     std::string_view closing_tag_name
 ) const {
-    qDebug() << "iiXml::elements::OpenTag::close_open_tag begin"
+    qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag begin"
              << "open_tags=" << open_tags.size()
              << "closing_tag=" << QString::fromStdString(std::string(closing_tag_name));
     try {
         if (closing_tag_name.empty()) {
-            qDebug() << "iiXml::elements::OpenTag::close_open_tag failed"
+            qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag failed"
                      << "reason=empty closing tag name";
             return false;
         }
@@ -151,12 +151,12 @@ bool OpenTag::close_open_tag(
         const auto matched = std::find_if(
             open_tags.rbegin(),
             open_tags.rend(),
-            [&](const std::string& tag_name) {
-                return tag_name == closing_tag_name;
+            [&](const std::string& TagName) {
+                return TagName == closing_tag_name;
             }
         );
         if (matched == open_tags.rend()) {
-            qDebug() << "iiXml::elements::OpenTag::close_open_tag failed"
+            qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag failed"
                      << "reason=no matching open tag";
             return false;
         }
@@ -164,25 +164,25 @@ bool OpenTag::close_open_tag(
         const bool closes_top_tag = matched == open_tags.rbegin();
         open_tags.erase(std::next(matched).base());
 
-        qDebug() << "iiXml::elements::OpenTag::close_open_tag closed"
+        qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag closed"
                  << "mode=" << (closes_top_tag ? "stack_top" : "cross_nested")
                  << "remaining_open_tags=" << open_tags.size();
         return true;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::elements::OpenTag::close_open_tag exception"
+        qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag exception"
                  << "what=" << exception.what();
         return false;
     } catch (...) {
-        qDebug() << "iiXml::elements::OpenTag::close_open_tag exception"
+        qDebug() << "iiXml::Elements::OpenTag::CloseOpenTag exception"
                  << "what=unknown";
         return false;
     }
 }
 
-std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_view input) const {
-    qDebug() << "iiXml::elements::OpenTag::parse_open_tags begin"
+std::optional<std::vector<OpenTagRange>> OpenTag::ParseOpenTags(std::string_view input) const {
+    qDebug() << "iiXml::Elements::OpenTag::ParseOpenTags begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::OpenTag::parse_open_tags", input);
+    iiXml::Logging::LogInputSummary("iiXml::Elements::OpenTag::ParseOpenTags", input);
     try {
         active_open_tag_list active_tags;
         active_open_tag_index active_tags_by_name;
@@ -198,8 +198,8 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
             if (starts_with_at(input, tag_start, "<!--")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 4, "-->");
                 if (!end.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "unclosed comment",
                         input,
                         tag_start
@@ -213,8 +213,8 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
             if (starts_with_at(input, tag_start, "<![CDATA[")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 9, "]]>");
                 if (!end.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "unclosed cdata",
                         input,
                         tag_start
@@ -228,8 +228,8 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
             if (starts_with_at(input, tag_start, "<?")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 2, "?>");
                 if (!end.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "unclosed processing instruction",
                         input,
                         tag_start
@@ -240,26 +240,26 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
                 continue;
             }
 
-            if (starts_with_at(input, tag_start, "<!DOCTYPE")) {
-                const DOCTYPE doctype;
-                const doctype_result matched = doctype.match_top(input.substr(tag_start));
-                if (!matched.match.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+            if (starts_with_at(input, tag_start, "<!Doctype")) {
+                const Doctype doctype;
+                const DoctypeResult matched = doctype.MatchTop(input.substr(tag_start));
+                if (!matched.Match.has_value()) {
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "malformed doctype",
                         input,
                         tag_start
                     );
                     return std::nullopt;
                 }
-                index = tag_start + matched.match->raw.size();
+                index = tag_start + matched.Match->Raw.size();
                 continue;
             }
 
             const std::optional<std::size_t> tag_end = find_markup_end(input, tag_start + 1);
             if (!tag_end.has_value()) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::OpenTag::parse_open_tags",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::OpenTag::ParseOpenTags",
                     "unclosed tag markup",
                     input,
                     tag_start
@@ -269,8 +269,8 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
 
             const std::string_view markup = input.substr(tag_start, *tag_end - tag_start + 1);
             if (markup.size() < 3) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::OpenTag::parse_open_tags",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::OpenTag::ParseOpenTags",
                     "markup too short",
                     input,
                     tag_start
@@ -279,10 +279,10 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
             }
 
             if (markup[1] == '/') {
-                const std::optional<std::string> tag_name = read_tag_name(markup, 2);
-                if (!tag_name.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                const std::optional<std::string> TagName = read_tag_name(markup, 2);
+                if (!TagName.has_value()) {
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "invalid closing tag name",
                         input,
                         tag_start + 2
@@ -290,19 +290,19 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
                     return std::nullopt;
                 }
 
-                const auto indexed_tags = active_tags_by_name.find(*tag_name);
+                const auto indexed_tags = active_tags_by_name.find(*TagName);
                 if (indexed_tags == active_tags_by_name.end() || indexed_tags->second.empty()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "no matching open tag",
                         input,
                         tag_start
                     );
                     return std::nullopt;
                 }
-                iiXml::logging::log_parse_event(
-                    "iiXml::elements::OpenTag::parse_open_tags",
-                    std::string("close_tag name=") + *tag_name,
+                iiXml::Logging::LogParseEvent(
+                    "iiXml::Elements::OpenTag::ParseOpenTags",
+                    std::string("close_tag name=") + *TagName,
                     input,
                     tag_start
                 );
@@ -317,20 +317,20 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
 
                 const std::size_t close_end = *tag_end + 1;
                 parsed_tags.push_back(indexed_open_tag_range{
-                    closed.sequence,
-                    open_tag_range{
-                        std::move(closed.name),
-                        closed.open_begin,
-                        closed.value_begin,
+                    closed.Sequence,
+                    OpenTagRange{
+                        std::move(closed.Name),
+                        closed.OpenBegin,
+                        closed.ValueBegin,
                         tag_start,
                         close_end
                     }
                 });
             } else {
-                const std::optional<std::string> tag_name = read_tag_name(markup, 1);
-                if (!tag_name.has_value()) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::OpenTag::parse_open_tags",
+                const std::optional<std::string> TagName = read_tag_name(markup, 1);
+                if (!TagName.has_value()) {
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
                         "invalid opening tag name",
                         input,
                         tag_start + 1
@@ -339,16 +339,16 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
                 }
 
                 if (is_self_closing_markup(markup)) {
-                    iiXml::logging::log_parse_event(
-                        "iiXml::elements::OpenTag::parse_open_tags",
-                        std::string("self_closing_tag name=") + *tag_name,
+                    iiXml::Logging::LogParseEvent(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
+                        std::string("self_closing_tag name=") + *TagName,
                         input,
                         tag_start
                     );
                     parsed_tags.push_back(indexed_open_tag_range{
                         sequence,
-                        open_tag_range{
-                            *tag_name,
+                        OpenTagRange{
+                            *TagName,
                             tag_start,
                             *tag_end + 1,
                             *tag_end + 1,
@@ -357,20 +357,20 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
                     });
                     ++sequence;
                 } else {
-                    iiXml::logging::log_parse_event(
-                        "iiXml::elements::OpenTag::parse_open_tags",
-                        std::string("open_tag name=") + *tag_name,
+                    iiXml::Logging::LogParseEvent(
+                        "iiXml::Elements::OpenTag::ParseOpenTags",
+                        std::string("open_tag name=") + *TagName,
                         input,
                         tag_start
                     );
                     active_tags.push_back(active_open_tag{
-                        *tag_name,
+                        *TagName,
                         tag_start,
                         *tag_end + 1,
                         sequence
                     });
                     active_open_tag_iterator opened = std::prev(active_tags.end());
-                    active_tags_by_name[opened->name].push_back(opened);
+                    active_tags_by_name[opened->Name].push_back(opened);
                     ++sequence;
                 }
             }
@@ -379,14 +379,14 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
         }
 
         if (!active_tags.empty()) {
-            const std::size_t open_begin = active_tags.front().open_begin;
-            iiXml::logging::log_parse_failure(
-                "iiXml::elements::OpenTag::parse_open_tags",
+            const std::size_t open_begin = active_tags.front().OpenBegin;
+            iiXml::Logging::LogParseFailure(
+                "iiXml::Elements::OpenTag::ParseOpenTags",
                 "unclosed open tags",
                 input,
                 open_begin
             );
-            qDebug() << "iiXml::elements::OpenTag::parse_open_tags failed"
+            qDebug() << "iiXml::Elements::OpenTag::ParseOpenTags failed"
                      << "reason=unclosed open tags"
                      << "remaining_open_tags=" << active_tags.size();
             return std::nullopt;
@@ -396,33 +396,33 @@ std::optional<std::vector<open_tag_range>> OpenTag::parse_open_tags(std::string_
             parsed_tags.begin(),
             parsed_tags.end(),
             [](const indexed_open_tag_range& left, const indexed_open_tag_range& right) {
-                return left.sequence < right.sequence;
+                return left.Sequence < right.Sequence;
             }
         );
 
-        std::vector<open_tag_range> result;
+        std::vector<OpenTagRange> result;
         result.reserve(parsed_tags.size());
         for (indexed_open_tag_range& parsed : parsed_tags) {
-            result.push_back(std::move(parsed.range));
+            result.push_back(std::move(parsed.Range));
         }
 
-        qDebug() << "iiXml::elements::OpenTag::parse_open_tags parsed"
+        qDebug() << "iiXml::Elements::OpenTag::ParseOpenTags parsed"
                  << "tag_count=" << result.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::elements::OpenTag::parse_open_tags",
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Elements::OpenTag::ParseOpenTags",
             "parsed",
             std::string("tag_count=") + std::to_string(result.size())
         );
         return result;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::elements::OpenTag::parse_open_tags exception"
+        qDebug() << "iiXml::Elements::OpenTag::ParseOpenTags exception"
                  << "what=" << exception.what();
         return std::nullopt;
     } catch (...) {
-        qDebug() << "iiXml::elements::OpenTag::parse_open_tags exception"
+        qDebug() << "iiXml::Elements::OpenTag::ParseOpenTags exception"
                  << "what=unknown";
         return std::nullopt;
     }
 }
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements

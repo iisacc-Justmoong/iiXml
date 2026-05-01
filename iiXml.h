@@ -2,7 +2,7 @@
 #define IIXML_LIBRARY_H
 
 #include "Src/Elements/ClosedTag.h"
-#include "Src/Elements/DOCTYPE.h"
+#include "Src/Elements/Doctype.h"
 #include "Src/Elements/InlineProperties.h"
 #include "Src/Elements/OpenTag.h"
 #include "Src/Parser/FileParser.h"
@@ -11,6 +11,6 @@
 #include "Src/Input/GetStringToken.h"
 #include "Src/Input/InputValidator.h"
 
-void launch();
+void Launch();
 
 #endif // IIXML_LIBRARY_H

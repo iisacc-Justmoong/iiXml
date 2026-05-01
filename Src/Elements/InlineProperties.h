@@ -8,24 +8,24 @@
 #include <string_view>
 #include <vector>
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
-enum class inline_property_type {
-    string_type,
-    int_type,
-    float_type,
-    bool_type
+enum class InlinePropertyType {
+    StringType,
+    IntType,
+    FloatType,
+    BoolType
 };
 
-struct inline_property {
-    std::string name;
-    std::size_t name_begin;
-    std::size_t name_end;
-    bool has_value;
-    std::size_t value_begin;
-    std::size_t value_end;
-    inline_property_type value_type;
-    bool type_declared;
+struct InlineProperty {
+    std::string Name;
+    std::size_t NameBegin;
+    std::size_t NameEnd;
+    bool HasValue;
+    std::size_t ValueBegin;
+    std::size_t ValueEnd;
+    InlinePropertyType ValueType;
+    bool TypeDeclared;
 };
 
 class InlineProperties : public QObject {
@@ -34,12 +34,12 @@ class InlineProperties : public QObject {
 public:
     explicit InlineProperties(QObject* parent = nullptr);
 
-    [[nodiscard]] std::optional<std::vector<inline_property>> parse(
-        std::string_view opening_tag,
-        std::size_t source_offset = 0
+    [[nodiscard]] std::optional<std::vector<InlineProperty>> Parse(
+        std::string_view OpeningTag,
+        std::size_t SourceOffset = 0
     ) const;
 };
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements
 
-using InlineProperties = iiXml::elements::InlineProperties;
+using InlineProperties = iiXml::Elements::InlineProperties;

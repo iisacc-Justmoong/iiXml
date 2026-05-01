@@ -8,14 +8,14 @@
 #include <string_view>
 #include <vector>
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
-struct open_tag_range {
-    std::string tag_name;
-    std::size_t raw_begin;
-    std::size_t value_begin;
-    std::size_t value_end;
-    std::size_t raw_end;
+struct OpenTagRange {
+    std::string TagName;
+    std::size_t RawBegin;
+    std::size_t ValueBegin;
+    std::size_t ValueEnd;
+    std::size_t RawEnd;
 };
 
 class OpenTag : public QObject {
@@ -24,16 +24,16 @@ class OpenTag : public QObject {
 public:
     explicit OpenTag(QObject* parent = nullptr);
 
-    [[nodiscard]] bool close_open_tag(
-        std::vector<std::string>& open_tags,
-        std::string_view closing_tag_name
+    [[nodiscard]] bool CloseOpenTag(
+        std::vector<std::string>& OpenTags,
+        std::string_view ClosingTagName
     ) const;
 
-    [[nodiscard]] std::optional<std::vector<open_tag_range>> parse_open_tags(
-        std::string_view input
+    [[nodiscard]] std::optional<std::vector<OpenTagRange>> ParseOpenTags(
+        std::string_view Input
     ) const;
 };
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements
 
-using OpenTag = iiXml::elements::OpenTag;
+using OpenTag = iiXml::Elements::OpenTag;

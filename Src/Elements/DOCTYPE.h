@@ -7,34 +7,34 @@
 #include <string>
 #include <string_view>
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
-enum class doctype_kind {
-    xml_declaration,
-    doctype_declaration
+enum class DoctypeKind {
+    XmlDeclaration,
+    DoctypeDeclaration
 };
 
-enum class doctype_status {
-    matched,
-    empty_input,
-    no_top_declaration,
-    malformed_xml_declaration,
-    malformed_doctype_declaration,
-    exception_thrown
+enum class DoctypeStatus {
+    Matched,
+    EmptyInput,
+    NoTopDeclaration,
+    MalformedXmlDeclaration,
+    MalformedDoctypeDeclaration,
+    ExceptionThrown
 };
 
-struct doctype_match {
-    doctype_kind kind;
-    std::string raw;
+struct DoctypeMatch {
+    DoctypeKind Kind;
+    std::string Raw;
 };
 
-struct doctype_result {
-    doctype_status status;
-    std::optional<doctype_match> match;
-    std::string reason;
+struct DoctypeResult {
+    DoctypeStatus Status;
+    std::optional<DoctypeMatch> Match;
+    std::string Reason;
 };
 
-class DOCTYPE : public QObject {
+class Doctype : public QObject {
     Q_OBJECT
 
 public:
@@ -44,24 +44,24 @@ public:
     };
     Q_ENUM(Kind)
 
-    explicit DOCTYPE(QObject* parent = nullptr);
+    explicit Doctype(QObject* parent = nullptr);
 
-    [[nodiscard]] doctype_result match_top(std::string_view input) const;
-    [[nodiscard]] doctype_result match_top_result(std::string_view input) const;
-    [[nodiscard]] std::optional<doctype_match> match_top_match(std::string_view input) const;
-    [[nodiscard]] bool is_top_doctype(std::string_view input) const;
-    [[nodiscard]] bool is_top_xml_declaration(std::string_view input) const;
+    [[nodiscard]] DoctypeResult MatchTop(std::string_view Input) const;
+    [[nodiscard]] DoctypeResult MatchTopResult(std::string_view Input) const;
+    [[nodiscard]] std::optional<DoctypeMatch> MatchTopMatch(std::string_view Input) const;
+    [[nodiscard]] bool IsTopDoctype(std::string_view Input) const;
+    [[nodiscard]] bool IsTopXmlDeclaration(std::string_view Input) const;
 
 public slots:
-    void matchTop(const QString& input);
+    void MatchTopInput(const QString& Input);
 
 signals:
-    void doctypeMatched(iiXml::elements::DOCTYPE::Kind kind, const QString& raw);
-    void doctypeRejected(const QString& reason);
-    void xmlDeclarationMatched(const QString& raw);
-    void doctypeDeclarationMatched(const QString& raw);
+    void DoctypeMatched(iiXml::Elements::Doctype::Kind Kind, const QString& Raw);
+    void DoctypeRejected(const QString& Reason);
+    void XmlDeclarationMatched(const QString& Raw);
+    void DoctypeDeclarationMatched(const QString& Raw);
 };
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements
 
-Q_DECLARE_METATYPE(iiXml::elements::DOCTYPE::Kind)
+Q_DECLARE_METATYPE(iiXml::Elements::Doctype::Kind)

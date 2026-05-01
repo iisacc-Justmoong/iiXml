@@ -4,10 +4,10 @@
 
 ## 반환 형식
 
-`iiXml::parser::FileParser::parse_file()`은 파일 전체를 읽은 뒤 `iiXml::parser::tag_parser::parse()`에 넘긴다.
+`iiXml::Parser::FileParser::ParseFile()`은 파일 전체를 읽은 뒤 `iiXml::Parser::TagParser::Parse()`에 넘긴다.
 
 ```cpp
-std::optional<iiXml::parser::tag_value>
+std::optional<iiXml::Parser::TagValue>
 ```
 
 파일을 열 수 없거나 파일 내용이 태그 파서를 통과하지 못하면 `std::nullopt`를 반환한다.
@@ -17,14 +17,14 @@ std::optional<iiXml::parser::tag_value>
 ## 사용 예
 
 ```cpp
-#include "iiXml.h"
+#include <iiXml>
 
-iiXml::parser::FileParser parser;
-auto parsed = parser.parse_file("input.xml");
+iiXml::Parser::FileParser parser;
+auto parsed = parser.ParseFile("input.xml");
 
 if (parsed.has_value()) {
-    // parsed->tag_name
-    // parsed->value
+    // parsed->TagName
+    // parsed->Value
 }
 ```
 

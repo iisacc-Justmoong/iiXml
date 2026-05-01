@@ -1,4 +1,4 @@
-#include "iiXml.h"
+#include <iiXml>
 
 #include <QObject>
 #include <QString>
@@ -16,108 +16,108 @@ void expect(bool condition, const char* message) {
 }
 
 void parses_qstring_token() {
-    const iiXml::writer::GetStringToken input;
+    const iiXml::Writer::GetStringToken input;
 
-    const iiXml::writer::get_string_token_result result =
-        input.parse_string("<!DOCTYPE XML>\n<XML><number>42</number></XML>");
+    const iiXml::Writer::GetStringTokenResult result =
+        input.ParseString("<!Doctype XML>\n<XML><number>42</number></XML>");
 
-    expect(result.status == iiXml::writer::get_string_token_status::parsed,
+    expect(result.Status == iiXml::Writer::GetStringTokenStatus::Parsed,
         "validated QString XML should return parsed status");
-    expect(!result.reason.empty(), "validated QString XML should return non-empty reason");
-    expect(result.token.has_value(), "validated QString XML should parse");
-    if (!result.token.has_value()) {
+    expect(!result.Reason.empty(), "validated QString XML should return non-empty reason");
+    expect(result.Token.has_value(), "validated QString XML should parse");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "validated QString XML should preserve root tag name");
-    expect(result.token->value == "<number>42</number>", "validated QString XML should preserve root value");
+    expect(result.Token->TagName == "XML", "validated QString XML should preserve root tag name");
+    expect(result.Token->Value == "<number>42</number>", "validated QString XML should preserve root value");
 }
 
 void preserves_utf8_qstring_value() {
-    const iiXml::writer::GetStringToken input;
+    const iiXml::Writer::GetStringToken input;
 
-    const iiXml::writer::get_string_token_result result =
-        input.parse_string("<!DOCTYPE XML>\n<XML><number>숫자</number></XML>");
+    const iiXml::Writer::GetStringTokenResult result =
+        input.ParseString("<!Doctype XML>\n<XML><number>숫자</number></XML>");
 
-    expect(result.status == iiXml::writer::get_string_token_status::parsed,
+    expect(result.Status == iiXml::Writer::GetStringTokenStatus::Parsed,
         "UTF-8 validated QString XML should return parsed status");
-    expect(!result.reason.empty(), "UTF-8 validated QString XML should return non-empty reason");
-    expect(result.token.has_value(), "UTF-8 validated QString XML should parse");
-    if (!result.token.has_value()) {
+    expect(!result.Reason.empty(), "UTF-8 validated QString XML should return non-empty reason");
+    expect(result.Token.has_value(), "UTF-8 validated QString XML should parse");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->value == "<number>숫자</number>", "UTF-8 QString value should be preserved");
+    expect(result.Token->Value == "<number>숫자</number>", "UTF-8 QString value should be preserved");
 }
 
 void rejects_string_without_doctype() {
-    const iiXml::writer::GetStringToken input;
+    const iiXml::Writer::GetStringToken input;
 
-    const iiXml::writer::get_string_token_result result =
-        input.parse_string("<number>42</number>");
+    const iiXml::Writer::GetStringTokenResult result =
+        input.ParseString("<number>42</number>");
 
-    expect(result.status == iiXml::writer::get_string_token_status::invalid_xml_file,
-        "QString input without DOCTYPE should return invalid_xml_file");
-    expect(!result.reason.empty(), "DOCTYPE failure should return non-empty reason");
-    expect(!result.token.has_value(),
-        "QString input without DOCTYPE should fail before tag parser");
+    expect(result.Status == iiXml::Writer::GetStringTokenStatus::InvalidXmlFile,
+        "QString input without Doctype should return invalid_xml_file");
+    expect(!result.Reason.empty(), "Doctype failure should return non-empty reason");
+    expect(!result.Token.has_value(),
+        "QString input without Doctype should fail before tag parser");
 }
 
 void rejects_invalid_tag_closure_after_doctype() {
-    const iiXml::writer::GetStringToken input;
+    const iiXml::Writer::GetStringToken input;
 
-    const iiXml::writer::get_string_token_result result =
-        input.parse_string("<!DOCTYPE XML>\n<XML><number>42</XML>");
+    const iiXml::Writer::GetStringTokenResult result =
+        input.ParseString("<!Doctype XML>\n<XML><number>42</XML>");
 
-    expect(result.status == iiXml::writer::get_string_token_status::invalid_tag_closure,
+    expect(result.Status == iiXml::Writer::GetStringTokenStatus::InvalidTagClosure,
         "QString input with invalid tag closure should return invalid_tag_closure");
-    expect(!result.reason.empty(), "tag closure failure should return non-empty reason");
-    expect(!result.token.has_value(),
+    expect(!result.Reason.empty(), "tag closure failure should return non-empty reason");
+    expect(!result.Token.has_value(),
         "QString input with invalid tag closure should fail before tag parser");
 }
 
 void emits_parsed_signal() {
-    iiXml::writer::GetStringToken input;
+    iiXml::Writer::GetStringToken input;
     bool emitted = false;
-    QString tag_name;
+    QString TagName;
     QString value;
 
-    QObject::connect(&input, &iiXml::writer::GetStringToken::parsed,
+    QObject::connect(&input, &iiXml::Writer::GetStringToken::Parsed,
         [&](const QString& emitted_tag_name, const QString& emitted_value) {
             emitted = true;
-            tag_name = emitted_tag_name;
+            TagName = emitted_tag_name;
             value = emitted_value;
         });
 
-    input.readString("<!DOCTYPE XML>\n<XML><number>숫자</number></XML>");
+    input.ReadString("<!Doctype XML>\n<XML><number>숫자</number></XML>");
 
-    expect(emitted, "GetStringToken should emit parsed");
-    expect(tag_name == "XML", "GetStringToken should emit root tag name");
+    expect(emitted, "GetStringToken should emit Parsed");
+    expect(TagName == "XML", "GetStringToken should emit root tag name");
     expect(value == "<number>숫자</number>", "GetStringToken should emit root value");
 }
 
 void emits_failure_signal() {
-    iiXml::writer::GetStringToken input;
+    iiXml::Writer::GetStringToken input;
     bool failed = false;
     bool status_failed = false;
-    iiXml::writer::GetStringToken::Status status =
-        iiXml::writer::GetStringToken::Status::Parsed;
+    iiXml::Writer::GetStringToken::Status status =
+        iiXml::Writer::GetStringToken::Status::Parsed;
 
-    QObject::connect(&input, &iiXml::writer::GetStringToken::parseFailed,
+    QObject::connect(&input, &iiXml::Writer::GetStringToken::ParseFailed,
         [&](const QString& reason) {
             failed = !reason.isEmpty();
         });
-    QObject::connect(&input, &iiXml::writer::GetStringToken::failed,
-        [&](iiXml::writer::GetStringToken::Status emitted_status, const QString& reason) {
+    QObject::connect(&input, &iiXml::Writer::GetStringToken::Failed,
+        [&](iiXml::Writer::GetStringToken::Status emitted_status, const QString& reason) {
             status_failed = !reason.isEmpty();
             status = emitted_status;
         });
 
-    input.readString("<number>42</number>");
+    input.ReadString("<number>42</number>");
 
-    expect(failed, "GetStringToken should emit parseFailed");
-    expect(status_failed, "GetStringToken should emit failed with reason");
-    expect(status == iiXml::writer::GetStringToken::Status::InvalidXmlFile,
+    expect(failed, "GetStringToken should emit ParseFailed");
+    expect(status_failed, "GetStringToken should emit Failed with reason");
+    expect(status == iiXml::Writer::GetStringToken::Status::InvalidXmlFile,
         "GetStringToken failed signal should emit InvalidXmlFile status");
 }
 

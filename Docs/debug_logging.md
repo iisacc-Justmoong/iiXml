@@ -20,27 +20,27 @@ iiXml의 라이브러리 객체와 public 메서드는 Qt 표준 디버그 스�
 ## 예시
 
 ```cpp
-iiXml::writer::GetFile input;
-auto result = input.parse_xml("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
+iiXml::Writer::GetFile input;
+auto result = input.ParseXml("<!Doctype XML>\n<XML><number>1</number></XML>");
 ```
 
-위 호출은 `iiXml::writer::GetFile::parse_xml begin`, `input`, `parsing`, `output` 로그를 `qDebug()`로 출력한다.
+위 호출은 `iiXml::Writer::GetFile::ParseXml begin`, `input`, `parsing`, `output` 로그를 `qDebug()`로 출력한다.
 
 정상 파싱 로그는 다음과 같은 진단 필드를 포함한다.
 
 ```text
-iiXml::parser::tag_parser::parse input input_size= 19 line_count= 1 preview= <number>42</number>
-iiXml::parser::tag_parser::parse parsing event= opening_tag offset= 0 line= 1 column= 1 context= <number>42</number>
-iiXml::parser::tag_parser::parse output status= parsed summary= tag=number value_size=2 raw_size=19
+iiXml::Parser::TagParser::Parse input input_size= 19 line_count= 1 preview= <number>42</number>
+iiXml::Parser::TagParser::Parse parsing event= opening_tag offset= 0 line= 1 column= 1 context= <number>42</number>
+iiXml::Parser::TagParser::Parse output status= parsed summary= tag=number value_size=2 raw_size=19
 ```
 
 파싱 실패 예시는 다음과 같은 진단 필드를 포함한다.
 
 ```text
-iiXml::parser::tag_parser::parse failed reason= closing tag mismatch offset= 11 line= 1 column= 12 context= <number>42</text>
+iiXml::Parser::TagParser::Parse failed reason= closing tag mismatch offset= 11 line= 1 column= 12 context= <number>42</text>
 ```
 
-라이브러리 로딩/초기 확인이 필요한 경우 `launch()`를 호출한다. `launch()`는 표준 출력 대신 `qDebug()`로 `iiXml::launch library launch` 로그를 출력한다.
+라이브러리 로딩/초기 확인이 필요한 경우 `Launch()`를 호출한다. `Launch()`는 표준 출력 대신 `qDebug()`로 `iiXml::Launch library Launch` 로그를 출력한다.
 
 ## 검증
 

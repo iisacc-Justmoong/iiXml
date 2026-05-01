@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <optional>
 
-namespace iiXml::parser {
+namespace iiXml::Parser {
 
 class FileParser : public QObject {
     Q_OBJECT
@@ -16,14 +16,14 @@ class FileParser : public QObject {
 public:
     explicit FileParser(QObject* parent = nullptr);
 
-    [[nodiscard]] std::optional<tag_value> parse_file(const std::filesystem::path& file_path) const;
+    [[nodiscard]] std::optional<TagValue> ParseFile(const std::filesystem::path& FilePath) const;
 
 public slots:
-    void parseFile(const QString& file_path);
+    void ParseFileInput(const QString& FilePath);
 
 signals:
-    void tagParsed(const QString& tag_name, const QString& value);
-    void parseFailed(const QString& reason);
+    void TagParsed(const QString& TagName, const QString& Value);
+    void ParseFailed(const QString& Reason);
 };
 
-} // namespace iiXml::parser
+} // namespace iiXml::Parser

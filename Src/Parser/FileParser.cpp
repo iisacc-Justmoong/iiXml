@@ -13,20 +13,20 @@
 #include <sstream>
 #include <string>
 
-namespace iiXml::parser {
+namespace iiXml::Parser {
 
 FileParser::FileParser(QObject* parent)
     : QObject(parent) {
-    qDebug() << "iiXml::parser::FileParser::FileParser constructed";
+    qDebug() << "iiXml::Parser::FileParser::FileParser constructed";
 }
 
-std::optional<tag_value> FileParser::parse_file(const std::filesystem::path& file_path) const {
-    qDebug() << "iiXml::parser::FileParser::parse_file begin"
+std::optional<TagValue> FileParser::ParseFile(const std::filesystem::path& file_path) const {
+    qDebug() << "iiXml::Parser::FileParser::ParseFile begin"
              << "path=" << QString::fromStdString(file_path.string());
     try {
         std::ifstream file(file_path, std::ios::binary);
         if (!file.is_open()) {
-            qDebug() << "iiXml::parser::FileParser::parse_file failed"
+            qDebug() << "iiXml::Parser::FileParser::ParseFile failed"
                      << "reason=file open failed";
             return std::nullopt;
         }
@@ -34,76 +34,76 @@ std::optional<tag_value> FileParser::parse_file(const std::filesystem::path& fil
         std::ostringstream buffer;
         buffer << file.rdbuf();
         const std::string content = buffer.str();
-        iiXml::logging::log_input_summary(
-            "iiXml::parser::FileParser::parse_file",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Parser::FileParser::ParseFile",
             content
         );
 
-        const tag_parser parser;
-        const std::optional<tag_value> parsed = parser.parse(content);
+        const TagParser parser;
+        const std::optional<TagValue> parsed = parser.Parse(content);
         if (!parsed.has_value()) {
-            qDebug() << "iiXml::parser::FileParser::parse_file failed"
+            qDebug() << "iiXml::Parser::FileParser::ParseFile failed"
                      << "reason=tag parser rejected file content";
             return std::nullopt;
         }
 
-        qDebug() << "iiXml::parser::FileParser::parse_file parsed"
-                 << "tag=" << QString::fromStdString(parsed->tag_name)
-                 << "value_size=" << parsed->value.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::parser::FileParser::parse_file",
+        qDebug() << "iiXml::Parser::FileParser::ParseFile parsed"
+                 << "tag=" << QString::fromStdString(parsed->TagName)
+                 << "value_size=" << parsed->Value.size();
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Parser::FileParser::ParseFile",
             "parsed",
-            std::string("tag=") + parsed->tag_name
-                + " value_size=" + std::to_string(parsed->value.size())
+            std::string("tag=") + parsed->TagName
+                + " value_size=" + std::to_string(parsed->Value.size())
         );
         return parsed;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::parser::FileParser::parse_file exception"
+        qDebug() << "iiXml::Parser::FileParser::ParseFile exception"
                  << "what=" << exception.what();
         return std::nullopt;
     } catch (...) {
-        qDebug() << "iiXml::parser::FileParser::parse_file exception"
+        qDebug() << "iiXml::Parser::FileParser::ParseFile exception"
                  << "what=unknown";
         return std::nullopt;
     }
 }
 
-void FileParser::parseFile(const QString& file_path) {
-    qDebug() << "iiXml::parser::FileParser::parseFile begin"
+void FileParser::ParseFileInput(const QString& file_path) {
+    qDebug() << "iiXml::Parser::FileParser::ParseFileInput begin"
              << "path=" << file_path;
     try {
         const QByteArray utf8 = file_path.toUtf8();
         const std::string path(utf8.constData(), static_cast<std::size_t>(utf8.size()));
-        const std::optional<tag_value> parsed = parse_file(std::filesystem::path(path));
+        const std::optional<TagValue> parsed = ParseFile(std::filesystem::path(path));
 
         if (!parsed.has_value()) {
-            qDebug() << "iiXml::parser::FileParser::parseFile failed"
+            qDebug() << "iiXml::Parser::FileParser::ParseFileInput failed"
                      << "reason=file parse failed";
-            emit parseFailed("file parse failed");
+            emit ParseFailed("file parse failed");
             return;
         }
 
-        qDebug() << "iiXml::parser::FileParser::parseFile parsed"
-                 << "tag=" << QString::fromStdString(parsed->tag_name)
-                 << "value_size=" << parsed->value.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::parser::FileParser::parseFile",
+        qDebug() << "iiXml::Parser::FileParser::ParseFileInput parsed"
+                 << "tag=" << QString::fromStdString(parsed->TagName)
+                 << "value_size=" << parsed->Value.size();
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Parser::FileParser::ParseFileInput",
             "parsed",
-            std::string("tag=") + parsed->tag_name
-                + " value_size=" + std::to_string(parsed->value.size())
+            std::string("tag=") + parsed->TagName
+                + " value_size=" + std::to_string(parsed->Value.size())
         );
-        emit tagParsed(QString::fromStdString(parsed->tag_name), QString::fromStdString(parsed->value));
+        emit TagParsed(QString::fromStdString(parsed->TagName), QString::fromStdString(parsed->Value));
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::parser::FileParser::parseFile exception"
+        qDebug() << "iiXml::Parser::FileParser::ParseFileInput exception"
                  << "what=" << exception.what();
-        emit parseFailed(QString::fromStdString(
+        emit ParseFailed(QString::fromStdString(
             std::string("file parse exception: ") + exception.what()
         ));
     } catch (...) {
-        qDebug() << "iiXml::parser::FileParser::parseFile exception"
+        qDebug() << "iiXml::Parser::FileParser::ParseFileInput exception"
                  << "what=unknown";
-        emit parseFailed("file parse exception: unknown");
+        emit ParseFailed("file parse exception: unknown");
     }
 }
 
-} // namespace iiXml::parser
+} // namespace iiXml::Parser

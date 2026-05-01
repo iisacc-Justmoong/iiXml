@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="${ROOT_DIR}/build"
-PREFIX="${HOME}/.local"
+PREFIX="${HOME}/.local/iiXml"
 QT_PREFIX="${HOME}/Qt/6.8.3/macos"
 
 cmake_args=(
@@ -24,6 +24,12 @@ cmake --build "${BUILD_DIR}"
 
 echo "Running iiXml tests"
 ctest --test-dir "${BUILD_DIR}" --output-on-failure
+
+LEGACY_INCLUDE_DIR="${PREFIX}/include/iiXml"
+if [[ -d "${LEGACY_INCLUDE_DIR}" && ( -f "${LEGACY_INCLUDE_DIR}/iiXml.h" || -d "${LEGACY_INCLUDE_DIR}/Src" ) ]]; then
+    echo "Removing legacy iiXml include directory: ${LEGACY_INCLUDE_DIR}"
+    rm -rf "${LEGACY_INCLUDE_DIR}"
+fi
 
 echo "Installing iiXml into ${PREFIX}"
 cmake --install "${BUILD_DIR}" --prefix "${PREFIX}"

@@ -18,8 +18,8 @@ add_library(iiXml SHARED
     iiXml.cpp
     Src/Elements/ClosedTag.cpp
     Src/Elements/ClosedTag.h
-    Src/Elements/DOCTYPE.cpp
-    Src/Elements/DOCTYPE.h
+    Src/Elements/Doctype.cpp
+    Src/Elements/Doctype.h
     Src/Elements/InlineProperties.cpp
     Src/Elements/InlineProperties.h
     Src/Elements/OpenTag.cpp
@@ -41,7 +41,6 @@ add_library(iiXml SHARED
 target_include_directories(iiXml PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/iiXml>
 )
 
 target_link_libraries(iiXml PUBLIC
@@ -55,12 +54,12 @@ install(TARGETS iiXml
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-install(FILES iiXml.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXml
+install(FILES iiXml iiXml.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(DIRECTORY Src/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXml/Src
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Src
     FILES_MATCHING PATTERN "*.h"
 )
 

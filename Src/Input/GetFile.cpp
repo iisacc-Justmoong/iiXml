@@ -1,6 +1,6 @@
 #include "GetFile.h"
 
-#include "Src/Elements/DOCTYPE.h"
+#include "Src/Elements/Doctype.h"
 #include "Src/Input/InputValidator.h"
 #include "Src/Logging/XmlLog.h"
 #include "Src/Parser/TagParser.h"
@@ -46,7 +46,7 @@ std::optional<std::string> read_file(const std::filesystem::path& file_path) {
 
 std::string_view consume_matched_declaration(
     std::string_view input,
-    const iiXml::elements::doctype_match& matched
+    const iiXml::Elements::DoctypeMatch& matched
 ) {
     std::size_t offset = 0;
     if (input.starts_with(utf8_bom)) {
@@ -57,7 +57,7 @@ std::string_view consume_matched_declaration(
         ++offset;
     }
 
-    offset += matched.raw.size();
+    offset += matched.Raw.size();
     return offset <= input.size() ? input.substr(offset) : std::string_view{};
 }
 
@@ -76,390 +76,390 @@ std::string_view trim_outer(std::string_view input) {
 }
 
 std::string_view parser_body_after_declarations(std::string_view input) {
-    const iiXml::elements::DOCTYPE doctype;
+    const iiXml::Elements::Doctype doctype;
     while (true) {
-        const iiXml::elements::doctype_result matched = doctype.match_top(input);
-        if (!matched.match.has_value()) {
+        const iiXml::Elements::DoctypeResult matched = doctype.MatchTop(input);
+        if (!matched.Match.has_value()) {
             break;
         }
 
-        input = consume_matched_declaration(input, *matched.match);
+        input = consume_matched_declaration(input, *matched.Match);
     }
 
     return trim_outer(input);
 }
 
-iiXml::writer::GetFile::Status to_qt_status(iiXml::writer::get_file_status status) {
+iiXml::Writer::GetFile::Status to_qt_status(iiXml::Writer::GetFileStatus status) {
     switch (status) {
-        case iiXml::writer::get_file_status::parsed:
-            return iiXml::writer::GetFile::Status::Parsed;
-        case iiXml::writer::get_file_status::file_read_failed:
-            return iiXml::writer::GetFile::Status::FileReadFailed;
-        case iiXml::writer::get_file_status::invalid_xml_file:
-            return iiXml::writer::GetFile::Status::InvalidXmlFile;
-        case iiXml::writer::get_file_status::invalid_tag_closure:
-            return iiXml::writer::GetFile::Status::InvalidTagClosure;
-        case iiXml::writer::get_file_status::parser_rejected:
-            return iiXml::writer::GetFile::Status::ParserRejected;
-        case iiXml::writer::get_file_status::exception_thrown:
-            return iiXml::writer::GetFile::Status::ExceptionThrown;
+        case iiXml::Writer::GetFileStatus::Parsed:
+            return iiXml::Writer::GetFile::Status::Parsed;
+        case iiXml::Writer::GetFileStatus::FileReadFailed:
+            return iiXml::Writer::GetFile::Status::FileReadFailed;
+        case iiXml::Writer::GetFileStatus::InvalidXmlFile:
+            return iiXml::Writer::GetFile::Status::InvalidXmlFile;
+        case iiXml::Writer::GetFileStatus::InvalidTagClosure:
+            return iiXml::Writer::GetFile::Status::InvalidTagClosure;
+        case iiXml::Writer::GetFileStatus::ParserRejected:
+            return iiXml::Writer::GetFile::Status::ParserRejected;
+        case iiXml::Writer::GetFileStatus::ExceptionThrown:
+            return iiXml::Writer::GetFile::Status::ExceptionThrown;
     }
 
-    return iiXml::writer::GetFile::Status::ExceptionThrown;
+    return iiXml::Writer::GetFile::Status::ExceptionThrown;
 }
 
-QString reason_for_status(iiXml::writer::get_file_status status) {
+QString reason_for_status(iiXml::Writer::GetFileStatus status) {
     switch (status) {
-        case iiXml::writer::get_file_status::parsed:
+        case iiXml::Writer::GetFileStatus::Parsed:
             return "parsed";
-        case iiXml::writer::get_file_status::file_read_failed:
+        case iiXml::Writer::GetFileStatus::FileReadFailed:
             return "file read failed";
-        case iiXml::writer::get_file_status::invalid_xml_file:
+        case iiXml::Writer::GetFileStatus::InvalidXmlFile:
             return "invalid xml file";
-        case iiXml::writer::get_file_status::invalid_tag_closure:
+        case iiXml::Writer::GetFileStatus::InvalidTagClosure:
             return "invalid tag closure";
-        case iiXml::writer::get_file_status::parser_rejected:
+        case iiXml::Writer::GetFileStatus::ParserRejected:
             return "parser rejected input";
-        case iiXml::writer::get_file_status::exception_thrown:
+        case iiXml::Writer::GetFileStatus::ExceptionThrown:
             return "exception thrown";
     }
 
     return "unknown failure";
 }
 
-const char* status_name(iiXml::writer::get_file_status status) {
+const char* status_name(iiXml::Writer::GetFileStatus status) {
     switch (status) {
-        case iiXml::writer::get_file_status::parsed:
+        case iiXml::Writer::GetFileStatus::Parsed:
             return "parsed";
-        case iiXml::writer::get_file_status::file_read_failed:
+        case iiXml::Writer::GetFileStatus::FileReadFailed:
             return "file_read_failed";
-        case iiXml::writer::get_file_status::invalid_xml_file:
+        case iiXml::Writer::GetFileStatus::InvalidXmlFile:
             return "invalid_xml_file";
-        case iiXml::writer::get_file_status::invalid_tag_closure:
+        case iiXml::Writer::GetFileStatus::InvalidTagClosure:
             return "invalid_tag_closure";
-        case iiXml::writer::get_file_status::parser_rejected:
+        case iiXml::Writer::GetFileStatus::ParserRejected:
             return "parser_rejected";
-        case iiXml::writer::get_file_status::exception_thrown:
+        case iiXml::Writer::GetFileStatus::ExceptionThrown:
             return "exception_thrown";
     }
 
     return "unknown";
 }
 
-iiXml::writer::get_file_result make_result(
-    iiXml::writer::get_file_status status,
-    std::optional<iiXml::parser::tag_value> token,
+iiXml::Writer::GetFileResult make_result(
+    iiXml::Writer::GetFileStatus status,
+    std::optional<iiXml::Parser::TagValue> token,
     std::string reason
 ) {
     if (reason.empty()) {
         reason = reason_for_status(status).toStdString();
     }
 
-    return iiXml::writer::get_file_result{status, std::move(token), std::move(reason)};
+    return iiXml::Writer::GetFileResult{status, std::move(token), std::move(reason)};
 }
 
 } // namespace
 
-namespace iiXml::writer {
+namespace iiXml::Writer {
 
 GetFile::GetFile(QObject* parent)
     : QObject(parent) {
-    qRegisterMetaType<GetFile::Status>("iiXml::writer::GetFile::Status");
-    qDebug() << "iiXml::writer::GetFile::GetFile constructed";
+    qRegisterMetaType<GetFile::Status>("iiXml::Writer::GetFile::Status");
+    qDebug() << "iiXml::Writer::GetFile::GetFile constructed";
 }
 
-get_file_result GetFile::parse_file(const std::filesystem::path& file_path) const {
-    qDebug() << "iiXml::writer::GetFile::parse_file begin"
+GetFileResult GetFile::ParseFile(const std::filesystem::path& file_path) const {
+    qDebug() << "iiXml::Writer::GetFile::ParseFile begin"
              << "path=" << QString::fromStdString(file_path.string());
     try {
         const std::optional<std::string> content = read_file(file_path);
         if (!content.has_value()) {
-            qDebug() << "iiXml::writer::GetFile::parse_file failed"
-                     << "status=" << status_name(get_file_status::file_read_failed);
+            qDebug() << "iiXml::Writer::GetFile::ParseFile failed"
+                     << "status=" << status_name(GetFileStatus::FileReadFailed);
             return make_result(
-                get_file_status::file_read_failed,
+                GetFileStatus::FileReadFailed,
                 std::nullopt,
                 "file read failed"
             );
         }
-        iiXml::logging::log_input_summary(
-            "iiXml::writer::GetFile::parse_file",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Writer::GetFile::ParseFile",
             *content
         );
 
-        const get_file_result result = parse_xml(*content);
-        qDebug() << "iiXml::writer::GetFile::parse_file"
-                 << (result.status == get_file_status::parsed ? "parsed" : "failed")
-                 << "status=" << status_name(result.status);
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetFile::parse_file",
-            status_name(result.status),
-            result.token.has_value()
-                ? std::string("tag=") + result.token->tag_name
-                    + " value_size=" + std::to_string(result.token->value.size())
-                : result.reason
+        const GetFileResult result = ParseXml(*content);
+        qDebug() << "iiXml::Writer::GetFile::ParseFile"
+                 << (result.Status == GetFileStatus::Parsed ? "parsed" : "failed")
+                 << "status=" << status_name(result.Status);
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetFile::ParseFile",
+            status_name(result.Status),
+            result.Token.has_value()
+                ? std::string("tag=") + result.Token->TagName
+                    + " value_size=" + std::to_string(result.Token->Value.size())
+                : result.Reason
         );
         return result;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetFile::parse_file exception"
+        qDebug() << "iiXml::Writer::GetFile::ParseFile exception"
                  << "what=" << exception.what();
         return make_result(
-            get_file_status::exception_thrown,
+            GetFileStatus::ExceptionThrown,
             std::nullopt,
             std::string("file input exception: ") + exception.what()
         );
     } catch (...) {
-        qDebug() << "iiXml::writer::GetFile::parse_file exception"
+        qDebug() << "iiXml::Writer::GetFile::ParseFile exception"
                  << "what=unknown";
         return make_result(
-            get_file_status::exception_thrown,
+            GetFileStatus::ExceptionThrown,
             std::nullopt,
             "file input exception: unknown"
         );
     }
 }
 
-get_file_result GetFile::parse_xml(std::string_view input) const {
-    qDebug() << "iiXml::writer::GetFile::parse_xml begin"
+GetFileResult GetFile::ParseXml(std::string_view input) const {
+    qDebug() << "iiXml::Writer::GetFile::ParseXml begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::writer::GetFile::parse_xml", input);
+    iiXml::Logging::LogInputSummary("iiXml::Writer::GetFile::ParseXml", input);
     try {
-        const iiXml::elements::DOCTYPE doctype;
-        const iiXml::elements::doctype_result declaration = doctype.match_top_result(input);
-        if (!declaration.match.has_value()) {
-            qDebug() << "iiXml::writer::GetFile::parse_xml failed"
-                     << "status=" << status_name(get_file_status::invalid_xml_file);
+        const iiXml::Elements::Doctype doctype;
+        const iiXml::Elements::DoctypeResult declaration = doctype.MatchTopResult(input);
+        if (!declaration.Match.has_value()) {
+            qDebug() << "iiXml::Writer::GetFile::ParseXml failed"
+                     << "status=" << status_name(GetFileStatus::InvalidXmlFile);
             return make_result(
-                get_file_status::invalid_xml_file,
+                GetFileStatus::InvalidXmlFile,
                 std::nullopt,
-                declaration.reason
+                declaration.Reason
             );
         }
 
         const InputValidator validator;
-        const validation_result validation = validator.validate_result(input);
-        if (validation.exit == validation_exit::invalid_xml_file) {
-            qDebug() << "iiXml::writer::GetFile::parse_xml failed"
-                     << "status=" << status_name(get_file_status::invalid_xml_file);
+        const ValidationResult validation = validator.ValidateResult(input);
+        if (validation.Exit == ValidationExit::InvalidXmlFile) {
+            qDebug() << "iiXml::Writer::GetFile::ParseXml failed"
+                     << "status=" << status_name(GetFileStatus::InvalidXmlFile);
             return make_result(
-                get_file_status::invalid_xml_file,
+                GetFileStatus::InvalidXmlFile,
                 std::nullopt,
-                validation.reason
+                validation.Reason
             );
         }
 
-        if (validation.exit == validation_exit::invalid_tag_closure) {
-            qDebug() << "iiXml::writer::GetFile::parse_xml failed"
-                     << "status=" << status_name(get_file_status::invalid_tag_closure);
+        if (validation.Exit == ValidationExit::InvalidTagClosure) {
+            qDebug() << "iiXml::Writer::GetFile::ParseXml failed"
+                     << "status=" << status_name(GetFileStatus::InvalidTagClosure);
             return make_result(
-                get_file_status::invalid_tag_closure,
+                GetFileStatus::InvalidTagClosure,
                 std::nullopt,
-                validation.reason
+                validation.Reason
             );
         }
 
-        if (validation.exit == validation_exit::exception_thrown) {
-            qDebug() << "iiXml::writer::GetFile::parse_xml failed"
-                     << "status=" << status_name(get_file_status::exception_thrown);
+        if (validation.Exit == ValidationExit::ExceptionThrown) {
+            qDebug() << "iiXml::Writer::GetFile::ParseXml failed"
+                     << "status=" << status_name(GetFileStatus::ExceptionThrown);
             return make_result(
-                get_file_status::exception_thrown,
+                GetFileStatus::ExceptionThrown,
                 std::nullopt,
-                validation.reason
+                validation.Reason
             );
         }
 
         const std::string_view parser_input = parser_body_after_declarations(input);
-        iiXml::logging::log_parse_event(
-            "iiXml::writer::GetFile::parse_xml",
+        iiXml::Logging::LogParseEvent(
+            "iiXml::Writer::GetFile::ParseXml",
             "parser_body",
             input,
             input.size() - parser_input.size()
         );
-        const iiXml::parser::tag_parser parser;
-        const std::optional<iiXml::parser::tag_value> token = parser.parse(parser_input);
+        const iiXml::Parser::TagParser parser;
+        const std::optional<iiXml::Parser::TagValue> token = parser.Parse(parser_input);
         if (!token.has_value()) {
-            qDebug() << "iiXml::writer::GetFile::parse_xml failed"
-                     << "status=" << status_name(get_file_status::parser_rejected);
+            qDebug() << "iiXml::Writer::GetFile::ParseXml failed"
+                     << "status=" << status_name(GetFileStatus::ParserRejected);
             return make_result(
-                get_file_status::parser_rejected,
+                GetFileStatus::ParserRejected,
                 std::nullopt,
                 "tag parser rejected validated XML body"
             );
         }
 
-        qDebug() << "iiXml::writer::GetFile::parse_xml parsed"
-                 << "tag=" << QString::fromStdString(token->tag_name)
-                 << "value_size=" << token->value.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetFile::parse_xml",
+        qDebug() << "iiXml::Writer::GetFile::ParseXml parsed"
+                 << "tag=" << QString::fromStdString(token->TagName)
+                 << "value_size=" << token->Value.size();
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetFile::ParseXml",
             "parsed",
-            std::string("tag=") + token->tag_name
-                + " value_size=" + std::to_string(token->value.size())
+            std::string("tag=") + token->TagName
+                + " value_size=" + std::to_string(token->Value.size())
         );
-        return make_result(get_file_status::parsed, token, "parsed");
+        return make_result(GetFileStatus::Parsed, token, "parsed");
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetFile::parse_xml exception"
+        qDebug() << "iiXml::Writer::GetFile::ParseXml exception"
                  << "what=" << exception.what();
         return make_result(
-            get_file_status::exception_thrown,
+            GetFileStatus::ExceptionThrown,
             std::nullopt,
             std::string("XML input exception: ") + exception.what()
         );
     } catch (...) {
-        qDebug() << "iiXml::writer::GetFile::parse_xml exception"
+        qDebug() << "iiXml::Writer::GetFile::ParseXml exception"
                  << "what=unknown";
         return make_result(
-            get_file_status::exception_thrown,
+            GetFileStatus::ExceptionThrown,
             std::nullopt,
             "XML input exception: unknown"
         );
     }
 }
 
-void GetFile::readFile(const QString& file_path) {
-    qDebug() << "iiXml::writer::GetFile::readFile begin"
+void GetFile::ReadFile(const QString& file_path) {
+    qDebug() << "iiXml::Writer::GetFile::ReadFile begin"
              << "path=" << file_path;
     try {
         const std::string path = to_utf8_string(file_path);
-        const get_file_result result = parse_file(std::filesystem::path(path));
-        if (result.status == get_file_status::parsed && result.token.has_value()) {
-            qDebug() << "iiXml::writer::GetFile::readFile parsed"
-                     << "tag=" << QString::fromStdString(result.token->tag_name)
-                     << "value_size=" << result.token->value.size();
-            iiXml::logging::log_output_summary(
-                "iiXml::writer::GetFile::readFile",
+        const GetFileResult result = ParseFile(std::filesystem::path(path));
+        if (result.Status == GetFileStatus::Parsed && result.Token.has_value()) {
+            qDebug() << "iiXml::Writer::GetFile::ReadFile parsed"
+                     << "tag=" << QString::fromStdString(result.Token->TagName)
+                     << "value_size=" << result.Token->Value.size();
+            iiXml::Logging::LogOutputSummary(
+                "iiXml::Writer::GetFile::ReadFile",
                 "parsed",
-                std::string("tag=") + result.token->tag_name
-                    + " value_size=" + std::to_string(result.token->value.size())
+                std::string("tag=") + result.Token->TagName
+                    + " value_size=" + std::to_string(result.Token->Value.size())
             );
-            emit parsed(
-                QString::fromStdString(result.token->tag_name),
-                QString::fromStdString(result.token->value)
+            emit Parsed(
+                QString::fromStdString(result.Token->TagName),
+                QString::fromStdString(result.Token->Value)
             );
             return;
         }
 
-        const Status status = to_qt_status(result.status);
-        const QString reason = result.reason.empty()
-            ? reason_for_status(result.status)
-            : QString::fromStdString(result.reason);
-        qDebug() << "iiXml::writer::GetFile::readFile failed"
-                 << "status=" << status_name(result.status)
+        const Status status = to_qt_status(result.Status);
+        const QString reason = result.Reason.empty()
+            ? reason_for_status(result.Status)
+            : QString::fromStdString(result.Reason);
+        qDebug() << "iiXml::Writer::GetFile::ReadFile failed"
+                 << "status=" << status_name(result.Status)
                  << "reason=" << reason;
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetFile::readFile",
-            status_name(result.status),
-            result.reason
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetFile::ReadFile",
+            status_name(result.Status),
+            result.Reason
         );
-        emit failed(status, reason);
+        emit Failed(status, reason);
 
         switch (status) {
             case Status::FileReadFailed:
-                emit fileReadFailed();
+                emit FileReadFailed();
                 return;
             case Status::InvalidXmlFile:
-                emit invalidXmlFile();
+                emit InvalidXmlFile();
                 return;
             case Status::InvalidTagClosure:
-                emit invalidTagClosure();
+                emit InvalidTagClosure();
                 return;
             case Status::ParserRejected:
-                emit parserRejected();
+                emit ParserRejected();
                 return;
             case Status::ExceptionThrown:
-                emit exceptionThrown();
+                emit ExceptionThrown();
                 return;
             case Status::Parsed:
                 return;
         }
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetFile::readFile exception"
+        qDebug() << "iiXml::Writer::GetFile::ReadFile exception"
                  << "what=" << exception.what();
-        emit failed(Status::ExceptionThrown, QString::fromStdString(
+        emit Failed(Status::ExceptionThrown, QString::fromStdString(
             std::string("file input slot exception: ") + exception.what()
         ));
-        emit exceptionThrown();
+        emit ExceptionThrown();
     } catch (...) {
-        qDebug() << "iiXml::writer::GetFile::readFile exception"
+        qDebug() << "iiXml::Writer::GetFile::ReadFile exception"
                  << "what=unknown";
-        emit failed(Status::ExceptionThrown, "file input slot exception: unknown");
-        emit exceptionThrown();
+        emit Failed(Status::ExceptionThrown, "file input slot exception: unknown");
+        emit ExceptionThrown();
     }
 }
 
-void GetFile::readXml(const QString& input) {
-    qDebug() << "iiXml::writer::GetFile::readXml begin"
+void GetFile::ReadXml(const QString& input) {
+    qDebug() << "iiXml::Writer::GetFile::ReadXml begin"
              << "input_size=" << input.size();
     try {
         const std::string bytes = to_utf8_string(input);
-        iiXml::logging::log_input_summary(
-            "iiXml::writer::GetFile::readXml",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Writer::GetFile::ReadXml",
             std::string_view(bytes.data(), bytes.size())
         );
-        const get_file_result result = parse_xml(std::string_view(bytes.data(), bytes.size()));
-        if (result.status == get_file_status::parsed && result.token.has_value()) {
-            qDebug() << "iiXml::writer::GetFile::readXml parsed"
-                     << "tag=" << QString::fromStdString(result.token->tag_name)
-                     << "value_size=" << result.token->value.size();
-            iiXml::logging::log_output_summary(
-                "iiXml::writer::GetFile::readXml",
+        const GetFileResult result = ParseXml(std::string_view(bytes.data(), bytes.size()));
+        if (result.Status == GetFileStatus::Parsed && result.Token.has_value()) {
+            qDebug() << "iiXml::Writer::GetFile::ReadXml parsed"
+                     << "tag=" << QString::fromStdString(result.Token->TagName)
+                     << "value_size=" << result.Token->Value.size();
+            iiXml::Logging::LogOutputSummary(
+                "iiXml::Writer::GetFile::ReadXml",
                 "parsed",
-                std::string("tag=") + result.token->tag_name
-                    + " value_size=" + std::to_string(result.token->value.size())
+                std::string("tag=") + result.Token->TagName
+                    + " value_size=" + std::to_string(result.Token->Value.size())
             );
-            emit parsed(
-                QString::fromStdString(result.token->tag_name),
-                QString::fromStdString(result.token->value)
+            emit Parsed(
+                QString::fromStdString(result.Token->TagName),
+                QString::fromStdString(result.Token->Value)
             );
             return;
         }
 
-        const Status status = to_qt_status(result.status);
-        const QString reason = result.reason.empty()
-            ? reason_for_status(result.status)
-            : QString::fromStdString(result.reason);
-        qDebug() << "iiXml::writer::GetFile::readXml failed"
-                 << "status=" << status_name(result.status)
+        const Status status = to_qt_status(result.Status);
+        const QString reason = result.Reason.empty()
+            ? reason_for_status(result.Status)
+            : QString::fromStdString(result.Reason);
+        qDebug() << "iiXml::Writer::GetFile::ReadXml failed"
+                 << "status=" << status_name(result.Status)
                  << "reason=" << reason;
-        iiXml::logging::log_output_summary(
-            "iiXml::writer::GetFile::readXml",
-            status_name(result.status),
-            result.reason
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Writer::GetFile::ReadXml",
+            status_name(result.Status),
+            result.Reason
         );
-        emit failed(status, reason);
+        emit Failed(status, reason);
 
         switch (status) {
             case Status::FileReadFailed:
-                emit fileReadFailed();
+                emit FileReadFailed();
                 return;
             case Status::InvalidXmlFile:
-                emit invalidXmlFile();
+                emit InvalidXmlFile();
                 return;
             case Status::InvalidTagClosure:
-                emit invalidTagClosure();
+                emit InvalidTagClosure();
                 return;
             case Status::ParserRejected:
-                emit parserRejected();
+                emit ParserRejected();
                 return;
             case Status::ExceptionThrown:
-                emit exceptionThrown();
+                emit ExceptionThrown();
                 return;
             case Status::Parsed:
                 return;
         }
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::writer::GetFile::readXml exception"
+        qDebug() << "iiXml::Writer::GetFile::ReadXml exception"
                  << "what=" << exception.what();
-        emit failed(Status::ExceptionThrown, QString::fromStdString(
+        emit Failed(Status::ExceptionThrown, QString::fromStdString(
             std::string("XML input slot exception: ") + exception.what()
         ));
-        emit exceptionThrown();
+        emit ExceptionThrown();
     } catch (...) {
-        qDebug() << "iiXml::writer::GetFile::readXml exception"
+        qDebug() << "iiXml::Writer::GetFile::ReadXml exception"
                  << "what=unknown";
-        emit failed(Status::ExceptionThrown, "XML input slot exception: unknown");
-        emit exceptionThrown();
+        emit Failed(Status::ExceptionThrown, "XML input slot exception: unknown");
+        emit ExceptionThrown();
     }
 }
 
-} // namespace iiXml::writer
+} // namespace iiXml::Writer

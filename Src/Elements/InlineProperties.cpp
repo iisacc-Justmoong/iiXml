@@ -116,38 +116,38 @@ bool looks_like_bool(std::string_view value) {
     return value == "true" || value == "false";
 }
 
-iiXml::elements::inline_property_type infer_type(
+iiXml::Elements::InlinePropertyType infer_type(
     std::string_view value,
     bool was_quoted
 ) {
     if (was_quoted) {
-        return iiXml::elements::inline_property_type::string_type;
+        return iiXml::Elements::InlinePropertyType::StringType;
     }
 
     if (looks_like_bool(value)) {
-        return iiXml::elements::inline_property_type::bool_type;
+        return iiXml::Elements::InlinePropertyType::BoolType;
     }
 
     if (looks_like_int(value)) {
-        return iiXml::elements::inline_property_type::int_type;
+        return iiXml::Elements::InlinePropertyType::IntType;
     }
 
     if (looks_like_float(value)) {
-        return iiXml::elements::inline_property_type::float_type;
+        return iiXml::Elements::InlinePropertyType::FloatType;
     }
 
-    return iiXml::elements::inline_property_type::string_type;
+    return iiXml::Elements::InlinePropertyType::StringType;
 }
 
-const char* property_type_name(iiXml::elements::inline_property_type type) {
+const char* property_type_name(iiXml::Elements::InlinePropertyType type) {
     switch (type) {
-        case iiXml::elements::inline_property_type::string_type:
+        case iiXml::Elements::InlinePropertyType::StringType:
             return "string";
-        case iiXml::elements::inline_property_type::int_type:
+        case iiXml::Elements::InlinePropertyType::IntType:
             return "int";
-        case iiXml::elements::inline_property_type::float_type:
+        case iiXml::Elements::InlinePropertyType::FloatType:
             return "float";
-        case iiXml::elements::inline_property_type::bool_type:
+        case iiXml::Elements::InlinePropertyType::BoolType:
             return "bool";
     }
 
@@ -156,25 +156,25 @@ const char* property_type_name(iiXml::elements::inline_property_type type) {
 
 } // namespace
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
 InlineProperties::InlineProperties(QObject* parent)
     : QObject(parent) {
-    qDebug() << "iiXml::elements::InlineProperties::InlineProperties constructed";
+    qDebug() << "iiXml::Elements::InlineProperties::InlineProperties constructed";
 }
 
-std::optional<std::vector<inline_property>> InlineProperties::parse(
+std::optional<std::vector<InlineProperty>> InlineProperties::Parse(
     std::string_view opening_tag,
     std::size_t source_offset
 ) const {
-    qDebug() << "iiXml::elements::InlineProperties::parse begin"
+    qDebug() << "iiXml::Elements::InlineProperties::Parse begin"
              << "input_size=" << opening_tag.size()
              << "source_offset=" << source_offset;
-    iiXml::logging::log_input_summary("iiXml::elements::InlineProperties::parse", opening_tag);
+    iiXml::Logging::LogInputSummary("iiXml::Elements::InlineProperties::Parse", opening_tag);
     try {
         if (opening_tag.size() < 2 || opening_tag.front() != '<' || opening_tag.back() != '>') {
-            iiXml::logging::log_parse_failure(
-                "iiXml::elements::InlineProperties::parse",
+            iiXml::Logging::LogParseFailure(
+                "iiXml::Elements::InlineProperties::Parse",
                 "opening tag markup expected",
                 opening_tag,
                 opening_tag.empty() ? 0 : opening_tag.size() - 1
@@ -185,8 +185,8 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
         const std::size_t close_bracket = opening_tag.size() - 1;
         std::size_t index = 1;
         if (index >= close_bracket || !is_name_start(opening_tag[index])) {
-            iiXml::logging::log_parse_failure(
-                "iiXml::elements::InlineProperties::parse",
+            iiXml::Logging::LogParseFailure(
+                "iiXml::Elements::InlineProperties::Parse",
                 "invalid tag name",
                 opening_tag,
                 index
@@ -199,7 +199,7 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
             ++index;
         }
 
-        std::vector<inline_property> properties;
+        std::vector<InlineProperty> properties;
         while (index < close_bracket) {
             skip_spaces(opening_tag, index, close_bracket);
             if (index >= close_bracket) {
@@ -213,8 +213,8 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
                     break;
                 }
 
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::InlineProperties::parse",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::InlineProperties::Parse",
                     "unexpected self closing marker",
                     opening_tag,
                     index
@@ -223,8 +223,8 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
             }
 
             if (!is_name_start(opening_tag[index])) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::InlineProperties::parse",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::InlineProperties::Parse",
                     "invalid property name",
                     opening_tag,
                     index
@@ -232,36 +232,36 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
                 return std::nullopt;
             }
 
-            const std::size_t name_begin = index;
+            const std::size_t NameBegin = index;
             ++index;
             while (index < close_bracket && is_name_char(opening_tag[index])) {
                 ++index;
             }
-            const std::size_t name_end = index;
-            iiXml::logging::log_parse_event(
-                "iiXml::elements::InlineProperties::parse",
+            const std::size_t NameEnd = index;
+            iiXml::Logging::LogParseEvent(
+                "iiXml::Elements::InlineProperties::Parse",
                 std::string("property name=")
-                    + std::string(opening_tag.substr(name_begin, name_end - name_begin)),
+                    + std::string(opening_tag.substr(NameBegin, NameEnd - NameBegin)),
                 opening_tag,
-                name_begin
+                NameBegin
             );
 
             skip_spaces(opening_tag, index, close_bracket);
 
-            bool has_value = false;
-            bool type_declared = false;
+            bool HasValue = false;
+            bool TypeDeclared = false;
             bool quoted_value = false;
-            std::size_t value_begin = name_end;
-            std::size_t value_end = name_end;
-            inline_property_type value_type = inline_property_type::string_type;
+            std::size_t ValueBegin = NameEnd;
+            std::size_t ValueEnd = NameEnd;
+            InlinePropertyType ValueType = InlinePropertyType::StringType;
 
             if (index < close_bracket && opening_tag[index] == '=') {
-                has_value = true;
+                HasValue = true;
                 ++index;
                 skip_spaces(opening_tag, index, close_bracket);
                 if (index >= close_bracket) {
-                    iiXml::logging::log_parse_failure(
-                        "iiXml::elements::InlineProperties::parse",
+                    iiXml::Logging::LogParseFailure(
+                        "iiXml::Elements::InlineProperties::Parse",
                         "missing property value",
                         opening_tag,
                         index
@@ -273,71 +273,71 @@ std::optional<std::vector<inline_property>> InlineProperties::parse(
                     quoted_value = true;
                     const char quote = opening_tag[index];
                     ++index;
-                    value_begin = index;
+                    ValueBegin = index;
                     while (index < close_bracket && opening_tag[index] != quote) {
                         ++index;
                     }
                     if (index >= close_bracket) {
-                        iiXml::logging::log_parse_failure(
-                            "iiXml::elements::InlineProperties::parse",
+                        iiXml::Logging::LogParseFailure(
+                            "iiXml::Elements::InlineProperties::Parse",
                             "unclosed quoted property value",
                             opening_tag,
-                            value_begin > 0 ? value_begin - 1 : value_begin
+                            ValueBegin > 0 ? ValueBegin - 1 : ValueBegin
                         );
                         return std::nullopt;
                     }
-                    value_end = index;
+                    ValueEnd = index;
                     ++index;
                 } else {
-                    value_begin = index;
+                    ValueBegin = index;
                     while (index < close_bracket
                         && !is_space(opening_tag[index])
                         && opening_tag[index] != '/') {
                         ++index;
                     }
-                    value_end = index;
+                    ValueEnd = index;
                 }
 
-                value_type = infer_type(
-                    opening_tag.substr(value_begin, value_end - value_begin),
+                ValueType = infer_type(
+                    opening_tag.substr(ValueBegin, ValueEnd - ValueBegin),
                     quoted_value
                 );
             }
 
-            qDebug() << "iiXml::elements::InlineProperties::parse property"
-                     << "name=" << QString::fromStdString(std::string(opening_tag.substr(name_begin, name_end - name_begin)))
-                     << "has_value=" << has_value
-                     << "type=" << property_type_name(value_type)
-                     << "type_declared=" << type_declared;
-            properties.push_back(inline_property{
-                std::string(opening_tag.substr(name_begin, name_end - name_begin)),
-                source_offset + name_begin,
-                source_offset + name_end,
-                has_value,
-                source_offset + value_begin,
-                source_offset + value_end,
-                value_type,
-                type_declared
+            qDebug() << "iiXml::Elements::InlineProperties::Parse property"
+                     << "name=" << QString::fromStdString(std::string(opening_tag.substr(NameBegin, NameEnd - NameBegin)))
+                     << "HasValue=" << HasValue
+                     << "type=" << property_type_name(ValueType)
+                     << "TypeDeclared=" << TypeDeclared;
+            properties.push_back(InlineProperty{
+                std::string(opening_tag.substr(NameBegin, NameEnd - NameBegin)),
+                source_offset + NameBegin,
+                source_offset + NameEnd,
+                HasValue,
+                source_offset + ValueBegin,
+                source_offset + ValueEnd,
+                ValueType,
+                TypeDeclared
             });
         }
 
-        qDebug() << "iiXml::elements::InlineProperties::parse parsed"
+        qDebug() << "iiXml::Elements::InlineProperties::Parse parsed"
                  << "property_count=" << properties.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::elements::InlineProperties::parse",
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Elements::InlineProperties::Parse",
             "parsed",
             std::string("property_count=") + std::to_string(properties.size())
         );
         return properties;
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::elements::InlineProperties::parse exception"
+        qDebug() << "iiXml::Elements::InlineProperties::Parse exception"
                  << "what=" << exception.what();
         return std::nullopt;
     } catch (...) {
-        qDebug() << "iiXml::elements::InlineProperties::parse exception"
+        qDebug() << "iiXml::Elements::InlineProperties::Parse exception"
                  << "what=unknown";
         return std::nullopt;
     }
 }
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements

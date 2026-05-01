@@ -1,4 +1,4 @@
-#include "DOCTYPE.h"
+#include "Doctype.h"
 
 #include "Src/Logging/XmlLog.h"
 
@@ -18,7 +18,7 @@ namespace {
 
 constexpr std::string_view xml_declaration_start = "<?xml";
 constexpr std::string_view xml_declaration_end = "?>";
-constexpr std::string_view doctype_start = "<!DOCTYPE";
+constexpr std::string_view doctype_start = "<!Doctype";
 constexpr std::string_view utf8_bom = "\xEF\xBB\xBF";
 
 bool is_space(char value) {
@@ -140,47 +140,47 @@ bool has_doctype_name(std::string_view declaration) {
 
 } // namespace
 
-namespace iiXml::elements {
+namespace iiXml::Elements {
 
 namespace {
 
-DOCTYPE::Kind to_qt_kind(doctype_kind kind) {
+Doctype::Kind to_qt_kind(DoctypeKind kind) {
     switch (kind) {
-        case doctype_kind::xml_declaration:
-            return DOCTYPE::Kind::XmlDeclaration;
-        case doctype_kind::doctype_declaration:
-            return DOCTYPE::Kind::DoctypeDeclaration;
+        case DoctypeKind::XmlDeclaration:
+            return Doctype::Kind::XmlDeclaration;
+        case DoctypeKind::DoctypeDeclaration:
+            return Doctype::Kind::DoctypeDeclaration;
     }
 
-    return DOCTYPE::Kind::DoctypeDeclaration;
+    return Doctype::Kind::DoctypeDeclaration;
 }
 
-const char* status_name(doctype_status status) {
+const char* status_name(DoctypeStatus status) {
     switch (status) {
-        case doctype_status::matched:
+        case DoctypeStatus::Matched:
             return "matched";
-        case doctype_status::empty_input:
+        case DoctypeStatus::EmptyInput:
             return "empty_input";
-        case doctype_status::no_top_declaration:
+        case DoctypeStatus::NoTopDeclaration:
             return "no_top_declaration";
-        case doctype_status::malformed_xml_declaration:
+        case DoctypeStatus::MalformedXmlDeclaration:
             return "malformed_xml_declaration";
-        case doctype_status::malformed_doctype_declaration:
+        case DoctypeStatus::MalformedDoctypeDeclaration:
             return "malformed_doctype_declaration";
-        case doctype_status::exception_thrown:
+        case DoctypeStatus::ExceptionThrown:
             return "exception_thrown";
     }
 
     return "unknown";
 }
 
-doctype_result make_doctype_failure(doctype_status status, std::string reason) {
-    return doctype_result{status, std::nullopt, std::move(reason)};
+DoctypeResult make_doctype_failure(DoctypeStatus status, std::string reason) {
+    return DoctypeResult{status, std::nullopt, std::move(reason)};
 }
 
-doctype_result make_doctype_success(doctype_match match) {
-    return doctype_result{
-        doctype_status::matched,
+DoctypeResult make_doctype_success(DoctypeMatch match) {
+    return DoctypeResult{
+        DoctypeStatus::Matched,
         std::move(match),
         "top declaration matched"
     };
@@ -188,283 +188,283 @@ doctype_result make_doctype_success(doctype_match match) {
 
 } // namespace
 
-DOCTYPE::DOCTYPE(QObject* parent)
+Doctype::Doctype(QObject* parent)
     : QObject(parent) {
-    qRegisterMetaType<DOCTYPE::Kind>("iiXml::elements::DOCTYPE::Kind");
-    qDebug() << "iiXml::elements::DOCTYPE::DOCTYPE constructed";
+    qRegisterMetaType<Doctype::Kind>("iiXml::Elements::Doctype::Kind");
+    qDebug() << "iiXml::Elements::Doctype::Doctype constructed";
 }
 
-doctype_result DOCTYPE::match_top_result(std::string_view input) const {
-    qDebug() << "iiXml::elements::DOCTYPE::match_top_result begin"
+DoctypeResult Doctype::MatchTopResult(std::string_view input) const {
+    qDebug() << "iiXml::Elements::Doctype::MatchTopResult begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top_result", input);
+    iiXml::Logging::LogInputSummary("iiXml::Elements::Doctype::MatchTopResult", input);
     try {
         input = trim_top(input);
 
         if (input.empty()) {
-            iiXml::logging::log_parse_failure(
-                "iiXml::elements::DOCTYPE::match_top_result",
-                "input is empty; expected XML declaration or DOCTYPE declaration",
+            iiXml::Logging::LogParseFailure(
+                "iiXml::Elements::Doctype::MatchTopResult",
+                "input is empty; expected XML declaration or Doctype declaration",
                 input,
                 0
             );
             return make_doctype_failure(
-                doctype_status::empty_input,
-                "input is empty; expected XML declaration or DOCTYPE declaration"
+                DoctypeStatus::EmptyInput,
+                "input is empty; expected XML declaration or Doctype declaration"
             );
         }
 
         if (starts_with_token(input, xml_declaration_start)) {
-            iiXml::logging::log_parse_event(
-                "iiXml::elements::DOCTYPE::match_top_result",
+            iiXml::Logging::LogParseEvent(
+                "iiXml::Elements::Doctype::MatchTopResult",
                 "xml_declaration_begin",
                 input,
                 0
             );
             const std::optional<std::size_t> end = find_xml_declaration_end(input);
             if (!end.has_value()) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::DOCTYPE::match_top_result",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::Doctype::MatchTopResult",
                     "XML declaration is not closed with ?>",
                     input,
                     0
                 );
                 return make_doctype_failure(
-                    doctype_status::malformed_xml_declaration,
+                    DoctypeStatus::MalformedXmlDeclaration,
                     "XML declaration is not closed with ?>"
                 );
             }
 
             const std::string_view raw = input.substr(0, *end);
             if (!has_xml_declaration_body(raw)) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::DOCTYPE::match_top_result",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::Doctype::MatchTopResult",
                     "XML declaration must contain a body after <?xml",
                     input,
                     xml_declaration_start.size()
                 );
                 return make_doctype_failure(
-                    doctype_status::malformed_xml_declaration,
+                    DoctypeStatus::MalformedXmlDeclaration,
                     "XML declaration must contain a body after <?xml"
                 );
             }
 
-            qDebug() << "iiXml::elements::DOCTYPE::match_top_result matched"
+            qDebug() << "iiXml::Elements::Doctype::MatchTopResult matched"
                      << "kind=xml_declaration"
                      << "raw_size=" << raw.size();
-            iiXml::logging::log_output_summary(
-                "iiXml::elements::DOCTYPE::match_top_result",
+            iiXml::Logging::LogOutputSummary(
+                "iiXml::Elements::Doctype::MatchTopResult",
                 "matched",
                 std::string("kind=xml_declaration raw_size=") + std::to_string(raw.size())
             );
-            return make_doctype_success(doctype_match{
-                doctype_kind::xml_declaration,
+            return make_doctype_success(DoctypeMatch{
+                DoctypeKind::XmlDeclaration,
                 std::string(raw)
             });
         }
 
         if (starts_with_token(input, doctype_start)) {
-            iiXml::logging::log_parse_event(
-                "iiXml::elements::DOCTYPE::match_top_result",
+            iiXml::Logging::LogParseEvent(
+                "iiXml::Elements::Doctype::MatchTopResult",
                 "doctype_declaration_begin",
                 input,
                 0
             );
             const std::optional<std::size_t> end = find_doctype_end(input);
             if (!end.has_value()) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::DOCTYPE::match_top_result",
-                    "DOCTYPE declaration is not closed with >",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::Doctype::MatchTopResult",
+                    "Doctype declaration is not closed with >",
                     input,
                     0
                 );
                 return make_doctype_failure(
-                    doctype_status::malformed_doctype_declaration,
-                    "DOCTYPE declaration is not closed with >"
+                    DoctypeStatus::MalformedDoctypeDeclaration,
+                    "Doctype declaration is not closed with >"
                 );
             }
 
             const std::string_view raw = input.substr(0, *end);
             if (!has_doctype_name(raw)) {
-                iiXml::logging::log_parse_failure(
-                    "iiXml::elements::DOCTYPE::match_top_result",
-                    "DOCTYPE declaration is missing a valid root name",
+                iiXml::Logging::LogParseFailure(
+                    "iiXml::Elements::Doctype::MatchTopResult",
+                    "Doctype declaration is missing a valid root name",
                     input,
                     doctype_start.size()
                 );
                 return make_doctype_failure(
-                    doctype_status::malformed_doctype_declaration,
-                    "DOCTYPE declaration is missing a valid root name"
+                    DoctypeStatus::MalformedDoctypeDeclaration,
+                    "Doctype declaration is missing a valid root name"
                 );
             }
 
-            qDebug() << "iiXml::elements::DOCTYPE::match_top_result matched"
+            qDebug() << "iiXml::Elements::Doctype::MatchTopResult matched"
                      << "kind=doctype_declaration"
                      << "raw_size=" << raw.size();
-            iiXml::logging::log_output_summary(
-                "iiXml::elements::DOCTYPE::match_top_result",
+            iiXml::Logging::LogOutputSummary(
+                "iiXml::Elements::Doctype::MatchTopResult",
                 "matched",
                 std::string("kind=doctype_declaration raw_size=") + std::to_string(raw.size())
             );
-            return make_doctype_success(doctype_match{
-                doctype_kind::doctype_declaration,
+            return make_doctype_success(DoctypeMatch{
+                DoctypeKind::DoctypeDeclaration,
                 std::string(raw)
             });
         }
 
-        iiXml::logging::log_parse_failure(
-            "iiXml::elements::DOCTYPE::match_top_result",
-            "top declaration is missing; expected XML declaration or DOCTYPE declaration",
+        iiXml::Logging::LogParseFailure(
+            "iiXml::Elements::Doctype::MatchTopResult",
+            "top declaration is missing; expected XML declaration or Doctype declaration",
             input,
             0
         );
         return make_doctype_failure(
-            doctype_status::no_top_declaration,
-            "top declaration is missing; expected XML declaration or DOCTYPE declaration"
+            DoctypeStatus::NoTopDeclaration,
+            "top declaration is missing; expected XML declaration or Doctype declaration"
         );
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top_result exception"
+        qDebug() << "iiXml::Elements::Doctype::MatchTopResult exception"
                  << "what=" << exception.what();
         return make_doctype_failure(
-            doctype_status::exception_thrown,
-            std::string("DOCTYPE match exception: ") + exception.what()
+            DoctypeStatus::ExceptionThrown,
+            std::string("Doctype match exception: ") + exception.what()
         );
     } catch (...) {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top_result exception"
+        qDebug() << "iiXml::Elements::Doctype::MatchTopResult exception"
                  << "what=unknown";
         return make_doctype_failure(
-            doctype_status::exception_thrown,
-            "DOCTYPE match exception: unknown"
+            DoctypeStatus::ExceptionThrown,
+            "Doctype match exception: unknown"
         );
     }
 }
 
-doctype_result DOCTYPE::match_top(std::string_view input) const {
-    qDebug() << "iiXml::elements::DOCTYPE::match_top begin"
+DoctypeResult Doctype::MatchTop(std::string_view input) const {
+    qDebug() << "iiXml::Elements::Doctype::MatchTop begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top", input);
-    const doctype_result result = match_top_result(input);
-    if (result.match.has_value()) {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top matched"
-                 << "status=" << status_name(result.status);
-        iiXml::logging::log_output_summary(
-            "iiXml::elements::DOCTYPE::match_top",
-            status_name(result.status),
-            result.match.has_value()
-                ? std::string("raw_size=") + std::to_string(result.match->raw.size())
+    iiXml::Logging::LogInputSummary("iiXml::Elements::Doctype::MatchTop", input);
+    const DoctypeResult result = MatchTopResult(input);
+    if (result.Match.has_value()) {
+        qDebug() << "iiXml::Elements::Doctype::MatchTop matched"
+                 << "status=" << status_name(result.Status);
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Elements::Doctype::MatchTop",
+            status_name(result.Status),
+            result.Match.has_value()
+                ? std::string("raw_size=") + std::to_string(result.Match->Raw.size())
                 : "raw_size=0"
         );
     } else {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top failed"
-                 << "status=" << status_name(result.status)
-                 << "reason=" << QString::fromStdString(result.reason);
+        qDebug() << "iiXml::Elements::Doctype::MatchTop failed"
+                 << "status=" << status_name(result.Status)
+                 << "reason=" << QString::fromStdString(result.Reason);
     }
     return result;
 }
 
-std::optional<doctype_match> DOCTYPE::match_top_match(std::string_view input) const {
-    qDebug() << "iiXml::elements::DOCTYPE::match_top_match begin"
+std::optional<DoctypeMatch> Doctype::MatchTopMatch(std::string_view input) const {
+    qDebug() << "iiXml::Elements::Doctype::MatchTopMatch begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top_match", input);
-    const doctype_result result = match_top_result(input);
-    if (result.match.has_value()) {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top_match matched";
-        iiXml::logging::log_output_summary(
-            "iiXml::elements::DOCTYPE::match_top_match",
+    iiXml::Logging::LogInputSummary("iiXml::Elements::Doctype::MatchTopMatch", input);
+    const DoctypeResult result = MatchTopResult(input);
+    if (result.Match.has_value()) {
+        qDebug() << "iiXml::Elements::Doctype::MatchTopMatch matched";
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Elements::Doctype::MatchTopMatch",
             "matched",
-            std::string("raw_size=") + std::to_string(result.match->raw.size())
+            std::string("raw_size=") + std::to_string(result.Match->Raw.size())
         );
     } else {
-        qDebug() << "iiXml::elements::DOCTYPE::match_top_match failed"
-                 << "status=" << status_name(result.status);
+        qDebug() << "iiXml::Elements::Doctype::MatchTopMatch failed"
+                 << "status=" << status_name(result.Status);
     }
-    return result.match;
+    return result.Match;
 }
 
-bool DOCTYPE::is_top_doctype(std::string_view input) const {
-    qDebug() << "iiXml::elements::DOCTYPE::is_top_doctype begin"
+bool Doctype::IsTopDoctype(std::string_view input) const {
+    qDebug() << "iiXml::Elements::Doctype::IsTopDoctype begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::is_top_doctype", input);
-    const doctype_result matched = match_top(input);
+    iiXml::Logging::LogInputSummary("iiXml::Elements::Doctype::IsTopDoctype", input);
+    const DoctypeResult matched = MatchTop(input);
     const bool result =
-        matched.match.has_value() && matched.match->kind == doctype_kind::doctype_declaration;
-    qDebug() << "iiXml::elements::DOCTYPE::is_top_doctype"
+        matched.Match.has_value() && matched.Match->Kind == DoctypeKind::DoctypeDeclaration;
+    qDebug() << "iiXml::Elements::Doctype::IsTopDoctype"
              << (result ? "matched" : "failed")
              << "result=" << result;
-    iiXml::logging::log_output_summary(
-        "iiXml::elements::DOCTYPE::is_top_doctype",
+    iiXml::Logging::LogOutputSummary(
+        "iiXml::Elements::Doctype::IsTopDoctype",
         result ? "matched" : "failed",
         std::string("result=") + (result ? "true" : "false")
     );
     return result;
 }
 
-bool DOCTYPE::is_top_xml_declaration(std::string_view input) const {
-    qDebug() << "iiXml::elements::DOCTYPE::is_top_xml_declaration begin"
+bool Doctype::IsTopXmlDeclaration(std::string_view input) const {
+    qDebug() << "iiXml::Elements::Doctype::IsTopXmlDeclaration begin"
              << "input_size=" << input.size();
-    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::is_top_xml_declaration", input);
-    const doctype_result matched = match_top(input);
+    iiXml::Logging::LogInputSummary("iiXml::Elements::Doctype::IsTopXmlDeclaration", input);
+    const DoctypeResult matched = MatchTop(input);
     const bool result =
-        matched.match.has_value() && matched.match->kind == doctype_kind::xml_declaration;
-    qDebug() << "iiXml::elements::DOCTYPE::is_top_xml_declaration"
+        matched.Match.has_value() && matched.Match->Kind == DoctypeKind::XmlDeclaration;
+    qDebug() << "iiXml::Elements::Doctype::IsTopXmlDeclaration"
              << (result ? "matched" : "failed")
              << "result=" << result;
-    iiXml::logging::log_output_summary(
-        "iiXml::elements::DOCTYPE::is_top_xml_declaration",
+    iiXml::Logging::LogOutputSummary(
+        "iiXml::Elements::Doctype::IsTopXmlDeclaration",
         result ? "matched" : "failed",
         std::string("result=") + (result ? "true" : "false")
     );
     return result;
 }
 
-void DOCTYPE::matchTop(const QString& input) {
-    qDebug() << "iiXml::elements::DOCTYPE::matchTop begin"
+void Doctype::MatchTopInput(const QString& input) {
+    qDebug() << "iiXml::Elements::Doctype::MatchTopInput begin"
              << "input_size=" << input.size();
     try {
         const QByteArray utf8 = input.toUtf8();
         const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
-        iiXml::logging::log_input_summary(
-            "iiXml::elements::DOCTYPE::matchTop",
+        iiXml::Logging::LogInputSummary(
+            "iiXml::Elements::Doctype::MatchTopInput",
             std::string_view(bytes.data(), bytes.size())
         );
-        const doctype_result result = match_top_result(std::string_view(bytes.data(), bytes.size()));
+        const DoctypeResult result = MatchTopResult(std::string_view(bytes.data(), bytes.size()));
 
-        if (!result.match.has_value()) {
-            qDebug() << "iiXml::elements::DOCTYPE::matchTop rejected"
-                     << "status=" << status_name(result.status);
-            emit doctypeRejected(QString::fromStdString(result.reason));
+        if (!result.Match.has_value()) {
+            qDebug() << "iiXml::Elements::Doctype::MatchTopInput rejected"
+                     << "status=" << status_name(result.Status);
+            emit DoctypeRejected(QString::fromStdString(result.Reason));
             return;
         }
 
-        const QString raw = QString::fromStdString(result.match->raw);
-        const Kind kind = to_qt_kind(result.match->kind);
-        qDebug() << "iiXml::elements::DOCTYPE::matchTop matched"
+        const QString raw = QString::fromStdString(result.Match->Raw);
+        const Kind kind = to_qt_kind(result.Match->Kind);
+        qDebug() << "iiXml::Elements::Doctype::MatchTopInput matched"
                  << "kind=" << static_cast<int>(kind)
                  << "raw_size=" << raw.size();
-        iiXml::logging::log_output_summary(
-            "iiXml::elements::DOCTYPE::matchTop",
+        iiXml::Logging::LogOutputSummary(
+            "iiXml::Elements::Doctype::MatchTopInput",
             "matched",
-            std::string("raw_size=") + std::to_string(result.match->raw.size())
+            std::string("raw_size=") + std::to_string(result.Match->Raw.size())
         );
-        emit doctypeMatched(kind, raw);
+        emit DoctypeMatched(kind, raw);
 
         if (kind == Kind::XmlDeclaration) {
-            emit xmlDeclarationMatched(raw);
+            emit XmlDeclarationMatched(raw);
             return;
         }
 
-        emit doctypeDeclarationMatched(raw);
+        emit DoctypeDeclarationMatched(raw);
     } catch (const std::exception& exception) {
-        qDebug() << "iiXml::elements::DOCTYPE::matchTop exception"
+        qDebug() << "iiXml::Elements::Doctype::MatchTopInput exception"
                  << "what=" << exception.what();
-        emit doctypeRejected(QString::fromStdString(
-            std::string("DOCTYPE slot exception: ") + exception.what()
+        emit DoctypeRejected(QString::fromStdString(
+            std::string("Doctype slot exception: ") + exception.what()
         ));
     } catch (...) {
-        qDebug() << "iiXml::elements::DOCTYPE::matchTop exception"
+        qDebug() << "iiXml::Elements::Doctype::MatchTopInput exception"
                  << "what=unknown";
-        emit doctypeRejected("DOCTYPE slot exception: unknown");
+        emit DoctypeRejected("Doctype slot exception: unknown");
     }
 }
 
-} // namespace iiXml::elements
+} // namespace iiXml::Elements

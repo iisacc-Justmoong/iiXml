@@ -1,4 +1,4 @@
-#include "iiXml.h"
+#include <iiXml>
 
 #include <QTemporaryDir>
 #include <QString>
@@ -26,57 +26,57 @@ void write_file(const QString& path, const std::string& content) {
 }
 
 void parses_valid_doctype_xml_text() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result =
-        input.parse_xml("<!DOCTYPE XML>\n<XML><number>1</number></XML>");
+    const iiXml::Writer::GetFileResult result =
+        input.ParseXml("<!Doctype XML>\n<XML><number>1</number></XML>");
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
-        "valid DOCTYPE XML text should parse");
-    expect(!result.reason.empty(), "valid DOCTYPE XML text should return non-empty reason");
-    expect(result.token.has_value(), "valid DOCTYPE XML text should return token");
-    if (!result.token.has_value()) {
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
+        "valid Doctype XML text should parse");
+    expect(!result.Reason.empty(), "valid Doctype XML text should return non-empty reason");
+    expect(result.Token.has_value(), "valid Doctype XML text should return token");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "root tag should be passed to tag parser");
-    expect(result.token->value == "<number>1</number>", "root value should preserve inner XML");
+    expect(result.Token->TagName == "XML", "root tag should be passed to tag parser");
+    expect(result.Token->Value == "<number>1</number>", "root value should preserve inner XML");
 }
 
 void parses_xml_declaration_and_doctype_text() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result =
-        input.parse_xml("<?xml version=\"1.0\"?>\n<!DOCTYPE XML>\n<XML type=\"root\"><number>1</number></XML>");
+    const iiXml::Writer::GetFileResult result =
+        input.ParseXml("<?xml version=\"1.0\"?>\n<!Doctype XML>\n<XML type=\"root\"><number>1</number></XML>");
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
-        "XML declaration and DOCTYPE should be stripped before tag parser");
-    expect(!result.reason.empty(), "XML declaration and DOCTYPE should return non-empty reason");
-    expect(result.token.has_value(), "XML declaration and DOCTYPE should return token");
-    if (!result.token.has_value()) {
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
+        "XML declaration and Doctype should be stripped before tag parser");
+    expect(!result.Reason.empty(), "XML declaration and Doctype should return non-empty reason");
+    expect(result.Token.has_value(), "XML declaration and Doctype should return token");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "root tag with attributes should parse");
-    expect(result.token->value == "<number>1</number>", "root tag value should parse");
+    expect(result.Token->TagName == "XML", "root tag with attributes should parse");
+    expect(result.Token->Value == "<number>1</number>", "root tag value should parse");
 }
 
 void parses_xml_declaration_then_arbitrary_doctype_text() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result =
-        input.parse_xml("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE ABCD>\n<ABCD><number>2</number></ABCD>");
+    const iiXml::Writer::GetFileResult result =
+        input.ParseXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!Doctype ABCD>\n<ABCD><number>2</number></ABCD>");
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
-        "XML declaration followed by arbitrary DOCTYPE should parse");
-    expect(!result.reason.empty(), "arbitrary DOCTYPE document should return non-empty reason");
-    expect(result.token.has_value(), "arbitrary DOCTYPE document should return token");
-    if (!result.token.has_value()) {
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
+        "XML declaration followed by arbitrary Doctype should parse");
+    expect(!result.Reason.empty(), "arbitrary Doctype document should return non-empty reason");
+    expect(result.Token.has_value(), "arbitrary Doctype document should return token");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "ABCD", "arbitrary root tag should be passed to tag parser");
-    expect(result.token->value == "<number>2</number>", "arbitrary root value should parse");
+    expect(result.Token->TagName == "ABCD", "arbitrary root tag should be passed to tag parser");
+    expect(result.Token->Value == "<number>2</number>", "arbitrary root value should parse");
 }
 
 void parses_file_after_validation() {
@@ -87,21 +87,21 @@ void parses_file_after_validation() {
     }
 
     const QString path = directory.filePath("input.xml");
-    write_file(path, "<!DOCTYPE XML>\n<XML><number>42</number></XML>");
+    write_file(path, "<!Doctype XML>\n<XML><number>42</number></XML>");
 
-    const iiXml::writer::GetFile input;
-    const iiXml::writer::get_file_result result = input.parse_file(std::filesystem::path(path.toStdString()));
+    const iiXml::Writer::GetFile input;
+    const iiXml::Writer::GetFileResult result = input.ParseFile(std::filesystem::path(path.toStdString()));
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
         "valid XML file should parse");
-    expect(!result.reason.empty(), "valid XML file should return non-empty reason");
-    expect(result.token.has_value(), "valid XML file should return token");
-    if (!result.token.has_value()) {
+    expect(!result.Reason.empty(), "valid XML file should return non-empty reason");
+    expect(result.Token.has_value(), "valid XML file should return token");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "file root tag should parse");
-    expect(result.token->value == "<number>42</number>", "file root value should parse");
+    expect(result.Token->TagName == "XML", "file root tag should parse");
+    expect(result.Token->Value == "<number>42</number>", "file root value should parse");
 }
 
 void parses_non_xml_extension_file_after_validation() {
@@ -112,75 +112,75 @@ void parses_non_xml_extension_file_after_validation() {
     }
 
     const QString path = directory.filePath("input.custom_payload");
-    write_file(path, "<!DOCTYPE XML>\n<XML><number>77</number></XML>");
+    write_file(path, "<!Doctype XML>\n<XML><number>77</number></XML>");
 
-    const iiXml::writer::GetFile input;
-    const iiXml::writer::get_file_result result = input.parse_file(std::filesystem::path(path.toStdString()));
+    const iiXml::Writer::GetFile input;
+    const iiXml::Writer::GetFileResult result = input.ParseFile(std::filesystem::path(path.toStdString()));
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
         "valid XML content should parse even when extension is not xml");
-    expect(!result.reason.empty(), "non-xml extension file should return non-empty reason");
-    expect(result.token.has_value(), "non-xml extension file should return token when content is valid XML");
-    if (!result.token.has_value()) {
+    expect(!result.Reason.empty(), "non-xml extension file should return non-empty reason");
+    expect(result.Token.has_value(), "non-xml extension file should return token when content is valid XML");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "non-xml extension file root tag should parse");
-    expect(result.token->value == "<number>77</number>", "non-xml extension file root value should parse");
+    expect(result.Token->TagName == "XML", "non-xml extension file root tag should parse");
+    expect(result.Token->Value == "<number>77</number>", "non-xml extension file root value should parse");
 }
 
 void parses_cross_nested_tags_after_validation() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result =
-        input.parse_xml("<!DOCTYPE XML>\n<XML><a><b></a></b></XML>");
+    const iiXml::Writer::GetFileResult result =
+        input.ParseXml("<!Doctype XML>\n<XML><a><b></a></b></XML>");
 
-    expect(result.status == iiXml::writer::get_file_status::parsed,
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
         "cross nested tags should parse after validation");
-    expect(!result.reason.empty(), "cross nested tag input should return non-empty reason");
-    expect(result.token.has_value(), "cross nested tag input should return token");
-    if (!result.token.has_value()) {
+    expect(!result.Reason.empty(), "cross nested tag input should return non-empty reason");
+    expect(result.Token.has_value(), "cross nested tag input should return token");
+    if (!result.Token.has_value()) {
         return;
     }
 
-    expect(result.token->tag_name == "XML", "cross nested tag input should preserve root tag");
-    expect(result.token->value == "<a><b></a></b>",
+    expect(result.Token->TagName == "XML", "cross nested tag input should preserve root tag");
+    expect(result.Token->Value == "<a><b></a></b>",
         "cross nested tag input should preserve raw root value");
 }
 
 void returns_invalid_xml_file_when_doctype_fails() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result = input.parse_xml("<XML></XML>");
+    const iiXml::Writer::GetFileResult result = input.ParseXml("<XML></XML>");
 
-    expect(result.status == iiXml::writer::get_file_status::invalid_xml_file,
-        "DOCTYPE failure should return invalid_xml_file");
-    expect(!result.reason.empty(), "DOCTYPE failure should return non-empty reason");
-    expect(!result.token.has_value(), "DOCTYPE failure should not return token");
+    expect(result.Status == iiXml::Writer::GetFileStatus::InvalidXmlFile,
+        "Doctype failure should return invalid_xml_file");
+    expect(!result.Reason.empty(), "Doctype failure should return non-empty reason");
+    expect(!result.Token.has_value(), "Doctype failure should not return token");
 }
 
 void returns_invalid_tag_closure_when_validator_fails() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
 
-    const iiXml::writer::get_file_result result =
-        input.parse_xml("<!DOCTYPE XML>\n<XML><number>1</XML>");
+    const iiXml::Writer::GetFileResult result =
+        input.ParseXml("<!Doctype XML>\n<XML><number>1</XML>");
 
-    expect(result.status == iiXml::writer::get_file_status::invalid_tag_closure,
+    expect(result.Status == iiXml::Writer::GetFileStatus::InvalidTagClosure,
         "tag closure failure should return invalid_tag_closure");
-    expect(!result.reason.empty(), "tag closure failure should return non-empty reason");
-    expect(!result.token.has_value(), "tag closure failure should not return token");
+    expect(!result.Reason.empty(), "tag closure failure should return non-empty reason");
+    expect(!result.Token.has_value(), "tag closure failure should not return token");
 }
 
 void returns_file_read_failed_for_missing_file() {
-    const iiXml::writer::GetFile input;
+    const iiXml::Writer::GetFile input;
     const std::filesystem::path path = std::filesystem::current_path() / "missing_get_file.xml";
 
     std::filesystem::remove(path);
-    const iiXml::writer::get_file_result result = input.parse_file(path);
+    const iiXml::Writer::GetFileResult result = input.ParseFile(path);
 
-    expect(result.status == iiXml::writer::get_file_status::file_read_failed,
+    expect(result.Status == iiXml::Writer::GetFileStatus::FileReadFailed,
         "missing file should return file_read_failed");
-    expect(!result.reason.empty(), "missing file should return non-empty reason");
+    expect(!result.Reason.empty(), "missing file should return non-empty reason");
 }
 
 } // namespace
