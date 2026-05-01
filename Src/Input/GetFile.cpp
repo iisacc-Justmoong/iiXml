@@ -1,8 +1,9 @@
 #include "GetFile.h"
 
 #include "Src/Elements/DOCTYPE.h"
-#include "Src/Parser/TagParser.h"
 #include "Src/Input/InputValidator.h"
+#include "Src/Logging/XmlLog.h"
+#include "Src/Parser/TagParser.h"
 
 #include <QByteArray>
 #include <QDebug>
@@ -181,11 +182,23 @@ get_file_result GetFile::parse_file(const std::filesystem::path& file_path) cons
                 "file read failed"
             );
         }
+        iiXml::logging::log_input_summary(
+            "iiXml::writer::GetFile::parse_file",
+            *content
+        );
 
         const get_file_result result = parse_xml(*content);
         qDebug() << "iiXml::writer::GetFile::parse_file"
                  << (result.status == get_file_status::parsed ? "parsed" : "failed")
                  << "status=" << status_name(result.status);
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetFile::parse_file",
+            status_name(result.status),
+            result.token.has_value()
+                ? std::string("tag=") + result.token->tag_name
+                    + " value_size=" + std::to_string(result.token->value.size())
+                : result.reason
+        );
         return result;
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::GetFile::parse_file exception"
@@ -209,6 +222,7 @@ get_file_result GetFile::parse_file(const std::filesystem::path& file_path) cons
 get_file_result GetFile::parse_xml(std::string_view input) const {
     qDebug() << "iiXml::writer::GetFile::parse_xml begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::writer::GetFile::parse_xml", input);
     try {
         const iiXml::elements::DOCTYPE doctype;
         const iiXml::elements::doctype_result declaration = doctype.match_top_result(input);
@@ -255,6 +269,12 @@ get_file_result GetFile::parse_xml(std::string_view input) const {
         }
 
         const std::string_view parser_input = parser_body_after_declarations(input);
+        iiXml::logging::log_parse_event(
+            "iiXml::writer::GetFile::parse_xml",
+            "parser_body",
+            input,
+            input.size() - parser_input.size()
+        );
         const iiXml::parser::tag_parser parser;
         const std::optional<iiXml::parser::tag_value> token = parser.parse(parser_input);
         if (!token.has_value()) {
@@ -270,6 +290,12 @@ get_file_result GetFile::parse_xml(std::string_view input) const {
         qDebug() << "iiXml::writer::GetFile::parse_xml parsed"
                  << "tag=" << QString::fromStdString(token->tag_name)
                  << "value_size=" << token->value.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetFile::parse_xml",
+            "parsed",
+            std::string("tag=") + token->tag_name
+                + " value_size=" + std::to_string(token->value.size())
+        );
         return make_result(get_file_status::parsed, token, "parsed");
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::GetFile::parse_xml exception"
@@ -300,6 +326,12 @@ void GetFile::readFile(const QString& file_path) {
             qDebug() << "iiXml::writer::GetFile::readFile parsed"
                      << "tag=" << QString::fromStdString(result.token->tag_name)
                      << "value_size=" << result.token->value.size();
+            iiXml::logging::log_output_summary(
+                "iiXml::writer::GetFile::readFile",
+                "parsed",
+                std::string("tag=") + result.token->tag_name
+                    + " value_size=" + std::to_string(result.token->value.size())
+            );
             emit parsed(
                 QString::fromStdString(result.token->tag_name),
                 QString::fromStdString(result.token->value)
@@ -314,6 +346,11 @@ void GetFile::readFile(const QString& file_path) {
         qDebug() << "iiXml::writer::GetFile::readFile failed"
                  << "status=" << status_name(result.status)
                  << "reason=" << reason;
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetFile::readFile",
+            status_name(result.status),
+            result.reason
+        );
         emit failed(status, reason);
 
         switch (status) {
@@ -355,11 +392,21 @@ void GetFile::readXml(const QString& input) {
              << "input_size=" << input.size();
     try {
         const std::string bytes = to_utf8_string(input);
+        iiXml::logging::log_input_summary(
+            "iiXml::writer::GetFile::readXml",
+            std::string_view(bytes.data(), bytes.size())
+        );
         const get_file_result result = parse_xml(std::string_view(bytes.data(), bytes.size()));
         if (result.status == get_file_status::parsed && result.token.has_value()) {
             qDebug() << "iiXml::writer::GetFile::readXml parsed"
                      << "tag=" << QString::fromStdString(result.token->tag_name)
                      << "value_size=" << result.token->value.size();
+            iiXml::logging::log_output_summary(
+                "iiXml::writer::GetFile::readXml",
+                "parsed",
+                std::string("tag=") + result.token->tag_name
+                    + " value_size=" + std::to_string(result.token->value.size())
+            );
             emit parsed(
                 QString::fromStdString(result.token->tag_name),
                 QString::fromStdString(result.token->value)
@@ -374,6 +421,11 @@ void GetFile::readXml(const QString& input) {
         qDebug() << "iiXml::writer::GetFile::readXml failed"
                  << "status=" << status_name(result.status)
                  << "reason=" << reason;
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetFile::readXml",
+            status_name(result.status),
+            result.reason
+        );
         emit failed(status, reason);
 
         switch (status) {

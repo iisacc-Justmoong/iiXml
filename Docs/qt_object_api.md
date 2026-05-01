@@ -22,7 +22,7 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 - `parse(std::string_view input)`
 - `parse_all(std::string_view input)`
 
-`parse_all()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다. 반환 타입은 `std::vector<tag_range>`이며, `value/raw` 문자열을 복사하지 않고 원본 입력의 offset 범위를 제공한다.
+`parse_all()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다. 반환 타입은 `std::vector<tag_node>`이며, 각 노드는 `range`, `fields`, `children`을 가진다. `value/raw` 문자열과 field 값은 복사하지 않고 원본 입력의 offset 범위로 제공한다.
 
 시그널:
 
@@ -67,6 +67,16 @@ iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `
 - `parse_open_tags(std::string_view input)`
 
 `close_open_tag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `parse_open_tags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `raw_begin/value_begin/value_end/raw_end`에 원본 offset 범위를 보존한다.
+
+## InlineProperties
+
+`iiXml::elements::InlineProperties`는 `QObject`를 상속한다.
+
+동기 API:
+
+- `parse(std::string_view opening_tag, std::size_t source_offset = 0)`
+
+`parse()`는 여는 태그 안의 다중 attribute를 읽고, 각 속성의 이름 범위, 값 범위, `string_type`/`int_type`/`float_type`/`bool_type` 타입 정보를 반환한다.
 
 ## InputValidator
 

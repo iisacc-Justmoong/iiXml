@@ -1,5 +1,7 @@
 #include "DOCTYPE.h"
 
+#include "Src/Logging/XmlLog.h"
+
 #include <QByteArray>
 #include <QDebug>
 #include <QMetaType>
@@ -195,12 +197,17 @@ DOCTYPE::DOCTYPE(QObject* parent)
 doctype_result DOCTYPE::match_top_result(std::string_view input) const {
     qDebug() << "iiXml::elements::DOCTYPE::match_top_result begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top_result", input);
     try {
         input = trim_top(input);
 
         if (input.empty()) {
-            qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                     << "status=" << status_name(doctype_status::empty_input);
+            iiXml::logging::log_parse_failure(
+                "iiXml::elements::DOCTYPE::match_top_result",
+                "input is empty; expected XML declaration or DOCTYPE declaration",
+                input,
+                0
+            );
             return make_doctype_failure(
                 doctype_status::empty_input,
                 "input is empty; expected XML declaration or DOCTYPE declaration"
@@ -208,10 +215,20 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
         }
 
         if (starts_with_token(input, xml_declaration_start)) {
+            iiXml::logging::log_parse_event(
+                "iiXml::elements::DOCTYPE::match_top_result",
+                "xml_declaration_begin",
+                input,
+                0
+            );
             const std::optional<std::size_t> end = find_xml_declaration_end(input);
             if (!end.has_value()) {
-                qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                         << "status=" << status_name(doctype_status::malformed_xml_declaration);
+                iiXml::logging::log_parse_failure(
+                    "iiXml::elements::DOCTYPE::match_top_result",
+                    "XML declaration is not closed with ?>",
+                    input,
+                    0
+                );
                 return make_doctype_failure(
                     doctype_status::malformed_xml_declaration,
                     "XML declaration is not closed with ?>"
@@ -220,8 +237,12 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
 
             const std::string_view raw = input.substr(0, *end);
             if (!has_xml_declaration_body(raw)) {
-                qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                         << "status=" << status_name(doctype_status::malformed_xml_declaration);
+                iiXml::logging::log_parse_failure(
+                    "iiXml::elements::DOCTYPE::match_top_result",
+                    "XML declaration must contain a body after <?xml",
+                    input,
+                    xml_declaration_start.size()
+                );
                 return make_doctype_failure(
                     doctype_status::malformed_xml_declaration,
                     "XML declaration must contain a body after <?xml"
@@ -231,6 +252,11 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
             qDebug() << "iiXml::elements::DOCTYPE::match_top_result matched"
                      << "kind=xml_declaration"
                      << "raw_size=" << raw.size();
+            iiXml::logging::log_output_summary(
+                "iiXml::elements::DOCTYPE::match_top_result",
+                "matched",
+                std::string("kind=xml_declaration raw_size=") + std::to_string(raw.size())
+            );
             return make_doctype_success(doctype_match{
                 doctype_kind::xml_declaration,
                 std::string(raw)
@@ -238,10 +264,20 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
         }
 
         if (starts_with_token(input, doctype_start)) {
+            iiXml::logging::log_parse_event(
+                "iiXml::elements::DOCTYPE::match_top_result",
+                "doctype_declaration_begin",
+                input,
+                0
+            );
             const std::optional<std::size_t> end = find_doctype_end(input);
             if (!end.has_value()) {
-                qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                         << "status=" << status_name(doctype_status::malformed_doctype_declaration);
+                iiXml::logging::log_parse_failure(
+                    "iiXml::elements::DOCTYPE::match_top_result",
+                    "DOCTYPE declaration is not closed with >",
+                    input,
+                    0
+                );
                 return make_doctype_failure(
                     doctype_status::malformed_doctype_declaration,
                     "DOCTYPE declaration is not closed with >"
@@ -250,8 +286,12 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
 
             const std::string_view raw = input.substr(0, *end);
             if (!has_doctype_name(raw)) {
-                qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                         << "status=" << status_name(doctype_status::malformed_doctype_declaration);
+                iiXml::logging::log_parse_failure(
+                    "iiXml::elements::DOCTYPE::match_top_result",
+                    "DOCTYPE declaration is missing a valid root name",
+                    input,
+                    doctype_start.size()
+                );
                 return make_doctype_failure(
                     doctype_status::malformed_doctype_declaration,
                     "DOCTYPE declaration is missing a valid root name"
@@ -261,14 +301,23 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
             qDebug() << "iiXml::elements::DOCTYPE::match_top_result matched"
                      << "kind=doctype_declaration"
                      << "raw_size=" << raw.size();
+            iiXml::logging::log_output_summary(
+                "iiXml::elements::DOCTYPE::match_top_result",
+                "matched",
+                std::string("kind=doctype_declaration raw_size=") + std::to_string(raw.size())
+            );
             return make_doctype_success(doctype_match{
                 doctype_kind::doctype_declaration,
                 std::string(raw)
             });
         }
 
-        qDebug() << "iiXml::elements::DOCTYPE::match_top_result failed"
-                 << "status=" << status_name(doctype_status::no_top_declaration);
+        iiXml::logging::log_parse_failure(
+            "iiXml::elements::DOCTYPE::match_top_result",
+            "top declaration is missing; expected XML declaration or DOCTYPE declaration",
+            input,
+            0
+        );
         return make_doctype_failure(
             doctype_status::no_top_declaration,
             "top declaration is missing; expected XML declaration or DOCTYPE declaration"
@@ -293,10 +342,18 @@ doctype_result DOCTYPE::match_top_result(std::string_view input) const {
 doctype_result DOCTYPE::match_top(std::string_view input) const {
     qDebug() << "iiXml::elements::DOCTYPE::match_top begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top", input);
     const doctype_result result = match_top_result(input);
     if (result.match.has_value()) {
         qDebug() << "iiXml::elements::DOCTYPE::match_top matched"
                  << "status=" << status_name(result.status);
+        iiXml::logging::log_output_summary(
+            "iiXml::elements::DOCTYPE::match_top",
+            status_name(result.status),
+            result.match.has_value()
+                ? std::string("raw_size=") + std::to_string(result.match->raw.size())
+                : "raw_size=0"
+        );
     } else {
         qDebug() << "iiXml::elements::DOCTYPE::match_top failed"
                  << "status=" << status_name(result.status)
@@ -308,9 +365,15 @@ doctype_result DOCTYPE::match_top(std::string_view input) const {
 std::optional<doctype_match> DOCTYPE::match_top_match(std::string_view input) const {
     qDebug() << "iiXml::elements::DOCTYPE::match_top_match begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::match_top_match", input);
     const doctype_result result = match_top_result(input);
     if (result.match.has_value()) {
         qDebug() << "iiXml::elements::DOCTYPE::match_top_match matched";
+        iiXml::logging::log_output_summary(
+            "iiXml::elements::DOCTYPE::match_top_match",
+            "matched",
+            std::string("raw_size=") + std::to_string(result.match->raw.size())
+        );
     } else {
         qDebug() << "iiXml::elements::DOCTYPE::match_top_match failed"
                  << "status=" << status_name(result.status);
@@ -321,24 +384,36 @@ std::optional<doctype_match> DOCTYPE::match_top_match(std::string_view input) co
 bool DOCTYPE::is_top_doctype(std::string_view input) const {
     qDebug() << "iiXml::elements::DOCTYPE::is_top_doctype begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::is_top_doctype", input);
     const doctype_result matched = match_top(input);
     const bool result =
         matched.match.has_value() && matched.match->kind == doctype_kind::doctype_declaration;
     qDebug() << "iiXml::elements::DOCTYPE::is_top_doctype"
              << (result ? "matched" : "failed")
              << "result=" << result;
+    iiXml::logging::log_output_summary(
+        "iiXml::elements::DOCTYPE::is_top_doctype",
+        result ? "matched" : "failed",
+        std::string("result=") + (result ? "true" : "false")
+    );
     return result;
 }
 
 bool DOCTYPE::is_top_xml_declaration(std::string_view input) const {
     qDebug() << "iiXml::elements::DOCTYPE::is_top_xml_declaration begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::elements::DOCTYPE::is_top_xml_declaration", input);
     const doctype_result matched = match_top(input);
     const bool result =
         matched.match.has_value() && matched.match->kind == doctype_kind::xml_declaration;
     qDebug() << "iiXml::elements::DOCTYPE::is_top_xml_declaration"
              << (result ? "matched" : "failed")
              << "result=" << result;
+    iiXml::logging::log_output_summary(
+        "iiXml::elements::DOCTYPE::is_top_xml_declaration",
+        result ? "matched" : "failed",
+        std::string("result=") + (result ? "true" : "false")
+    );
     return result;
 }
 
@@ -348,6 +423,10 @@ void DOCTYPE::matchTop(const QString& input) {
     try {
         const QByteArray utf8 = input.toUtf8();
         const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+        iiXml::logging::log_input_summary(
+            "iiXml::elements::DOCTYPE::matchTop",
+            std::string_view(bytes.data(), bytes.size())
+        );
         const doctype_result result = match_top_result(std::string_view(bytes.data(), bytes.size()));
 
         if (!result.match.has_value()) {
@@ -362,6 +441,11 @@ void DOCTYPE::matchTop(const QString& input) {
         qDebug() << "iiXml::elements::DOCTYPE::matchTop matched"
                  << "kind=" << static_cast<int>(kind)
                  << "raw_size=" << raw.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::elements::DOCTYPE::matchTop",
+            "matched",
+            std::string("raw_size=") + std::to_string(result.match->raw.size())
+        );
         emit doctypeMatched(kind, raw);
 
         if (kind == Kind::XmlDeclaration) {

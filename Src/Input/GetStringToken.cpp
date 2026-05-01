@@ -1,6 +1,7 @@
 #include "GetStringToken.h"
 
 #include "Src/Input/GetFile.h"
+#include "Src/Logging/XmlLog.h"
 #include "Src/Parser/TagParser.h"
 
 #include <QByteArray>
@@ -137,6 +138,10 @@ get_string_token_result GetStringToken::parse_string(const QString& input) const
              << "input_size=" << input.size();
     try {
         const std::string bytes = to_utf8_string(input);
+        iiXml::logging::log_input_summary(
+            "iiXml::writer::GetStringToken::parse_string",
+            std::string_view(bytes.data(), bytes.size())
+        );
         const GetFile validated_input;
         const get_file_result result =
             validated_input.parse_xml(std::string_view(bytes.data(), bytes.size()));
@@ -145,6 +150,14 @@ get_string_token_result GetStringToken::parse_string(const QString& input) const
                  << (converted.status == get_string_token_status::parsed ? "parsed" : "failed")
                  << "status=" << status_name(converted.status)
                  << "has_token=" << converted.token.has_value();
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetStringToken::parse_string",
+            status_name(converted.status),
+            converted.token.has_value()
+                ? std::string("tag=") + converted.token->tag_name
+                    + " value_size=" + std::to_string(converted.token->value.size())
+                : converted.reason
+        );
         return converted;
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::GetStringToken::parse_string exception"
@@ -169,12 +182,22 @@ void GetStringToken::readString(const QString& input) {
     qDebug() << "iiXml::writer::GetStringToken::readString begin"
              << "input_size=" << input.size();
     try {
+        const std::string bytes = to_utf8_string(input);
+        iiXml::logging::log_input_summary(
+            "iiXml::writer::GetStringToken::readString",
+            std::string_view(bytes.data(), bytes.size())
+        );
         const get_string_token_result result = parse_string(input);
         if (result.status != get_string_token_status::parsed || !result.token.has_value()) {
             const QString reason = from_utf8_string(result.reason);
             qDebug() << "iiXml::writer::GetStringToken::readString failed"
                      << "status=" << status_name(result.status)
                      << "reason=" << reason;
+            iiXml::logging::log_output_summary(
+                "iiXml::writer::GetStringToken::readString",
+                status_name(result.status),
+                result.reason
+            );
             emit failed(to_qt_status(result.status), reason);
             emit parseFailed(reason);
             return;
@@ -183,6 +206,12 @@ void GetStringToken::readString(const QString& input) {
         qDebug() << "iiXml::writer::GetStringToken::readString parsed"
                  << "tag=" << from_utf8_string(result.token->tag_name)
                  << "value_size=" << result.token->value.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::GetStringToken::readString",
+            "parsed",
+            std::string("tag=") + result.token->tag_name
+                + " value_size=" + std::to_string(result.token->value.size())
+        );
         emit parsed(from_utf8_string(result.token->tag_name), from_utf8_string(result.token->value));
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::GetStringToken::readString exception"

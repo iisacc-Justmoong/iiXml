@@ -1,5 +1,7 @@
 #include "FileParser.h"
 
+#include "Src/Logging/XmlLog.h"
+
 #include <QByteArray>
 #include <QDebug>
 #include <QString>
@@ -31,9 +33,14 @@ std::optional<tag_value> FileParser::parse_file(const std::filesystem::path& fil
 
         std::ostringstream buffer;
         buffer << file.rdbuf();
+        const std::string content = buffer.str();
+        iiXml::logging::log_input_summary(
+            "iiXml::parser::FileParser::parse_file",
+            content
+        );
 
         const tag_parser parser;
-        const std::optional<tag_value> parsed = parser.parse(buffer.str());
+        const std::optional<tag_value> parsed = parser.parse(content);
         if (!parsed.has_value()) {
             qDebug() << "iiXml::parser::FileParser::parse_file failed"
                      << "reason=tag parser rejected file content";
@@ -43,6 +50,12 @@ std::optional<tag_value> FileParser::parse_file(const std::filesystem::path& fil
         qDebug() << "iiXml::parser::FileParser::parse_file parsed"
                  << "tag=" << QString::fromStdString(parsed->tag_name)
                  << "value_size=" << parsed->value.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::parser::FileParser::parse_file",
+            "parsed",
+            std::string("tag=") + parsed->tag_name
+                + " value_size=" + std::to_string(parsed->value.size())
+        );
         return parsed;
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::parser::FileParser::parse_file exception"
@@ -73,6 +86,12 @@ void FileParser::parseFile(const QString& file_path) {
         qDebug() << "iiXml::parser::FileParser::parseFile parsed"
                  << "tag=" << QString::fromStdString(parsed->tag_name)
                  << "value_size=" << parsed->value.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::parser::FileParser::parseFile",
+            "parsed",
+            std::string("tag=") + parsed->tag_name
+                + " value_size=" + std::to_string(parsed->value.size())
+        );
         emit tagParsed(QString::fromStdString(parsed->tag_name), QString::fromStdString(parsed->value));
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::parser::FileParser::parseFile exception"

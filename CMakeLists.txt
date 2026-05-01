@@ -34,6 +34,8 @@ add_library(iiXml SHARED
     Src/Input/GetStringToken.h
     Src/Input/InputValidator.cpp
     Src/Input/InputValidator.h
+    Src/Logging/XmlLog.cpp
+    Src/Logging/XmlLog.h
 )
 
 target_include_directories(iiXml PUBLIC
@@ -120,6 +122,14 @@ target_link_libraries(open_tag_test PRIVATE iiXml)
 
 add_test(NAME open_tag_test COMMAND open_tag_test)
 
+add_executable(inline_properties_test
+    Test/inline_properties_test.cpp
+)
+
+target_link_libraries(inline_properties_test PRIVATE iiXml)
+
+add_test(NAME inline_properties_test COMMAND inline_properties_test)
+
 add_executable(input_validator_test
     Test/input_validator_test.cpp
 )
@@ -159,6 +169,14 @@ add_executable(debug_log_test
 target_link_libraries(debug_log_test PRIVATE iiXml)
 
 add_test(NAME debug_log_test COMMAND debug_log_test)
+
+add_executable(debug_diagnostics_test
+    Test/debug_diagnostics_test.cpp
+)
+
+target_link_libraries(debug_diagnostics_test PRIVATE iiXml)
+
+add_test(NAME debug_diagnostics_test COMMAND debug_diagnostics_test)
 
 add_executable(install_layout_test
     Test/install_layout_test.cpp

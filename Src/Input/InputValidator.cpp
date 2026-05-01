@@ -1,5 +1,6 @@
 #include "InputValidator.h"
 
+#include "Src/Logging/XmlLog.h"
 #include "Src/Elements/DOCTYPE.h"
 #include "Src/Elements/OpenTag.h"
 
@@ -180,6 +181,7 @@ InputValidator::InputValidator(QObject* parent)
 validation_exit InputValidator::validate(std::string_view input) const {
     qDebug() << "iiXml::writer::InputValidator::validate begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::writer::InputValidator::validate", input);
     const validation_result result = validate_result(input);
     if (result.exit == validation_exit::valid) {
         qDebug() << "iiXml::writer::InputValidator::validate valid";
@@ -188,25 +190,39 @@ validation_exit InputValidator::validate(std::string_view input) const {
                  << "exit=" << validation_name(result.exit)
                  << "reason=" << QString::fromStdString(result.reason);
     }
+    iiXml::logging::log_output_summary(
+        "iiXml::writer::InputValidator::validate",
+        validation_name(result.exit),
+        result.reason
+    );
     return result.exit;
 }
 
 validation_result InputValidator::validate_result(std::string_view input) const {
     qDebug() << "iiXml::writer::InputValidator::validate_result begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::writer::InputValidator::validate_result", input);
     try {
         const iiXml::elements::DOCTYPE doctype;
         const iiXml::elements::doctype_result matched = doctype.match_top_result(input);
         if (!matched.match.has_value()) {
-            qDebug() << "iiXml::writer::InputValidator::validate_result failed"
-                     << "exit=" << validation_name(validation_exit::invalid_xml_file)
-                     << "reason=" << QString::fromStdString(matched.reason);
+            iiXml::logging::log_parse_failure(
+                "iiXml::writer::InputValidator::validate_result",
+                matched.reason,
+                input,
+                0
+            );
             return validation_result{validation_exit::invalid_xml_file, matched.reason};
         }
 
-        if (!has_valid_tag_closure(body_after_doctype(input, *matched.match))) {
-            qDebug() << "iiXml::writer::InputValidator::validate_result failed"
-                     << "exit=" << validation_name(validation_exit::invalid_tag_closure);
+        const std::string_view body = body_after_doctype(input, *matched.match);
+        if (!has_valid_tag_closure(body)) {
+            iiXml::logging::log_parse_failure(
+                "iiXml::writer::InputValidator::validate_result",
+                "tag closure validation failed",
+                body,
+                0
+            );
             return validation_result{
                 validation_exit::invalid_tag_closure,
                 "tag closure validation failed"
@@ -214,6 +230,11 @@ validation_result InputValidator::validate_result(std::string_view input) const 
         }
 
         qDebug() << "iiXml::writer::InputValidator::validate_result valid";
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::InputValidator::validate_result",
+            validation_name(validation_exit::valid),
+            "valid XML input"
+        );
         return validation_result{validation_exit::valid, "valid XML input"};
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::InputValidator::validate_result exception"
@@ -235,6 +256,7 @@ validation_result InputValidator::validate_result(std::string_view input) const 
 bool InputValidator::has_valid_tag_closure(std::string_view input) const {
     qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure begin"
              << "input_size=" << input.size();
+    iiXml::logging::log_input_summary("iiXml::writer::InputValidator::has_valid_tag_closure", input);
     try {
         input = trim_outer(input);
         const iiXml::elements::OpenTag open_tag;
@@ -250,8 +272,12 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
             if (starts_with_at(input, tag_start, "<!--")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 4, "-->");
                 if (!end.has_value()) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=unclosed comment";
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "unclosed comment",
+                        input,
+                        tag_start
+                    );
                     return false;
                 }
                 index = *end;
@@ -261,8 +287,12 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
             if (starts_with_at(input, tag_start, "<![CDATA[")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 9, "]]>");
                 if (!end.has_value()) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=unclosed cdata";
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "unclosed cdata",
+                        input,
+                        tag_start
+                    );
                     return false;
                 }
                 index = *end;
@@ -272,8 +302,12 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
             if (starts_with_at(input, tag_start, "<?")) {
                 const std::optional<std::size_t> end = find_token_end(input, tag_start + 2, "?>");
                 if (!end.has_value()) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=unclosed processing instruction";
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "unclosed processing instruction",
+                        input,
+                        tag_start
+                    );
                     return false;
                 }
                 index = *end;
@@ -284,8 +318,12 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
                 const iiXml::elements::DOCTYPE doctype;
                 const iiXml::elements::doctype_result matched = doctype.match_top(input.substr(tag_start));
                 if (!matched.match.has_value()) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=malformed nested doctype";
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "malformed nested doctype",
+                        input,
+                        tag_start
+                    );
                     return false;
                 }
                 index = tag_start + matched.match->raw.size();
@@ -294,36 +332,81 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
 
             const std::optional<std::size_t> tag_end = find_markup_end(input, tag_start + 1);
             if (!tag_end.has_value()) {
-                qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                         << "reason=unclosed tag markup";
+                iiXml::logging::log_parse_failure(
+                    "iiXml::writer::InputValidator::has_valid_tag_closure",
+                    "unclosed tag markup",
+                    input,
+                    tag_start
+                );
                 return false;
             }
 
             const std::string_view markup = input.substr(tag_start, *tag_end - tag_start + 1);
             if (markup.size() < 3) {
-                qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                         << "reason=markup too short";
+                iiXml::logging::log_parse_failure(
+                    "iiXml::writer::InputValidator::has_valid_tag_closure",
+                    "markup too short",
+                    input,
+                    tag_start
+                );
                 return false;
             }
 
             if (markup[1] == '/') {
                 const std::optional<std::string> tag_name = read_tag_name(markup, 2);
-                if (!tag_name.has_value() || !open_tag.close_open_tag(open_tags, *tag_name)) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=closing tag mismatch";
+                if (!tag_name.has_value()) {
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "invalid closing tag name",
+                        input,
+                        tag_start + 2
+                    );
                     return false;
                 }
+
+                if (!open_tag.close_open_tag(open_tags, *tag_name)) {
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "closing tag mismatch",
+                        input,
+                        tag_start
+                    );
+                    return false;
+                }
+                iiXml::logging::log_parse_event(
+                    "iiXml::writer::InputValidator::has_valid_tag_closure",
+                    std::string("close_tag name=") + *tag_name,
+                    input,
+                    tag_start
+                );
             } else {
                 const std::optional<std::string> tag_name = read_tag_name(markup, 1);
                 if (!tag_name.has_value()) {
-                    qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
-                             << "reason=invalid opening tag name";
+                    iiXml::logging::log_parse_failure(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        "invalid opening tag name",
+                        input,
+                        tag_start + 1
+                    );
                     return false;
                 }
 
                 saw_element = true;
                 if (!is_self_closing_markup(markup)) {
+                    iiXml::logging::log_parse_event(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        std::string("open_tag name=") + *tag_name,
+                        input,
+                        tag_start
+                    );
                     open_tags.push_back(*tag_name);
+                } else {
+                    iiXml::logging::log_parse_event(
+                        "iiXml::writer::InputValidator::has_valid_tag_closure",
+                        std::string("self_closing_tag name=") + *tag_name,
+                        input,
+                        tag_start
+                    );
                 }
             }
 
@@ -331,10 +414,32 @@ bool InputValidator::has_valid_tag_closure(std::string_view input) const {
         }
 
         const bool result = saw_element && open_tags.empty();
-        qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure"
-                 << (result ? "valid" : "failed")
+        if (!result) {
+            iiXml::logging::log_parse_failure(
+                "iiXml::writer::InputValidator::has_valid_tag_closure",
+                saw_element ? "unclosed open tags" : "no element found",
+                input,
+                saw_element ? input.size() : 0
+            );
+            qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure failed"
+                     << "result=" << result
+                     << "remaining_open_tags=" << open_tags.size();
+            iiXml::logging::log_output_summary(
+                "iiXml::writer::InputValidator::has_valid_tag_closure",
+                "failed",
+                std::string("remaining_open_tags=") + std::to_string(open_tags.size())
+            );
+            return false;
+        }
+
+        qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure valid"
                  << "result=" << result
                  << "remaining_open_tags=" << open_tags.size();
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::InputValidator::has_valid_tag_closure",
+            "valid",
+            std::string("remaining_open_tags=") + std::to_string(open_tags.size())
+        );
         return result;
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::writer::InputValidator::has_valid_tag_closure exception"
@@ -353,12 +458,21 @@ void InputValidator::validateInput(const QString& input) {
     try {
         const QByteArray utf8 = input.toUtf8();
         const std::string bytes(utf8.constData(), static_cast<std::size_t>(utf8.size()));
+        iiXml::logging::log_input_summary(
+            "iiXml::writer::InputValidator::validateInput",
+            std::string_view(bytes.data(), bytes.size())
+        );
         const validation_result detailed = validate_result(std::string_view(bytes.data(), bytes.size()));
         const ValidationExit result = to_qt_exit(detailed.exit);
 
         qDebug() << "iiXml::writer::InputValidator::validateInput"
                  << (detailed.exit == validation_exit::valid ? "valid" : "failed")
                  << "exit=" << validation_name(detailed.exit);
+        iiXml::logging::log_output_summary(
+            "iiXml::writer::InputValidator::validateInput",
+            validation_name(detailed.exit),
+            detailed.reason
+        );
         emit validationFinished(result);
 
         switch (result) {

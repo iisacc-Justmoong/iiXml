@@ -62,6 +62,8 @@ void exercises_debug_logged_objects() {
     const auto preserved_open_tags = open_tag.parse_open_tags("<a><b></a></b>");
     ClosedTag closed_tag;
     InlineProperties inline_properties;
+    const auto parsed_inline_properties =
+        inline_properties.parse("<resource title=\"text\" count=1 enabled=true>");
 
     iiXml::parser::tag_parser parser;
     const auto parsed_tag = parser.parse("<number>42</number>");
@@ -139,6 +141,8 @@ void exercises_debug_logged_objects() {
     expect(closed_cross_tag, "OpenTag should close cross nested tag in debug log test");
     expect(preserved_open_tags.has_value(),
         "OpenTag should preserve cross nested tags in debug log test");
+    expect(parsed_inline_properties.has_value(),
+        "InlineProperties should parse in debug log test");
     expect(parsed_file.has_value(), "file parser should parse in debug log test");
     expect(doctype_result.match.has_value(), "doctype should match in debug log test");
     expect(explicit_doctype_result.match.has_value(), "doctype result should match in debug log test");
@@ -192,6 +196,8 @@ int main() {
     expect(saw("ClosedTag::ClosedTag"), "ClosedTag constructor should log with qDebug");
     expect(saw("InlineProperties::InlineProperties"),
         "InlineProperties constructor should log with qDebug");
+    expect(saw("iiXml::elements::InlineProperties::parse"),
+        "InlineProperties::parse should log with qDebug");
     expect(saw("iiXml::parser::tag_parser::tag_parser"),
         "tag_parser constructor should log with qDebug");
     expect(saw("iiXml::parser::tag_parser::parse"),
