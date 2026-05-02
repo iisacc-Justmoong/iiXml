@@ -122,6 +122,52 @@ void doctype_emits_rejection_signal() {
     expect(rejected, "Doctype should emit DoctypeRejected");
 }
 
+void closed_tag_emits_flag_signal() {
+    iiXml::Elements::ClosedTag closed_tag;
+    bool emitted = false;
+    bool flag = false;
+    QString tag_name;
+
+    QObject::connect(&closed_tag, &iiXml::Elements::ClosedTag::ClosedTagFlagged,
+        [&](bool emitted_flag) {
+            emitted = true;
+            flag = emitted_flag;
+        });
+    QObject::connect(&closed_tag, &iiXml::Elements::ClosedTag::ClosedTagParsed,
+        [&](const QString& emitted_tag_name, const QString&) {
+            tag_name = emitted_tag_name;
+        });
+
+    closed_tag.ParseClosedTag("</XML>");
+
+    expect(emitted, "ClosedTag should emit ClosedTagFlagged");
+    expect(flag, "ClosedTag should emit true for an immediate closed tag");
+    expect(tag_name == "XML", "ClosedTag should emit the closed tag name");
+}
+
+void closed_tag_emits_rejection_signal() {
+    iiXml::Elements::ClosedTag closed_tag;
+    bool flag_emitted = false;
+    bool rejected = false;
+    bool flag = true;
+
+    QObject::connect(&closed_tag, &iiXml::Elements::ClosedTag::ClosedTagFlagged,
+        [&](bool emitted_flag) {
+            flag_emitted = true;
+            flag = emitted_flag;
+        });
+    QObject::connect(&closed_tag, &iiXml::Elements::ClosedTag::ClosedTagRejected,
+        [&](const QString& reason) {
+            rejected = !reason.isEmpty();
+        });
+
+    closed_tag.ParseClosedTag("<XML></XML>");
+
+    expect(flag_emitted, "ClosedTag should emit a flag for rejected input");
+    expect(!flag, "ClosedTag should emit false for non closed tag input");
+    expect(rejected, "ClosedTag should emit ClosedTagRejected");
+}
+
 void input_validator_emits_invalid_xml_file() {
     iiXml::Writer::InputValidator validator;
     bool invalid_xml_file = false;
@@ -252,6 +298,8 @@ int main() {
     file_parser_emits_parsed_signal();
     doctype_emits_match_signal();
     doctype_emits_rejection_signal();
+    closed_tag_emits_flag_signal();
+    closed_tag_emits_rejection_signal();
     input_validator_emits_invalid_xml_file();
     input_validator_emits_invalid_tag_closure();
     input_validator_emits_valid_xml();

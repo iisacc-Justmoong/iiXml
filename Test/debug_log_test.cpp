@@ -62,6 +62,11 @@ void exercises_debug_logged_objects() {
     const bool closed_cross_tag = open_tag.CloseOpenTag(open_tags, "a");
     const auto preserved_open_tags = open_tag.ParseOpenTags("<a><b></a></b>");
     ClosedTag closed_tag;
+    const bool is_immediate_closed_tag = closed_tag.IsImmediateClosedTag("</flag>");
+    const auto matched_closed_tag = closed_tag.MatchImmediate("</flag>");
+    closed_tag.ParseClosedTag("</flag>");
+    const auto rejected_closed_tag = closed_tag.MatchImmediate("<flag></flag>");
+    closed_tag.ParseClosedTag("<flag></flag>");
     InlineProperties inline_properties;
     const auto parsed_inline_properties =
         inline_properties.Parse("<resource title=\"text\" count=1 enabled=true>");
@@ -164,6 +169,10 @@ void exercises_debug_logged_objects() {
     expect(closed_cross_tag, "OpenTag should close cross nested tag in debug log test");
     expect(preserved_open_tags.has_value(),
         "OpenTag should preserve cross nested tags in debug log test");
+    expect(is_immediate_closed_tag, "ClosedTag should detect immediate closed tag in debug log test");
+    expect(matched_closed_tag.has_value(), "ClosedTag should match immediate tag in debug log test");
+    expect(!rejected_closed_tag.has_value(),
+        "ClosedTag should reject non immediate closed tag in debug log test");
     expect(parsed_inline_properties.has_value(),
         "InlineProperties should parse in debug log test");
     expect(parsed_file.has_value(), "file parser should parse in debug log test");
@@ -223,6 +232,16 @@ int main() {
     expect(saw("iiXml::Elements::OpenTag::ParseOpenTags"),
         "OpenTag::ParseOpenTags should log with qDebug");
     expect(saw("ClosedTag::ClosedTag"), "ClosedTag constructor should log with qDebug");
+    expect(saw("iiXml::Elements::ClosedTag::IsImmediateClosedTag"),
+        "ClosedTag::IsImmediateClosedTag should log with qDebug");
+    expect(saw("iiXml::Elements::ClosedTag::MatchImmediate"),
+        "ClosedTag::MatchImmediate should log with qDebug");
+    expect(saw("iiXml::Elements::ClosedTag::MatchImmediate rejected"),
+        "ClosedTag::MatchImmediate rejection should log with qDebug");
+    expect(saw("iiXml::Elements::ClosedTag::ParseClosedTag"),
+        "ClosedTag::ParseClosedTag should log with qDebug");
+    expect(saw("iiXml::Elements::ClosedTag::ParseClosedTag rejected"),
+        "ClosedTag::ParseClosedTag rejection should log with qDebug");
     expect(saw("InlineProperties::InlineProperties"),
         "InlineProperties constructor should log with qDebug");
     expect(saw("iiXml::Elements::InlineProperties::Parse"),

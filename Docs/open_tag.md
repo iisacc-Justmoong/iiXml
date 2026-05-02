@@ -55,6 +55,8 @@ if (parsed.has_value()) {
 - 실패 시 열린 태그 스택은 변경하지 않는다.
 - `ParseOpenTags()`는 끝까지 닫히지 않은 열린 태그가 남아 있으면 실패한다.
 
+입력의 첫 실제 마크업이 여는 태그 없이 `</tag>`로 시작하는지 별도 Qt 시그널로 감지해야 하는 경우에는 `iiXml::Elements::ClosedTag`를 사용한다. `ClosedTag::ParseClosedTag()`는 즉시 닫힌 태그에 대해 `ClosedTagFlagged(true)`를 방출한다.
+
 생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패, 예외 로그를 출력한다.
 
 ## 검증

@@ -121,6 +121,14 @@ target_link_libraries(open_tag_test PRIVATE iiXml)
 
 add_test(NAME open_tag_test COMMAND open_tag_test)
 
+add_executable(closed_tag_test
+    Test/closed_tag_test.cpp
+)
+
+target_link_libraries(closed_tag_test PRIVATE iiXml)
+
+add_test(NAME closed_tag_test COMMAND closed_tag_test)
+
 add_executable(inline_properties_test
     Test/inline_properties_test.cpp
 )

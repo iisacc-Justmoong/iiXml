@@ -76,6 +76,27 @@ Result API는 `TagParseResult`와 `TagTreeParseResult`를 반환한다. 각 Resu
 
 `CloseOpenTag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `ParseOpenTags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `RawBegin/ValueBegin/ValueEnd/RawEnd`에 원본 offset 범위를 보존한다.
 
+## ClosedTag
+
+`iiXml::Elements::ClosedTag`는 `QObject`를 상속한다.
+
+슬롯:
+
+- `ParseClosedTag(const QString& Input)`
+
+동기 API:
+
+- `IsImmediateClosedTag(std::string_view Input)`
+- `MatchImmediate(std::string_view Input, std::size_t SourceOffset = 0)`
+
+시그널:
+
+- `ClosedTagFlagged(bool Flag)`
+- `ClosedTagParsed(const QString& TagName, const QString& Raw)`
+- `ClosedTagRejected(const QString& Reason)`
+
+`ClosedTag`는 입력의 선행 공백 이후 첫 마크업이 `</tag>`인지를 판정한다. 여는 태그 없이 즉시 닫힌 태그가 들어오면 `ClosedTagFlagged(true)`를 방출하고, 아니라면 `ClosedTagFlagged(false)`와 실패 사유를 방출한다.
+
 ## InlineProperties
 
 `iiXml::Elements::InlineProperties`는 `QObject`를 상속한다.
