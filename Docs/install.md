@@ -8,9 +8,9 @@
 ./install.sh
 ```
 
-스크립트는 항상 루트의 `build/` 디렉터리를 사용한다.
+스크립트는 항상 루트의 `build/` 디렉터리를 사용한다. 기존 `CMakeCache.txt`가 다른 소스 또는 빌드 경로를 가리키면 오래된 빌드 트리로 보고 `build/`를 제거한 뒤 새로 구성한다.
 
-1. `cmake -S . -B build`로 구성한다.
+1. `cmake --fresh -S . -B build`로 구성한다.
 2. `cmake --build build`로 빌드한다.
 3. `ctest --test-dir build --output-on-failure`로 테스트를 실행한다.
 4. 이전 설치의 `~/.local/iiXml/include/iiXml/` 디렉터리가 있으면 제거한다.

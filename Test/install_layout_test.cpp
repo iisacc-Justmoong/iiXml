@@ -44,6 +44,14 @@ int main() {
         "install.sh must install to ~/.local/iiXml.");
     expect_contains(install_script, "BUILD_DIR=\"${ROOT_DIR}/build\"",
         "install.sh must use build/ as the build directory.");
+    expect_contains(install_script, "CMAKE_HOME_DIRECTORY",
+        "install.sh must inspect the cached source directory.");
+    expect_contains(install_script, "CMAKE_CACHEFILE_DIR",
+        "install.sh must inspect the cached build directory.");
+    expect_contains(install_script, "rm -rf \"${BUILD_DIR}\"",
+        "install.sh must remove build/ when the CMake cache belongs to another tree.");
+    expect_contains(install_script, "--fresh",
+        "install.sh must configure with a fresh CMake cache.");
     expect_contains(install_script, "cmake --install \"${BUILD_DIR}\" --prefix \"${PREFIX}\"",
         "install.sh must run cmake install with the ~/.local/iiXml prefix.");
     expect_contains(install_script, "LEGACY_INCLUDE_DIR=\"${PREFIX}/include/iiXml\"",

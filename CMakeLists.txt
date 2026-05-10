@@ -28,6 +28,8 @@ add_library(iiXml SHARED
     Src/Parser/FileParser.h
     Src/Parser/TagParser.cpp
     Src/Parser/TagParser.h
+    Src/Mutation/InlineTagMutation.cpp
+    Src/Mutation/InlineTagMutation.h
     Src/Input/GetFile.cpp
     Src/Input/GetFile.h
     Src/Input/GetStringToken.cpp
@@ -168,6 +170,14 @@ add_executable(qt_object_signal_test
 target_link_libraries(qt_object_signal_test PRIVATE iiXml)
 
 add_test(NAME qt_object_signal_test COMMAND qt_object_signal_test)
+
+add_executable(inline_tag_mutation_test
+    Test/inline_tag_mutation_test.cpp
+)
+
+target_link_libraries(inline_tag_mutation_test PRIVATE iiXml)
+
+add_test(NAME inline_tag_mutation_test COMMAND inline_tag_mutation_test)
 
 add_executable(debug_log_test
     Test/debug_log_test.cpp

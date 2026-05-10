@@ -7,6 +7,7 @@
 #include "Src/Elements/OpenTag.h"
 #include "Src/Parser/FileParser.h"
 #include "Src/Parser/TagParser.h"
+#include "Src/Mutation/InlineTagMutation.h"
 #include "Src/Input/GetFile.h"
 #include "Src/Input/GetStringToken.h"
 #include "Src/Input/InputValidator.h"
