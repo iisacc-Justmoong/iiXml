@@ -5,6 +5,19 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
+if(EMSCRIPTEN)
+    set(IIXML_BUILD_SHARED_DEFAULT OFF)
+else()
+    set(IIXML_BUILD_SHARED_DEFAULT ON)
+endif()
+
+option(IIXML_BUILD_SHARED "Build iiXml as a shared library." ${IIXML_BUILD_SHARED_DEFAULT})
+
+set(IIXML_LIBRARY_TYPE STATIC)
+if(IIXML_BUILD_SHARED)
+    set(IIXML_LIBRARY_TYPE SHARED)
+endif()
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -14,7 +27,7 @@ endif()
 
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 
-add_library(iiXml SHARED
+add_library(iiXml ${IIXML_LIBRARY_TYPE}
     iiXml.cpp
     Src/Elements/ClosedTag.cpp
     Src/Elements/ClosedTag.h
@@ -81,6 +94,13 @@ write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfigVersion.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMajorVersion
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/iiXmlConfigVersionRoot.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+    ARCH_INDEPENDENT
 )
 
 install(FILES

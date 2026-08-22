@@ -44,6 +44,38 @@ int main() {
         "install.sh must install to ~/.local/iiXml.");
     expect_contains(install_script, "BUILD_DIR=\"${ROOT_DIR}/build\"",
         "install.sh must use build/ as the build directory.");
+    expect_contains(install_script, "macos,ios,android,wasm",
+        "install.sh must default to the full macOS host platform set.");
+    expect_contains(install_script, "IIXML_INSTALL_PLATFORMS",
+        "install.sh must allow explicitly constrained platform installs.");
+    expect_contains(install_script, "MACOS_PLATFORM_PREFIX=\"${PREFIX}/platforms/macos\"",
+        "install.sh must install a macOS platform package mirror.");
+    expect_contains(install_script, "IOS_PREFIX=\"${PREFIX}/platforms/ios\"",
+        "install.sh must install an iOS platform package.");
+    expect_contains(install_script, "ANDROID_PREFIX=\"${PREFIX}/platforms/android\"",
+        "install.sh must install an Android platform package.");
+    expect_contains(install_script, "WASM_PREFIX=\"${PREFIX}/platforms/wasm\"",
+        "install.sh must install a WASM platform package.");
+    expect_contains(install_script, "IOS_BUILD_DIR=\"${BUILD_DIR}/platforms/ios\"",
+        "install.sh must keep the iOS build under build/platforms/ios.");
+    expect_contains(install_script, "ANDROID_BUILD_DIR=\"${BUILD_DIR}/platforms/android\"",
+        "install.sh must keep the Android build under build/platforms/android.");
+    expect_contains(install_script, "WASM_BUILD_DIR=\"${BUILD_DIR}/platforms/wasm\"",
+        "install.sh must keep the WASM build under build/platforms/wasm.");
+    expect_contains(install_script, "install_macos()",
+        "install.sh must provide a macOS platform install path.");
+    expect_contains(install_script, "install_ios()",
+        "install.sh must provide an iOS platform install path.");
+    expect_contains(install_script, "install_android()",
+        "install.sh must provide an Android platform install path.");
+    expect_contains(install_script, "/opt/homebrew/share/android-commandlinetools",
+        "install.sh must detect Homebrew's Android SDK package.");
+    expect_contains(install_script, "/opt/homebrew/share/android-ndk",
+        "install.sh must detect Homebrew's Android NDK package.");
+    expect_contains(install_script, "install_wasm()",
+        "install.sh must provide a WASM platform install path.");
+    expect_contains(install_script, "-DIIXML_BUILD_SHARED=OFF",
+        "install.sh must build the WASM package as a static library.");
     expect_contains(install_script, "CMAKE_HOME_DIRECTORY",
         "install.sh must inspect the cached source directory.");
     expect_contains(install_script, "CMAKE_CACHEFILE_DIR",
@@ -54,6 +86,8 @@ int main() {
         "install.sh must configure with a fresh CMake cache.");
     expect_contains(install_script, "cmake --install \"${BUILD_DIR}\" --prefix \"${PREFIX}\"",
         "install.sh must run cmake install with the ~/.local/iiXml prefix.");
+    expect_contains(install_script, "iiXmlConfigVersionRoot.cmake",
+        "install.sh must publish the architecture-independent root package version.");
     expect_contains(install_script, "LEGACY_INCLUDE_DIR=\"${PREFIX}/include/iiXml\"",
         "install.sh must detect the legacy include/iiXml directory.");
     expect_contains(install_script, "rm -rf \"${LEGACY_INCLUDE_DIR}\"",
@@ -61,12 +95,18 @@ int main() {
 
     expect_contains(cmake_lists, "install(TARGETS iiXml",
         "CMakeLists.txt must install the iiXml library target.");
+    expect_contains(cmake_lists, "IIXML_BUILD_SHARED",
+        "CMakeLists.txt must expose a shared/static library switch for cross-platform packages.");
     expect_contains(cmake_lists, "EXPORT iiXmlTargets",
         "CMakeLists.txt must export iiXmlTargets.");
     expect_contains(cmake_lists, "NAMESPACE iiXml::",
         "CMakeLists.txt must install the iiXml:: imported target namespace.");
     expect_contains(cmake_lists, "configure_package_config_file",
         "CMakeLists.txt must generate iiXmlConfig.cmake.");
+    expect_contains(cmake_lists, "iiXmlConfigVersionRoot.cmake",
+        "CMakeLists.txt must generate a separate root package version.");
+    expect_contains(cmake_lists, "ARCH_INDEPENDENT",
+        "The root package version must accept both native and WASM consumers.");
     expect_contains(cmake_lists, "install(FILES iiXml iiXml.h",
         "CMakeLists.txt must install the extensionless <iiXml> umbrella header.");
     expect_contains(cmake_lists, "install(DIRECTORY Src/",
@@ -76,14 +116,36 @@ int main() {
 
     expect_contains(config_template, "find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)",
         "iiXmlConfig.cmake.in must declare the Qt 6.8.3 dependency.");
+    expect_contains(config_template, "_iiXml_detect_target_platform",
+        "iiXmlConfig.cmake.in must detect target platforms.");
+    expect_contains(config_template, "platforms/${_iiXmlTargetPlatform}",
+        "iiXmlConfig.cmake.in must delegate root-prefix package loads to platform packages.");
     expect_contains(config_template, "iiXmlTargets.cmake",
         "iiXmlConfig.cmake.in must include exported targets.");
+    expect_contains(config_template, "INTERFACE_LINK_OPTIONS",
+        "iiXmlConfig.cmake.in must propagate the macOS runtime library search path.");
+    expect_contains(config_template, "CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES",
+        "iiXmlConfig.cmake.in must detect when an ambient library path suppresses CMake's build RPATH.");
+    expect_contains(config_template, "LINKER:-rpath,${_iiXmlPackageLibraryDirectory}",
+        "iiXmlConfig.cmake.in must derive the macOS runtime search path from the relocated package prefix.");
 
     expect_contains(docs, "./install.sh", "Docs/install.md must document the install script.");
+    expect_contains(docs, "macos,ios,android,wasm",
+        "Docs/install.md must document the default all-platform install set.");
+    expect_contains(docs, "IIXML_INSTALL_PLATFORMS=ios ./install.sh",
+        "Docs/install.md must document constrained platform installs.");
+    expect_contains(docs, "/opt/homebrew/share/android-commandlinetools",
+        "Docs/install.md must document Homebrew Android SDK discovery.");
+    expect_contains(docs, "~/.local/iiXml/platforms/wasm",
+        "Docs/install.md must document the WASM platform package.");
     expect_contains(docs, "~/.local/iiXml",
         "Docs/install.md must document the fixed ~/.local/iiXml install prefix.");
     expect_contains(docs, "find_package(iiXml CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
+    expect_contains(docs, "32-bit WASM",
+        "Docs/install.md must document architecture-independent root dispatch.");
+    expect_contains(docs, "DYLD_LIBRARY_PATH",
+        "Docs/install.md must document that installed macOS consumers need no runtime environment override.");
     expect_contains(docs, "iiXml::iiXml", "Docs/install.md must document the imported target.");
     expect_contains(docs, "#include <iiXml>",
         "Docs/install.md must document extensionless umbrella include usage.");

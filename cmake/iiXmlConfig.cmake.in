@@ -1,6 +1,100 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
+
+function(_iiXml_detect_target_platform out_var)
+    if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+        set(${out_var} "ios" PARENT_SCOPE)
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+        set(${out_var} "android" PARENT_SCOPE)
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+        set(${out_var} "wasm" PARENT_SCOPE)
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        set(${out_var} "macos" PARENT_SCOPE)
+    else()
+        set(${out_var} "" PARENT_SCOPE)
+    endif()
+endfunction()
+
+_iiXml_detect_target_platform(_iiXmlTargetPlatform)
+
+get_filename_component(_iiXmlCurrentPrefixName "${PACKAGE_PREFIX_DIR}" NAME)
+get_filename_component(_iiXmlCurrentPrefixParent "${PACKAGE_PREFIX_DIR}" DIRECTORY)
+get_filename_component(_iiXmlCurrentPrefixParentName "${_iiXmlCurrentPrefixParent}" NAME)
+set(_iiXmlInPlatformPrefix FALSE)
+if(_iiXmlCurrentPrefixParentName STREQUAL "platforms")
+    set(_iiXmlInPlatformPrefix TRUE)
+endif()
+
+if(NOT _iiXmlTargetPlatform STREQUAL ""
+        AND NOT (_iiXmlInPlatformPrefix
+            AND _iiXmlCurrentPrefixName STREQUAL _iiXmlTargetPlatform))
+    set(_iiXmlPlatformConfig
+        "${PACKAGE_PREFIX_DIR}/platforms/${_iiXmlTargetPlatform}/lib/cmake/iiXml/iiXmlConfig.cmake")
+    if(EXISTS "${_iiXmlPlatformConfig}")
+        include("${_iiXmlPlatformConfig}")
+        return()
+    elseif(_iiXmlTargetPlatform STREQUAL "ios"
+            OR _iiXmlTargetPlatform STREQUAL "android"
+            OR _iiXmlTargetPlatform STREQUAL "wasm")
+        message(FATAL_ERROR
+            "iiXml ${_iiXmlTargetPlatform} package was not found at ${_iiXmlPlatformConfig}. "
+            "Run iiXml install.sh so it installs the platforms/${_iiXmlTargetPlatform} package.")
+    endif()
+endif()
+
+set(_iiXmlDependencyPrefixes)
+if(_iiXmlTargetPlatform STREQUAL "macos")
+    list(APPEND _iiXmlDependencyPrefixes "$ENV{HOME}/Qt/6.8.3/macos")
+elseif(_iiXmlTargetPlatform STREQUAL "ios")
+    list(APPEND _iiXmlDependencyPrefixes
+        "$ENV{HOME}/Qt/6.8.3/ios"
+        "$ENV{HOME}/Qt/6.8.3/macos")
+elseif(_iiXmlTargetPlatform STREQUAL "android")
+    list(APPEND _iiXmlDependencyPrefixes
+        "$ENV{HOME}/Qt/6.8.3/android_arm64_v8a"
+        "$ENV{HOME}/Qt/6.8.3/macos")
+elseif(_iiXmlTargetPlatform STREQUAL "wasm")
+    list(APPEND _iiXmlDependencyPrefixes
+        "$ENV{HOME}/Qt/6.8.3/wasm_multithread"
+        "$ENV{HOME}/Qt/6.8.3/wasm_singlethread"
+        "$ENV{HOME}/Qt/6.8.3/macos")
+endif()
+
+list(REVERSE _iiXmlDependencyPrefixes)
+foreach(_iiXmlDependencyPrefix IN LISTS _iiXmlDependencyPrefixes)
+    if(EXISTS "${_iiXmlDependencyPrefix}")
+        list(PREPEND CMAKE_PREFIX_PATH "${_iiXmlDependencyPrefix}")
+    endif()
+endforeach()
+
+unset(_iiXmlDependencyPrefix)
+unset(_iiXmlDependencyPrefixes)
+unset(_iiXmlPlatformConfig)
+unset(_iiXmlInPlatformPrefix)
+unset(_iiXmlCurrentPrefixParentName)
+unset(_iiXmlCurrentPrefixParent)
+unset(_iiXmlCurrentPrefixName)
+unset(_iiXmlTargetPlatform)
+
 find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)
 
 include("${CMAKE_CURRENT_LIST_DIR}/iiXmlTargets.cmake")
+
+# A directory inherited through LIBRARY_PATH is treated as implicit, so CMake
+# omits it from the build RPATH even when iiXml is a transitive dylib. Restore
+# only that omitted path; non-implicit package directories are handled by CMake.
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND TARGET iiXml::iiXml)
+    set(_iiXmlPackageLibraryDirectory
+        "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@")
+    list(FIND CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES
+        "${_iiXmlPackageLibraryDirectory}"
+        _iiXmlImplicitLinkDirectoryIndex)
+    if(NOT _iiXmlImplicitLinkDirectoryIndex EQUAL -1)
+        set_property(TARGET iiXml::iiXml APPEND PROPERTY
+            INTERFACE_LINK_OPTIONS
+            "LINKER:-rpath,${_iiXmlPackageLibraryDirectory}")
+    endif()
+    unset(_iiXmlImplicitLinkDirectoryIndex)
+    unset(_iiXmlPackageLibraryDirectory)
+endif()
