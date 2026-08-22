@@ -7,6 +7,7 @@
 
 ## 전제 조건
 
+- `cmake --fresh`를 지원하는 CMake 3.24 이상이 필요하다.
 - Qt 6.8.3은 `~/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.
 - iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `~/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.
 - Android 패키지를 만들려면 Qt Android kit, Android SDK, Android NDK가 필요하다.

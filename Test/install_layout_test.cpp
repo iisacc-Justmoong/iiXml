@@ -93,6 +93,8 @@ int main() {
     expect_contains(install_script, "rm -rf \"${LEGACY_INCLUDE_DIR}\"",
         "install.sh must remove the legacy include/iiXml directory before installing the <iiXml> header.");
 
+    expect_contains(cmake_lists, "cmake_minimum_required(VERSION 3.24)",
+        "CMakeLists.txt must require the minimum version that supports cmake --fresh.");
     expect_contains(cmake_lists, "install(TARGETS iiXml",
         "CMakeLists.txt must install the iiXml library target.");
     expect_contains(cmake_lists, "IIXML_BUILD_SHARED",
@@ -142,6 +144,8 @@ int main() {
         "Docs/install.md must document the fixed ~/.local/iiXml install prefix.");
     expect_contains(docs, "find_package(iiXml CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
+    expect_contains(docs, "CMake 3.24",
+        "Docs/install.md must document the minimum supported CMake version.");
     expect_contains(docs, "32-bit WASM",
         "Docs/install.md must document architecture-independent root dispatch.");
     expect_contains(docs, "DYLD_LIBRARY_PATH",
