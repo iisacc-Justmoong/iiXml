@@ -40,8 +40,8 @@ int main() {
     const std::string docs = read_file(root + "/Docs/install.md");
 
     expect_executable_script_header(install_script);
-    expect_contains(install_script, "PREFIX=\"${HOME}/.local/iiXml\"",
-        "install.sh must install to ~/.local/iiXml.");
+    expect_contains(install_script, "PREFIX=\"${HOME}/.local/SDK/iiXml\"",
+        "install.sh must install to ~/.local/SDK/iiXml.");
     expect_contains(install_script, "BUILD_DIR=\"${ROOT_DIR}/build\"",
         "install.sh must use build/ as the build directory.");
     expect_contains(install_script, "macos,ios,android,wasm",
@@ -85,7 +85,7 @@ int main() {
     expect_contains(install_script, "--fresh",
         "install.sh must configure with a fresh CMake cache.");
     expect_contains(install_script, "cmake --install \"${BUILD_DIR}\" --prefix \"${PREFIX}\"",
-        "install.sh must run cmake install with the ~/.local/iiXml prefix.");
+        "install.sh must run cmake install with the ~/.local/SDK/iiXml prefix.");
     expect_contains(install_script, "iiXmlConfigVersionRoot.cmake",
         "install.sh must publish the architecture-independent root package version.");
     expect_contains(install_script, "LEGACY_INCLUDE_DIR=\"${PREFIX}/include/iiXml\"",
@@ -95,6 +95,12 @@ int main() {
 
     expect_contains(cmake_lists, "cmake_minimum_required(VERSION 3.24)",
         "CMakeLists.txt must require the minimum version that supports cmake --fresh.");
+    expect_contains(cmake_lists, "PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT",
+        "Default CMake installs must use the SDK prefix while respecting explicit overrides.");
+    expect_contains(cmake_lists, "USERPROFILE",
+        "Windows user profiles must provide the default prefix when HOME is empty.");
+    expect_contains(cmake_lists, ".local/SDK/iiXml",
+        "CMake must use the SDK package installation root.");
     expect_contains(cmake_lists, "install(TARGETS iiXml",
         "CMakeLists.txt must install the iiXml library target.");
     expect_contains(cmake_lists, "IIXML_BUILD_SHARED",
@@ -138,10 +144,10 @@ int main() {
         "Docs/install.md must document constrained platform installs.");
     expect_contains(docs, "/opt/homebrew/share/android-commandlinetools",
         "Docs/install.md must document Homebrew Android SDK discovery.");
-    expect_contains(docs, "~/.local/iiXml/platforms/wasm",
+    expect_contains(docs, "~/.local/SDK/iiXml/platforms/wasm",
         "Docs/install.md must document the WASM platform package.");
-    expect_contains(docs, "~/.local/iiXml",
-        "Docs/install.md must document the fixed ~/.local/iiXml install prefix.");
+    expect_contains(docs, "~/.local/SDK/iiXml",
+        "Docs/install.md must document the fixed ~/.local/SDK/iiXml install prefix.");
     expect_contains(docs, "find_package(iiXml CONFIG REQUIRED)",
         "Docs/install.md must document CMake package loading.");
     expect_contains(docs, "CMake 3.24",

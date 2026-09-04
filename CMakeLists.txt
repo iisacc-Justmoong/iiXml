@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiXml VERSION 0.1.0 LANGUAGES CXX)
 
+if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(_sdk_home "$ENV{HOME}")
+    if(_sdk_home STREQUAL "")
+        set(_sdk_home "$ENV{USERPROFILE}")
+    endif()
+    set(CMAKE_INSTALL_PREFIX "${_sdk_home}/.local/SDK/iiXml" CACHE PATH
+        "Installation prefix for iiXml." FORCE)
+    unset(_sdk_home)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)

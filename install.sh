@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="${ROOT_DIR}/build"
-PREFIX="${HOME}/.local/iiXml"
+PREFIX="${HOME}/.local/SDK/iiXml"
 QT_ROOT="${HOME}/Qt/6.8.3"
 
 MACOS_QT_PREFIX="${IIXML_MACOS_QT_PREFIX:-${QT_ROOT}/macos}"
@@ -78,9 +78,9 @@ remove_stale_build_dir() {
         echo "  cached source: ${cached_source:-unknown}"
         echo "  current source: ${ROOT_DIR}"
         if [[ "${build_dir}" == "${BUILD_DIR}" ]]; then
-            rm -rf "${BUILD_DIR}"
+            rm -rf "${BUILD_DIR}" || rm -rf "${BUILD_DIR}"
         else
-            rm -rf "${build_dir}"
+            rm -rf "${build_dir}" || rm -rf "${build_dir}"
         fi
     fi
 }
