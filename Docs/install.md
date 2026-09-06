@@ -8,8 +8,8 @@
 ## 전제 조건
 
 - `cmake --fresh`를 지원하는 CMake 3.24 이상이 필요하다.
-- Qt 6.8.3은 `~/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.
-- iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `~/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.
+- Qt 6.8.3은 `/Volumes/Storage/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.
+- iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `/Volumes/Storage/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.
 - Android 패키지를 만들려면 Qt Android kit, Android SDK, Android NDK가 필요하다.
   스크립트는 Apple Silicon Homebrew의 `/opt/homebrew/share/android-commandlinetools`와
   `/opt/homebrew/share/android-ndk`도 자동 탐지한다.
@@ -43,7 +43,7 @@ WASM 또는 Android 툴체인이 기본 위치에 없다면 다음 변수로 지
 
 ```sh
 IIXML_EMSDK_ROOT=~/emsdk ./install.sh
-IIXML_ANDROID_QT_PREFIX=~/Qt/6.8.3/android_arm64_v8a ANDROID_SDK_ROOT=~/Library/Android/sdk ./install.sh
+IIXML_ANDROID_QT_PREFIX=/Volumes/Storage/Qt/6.8.3/android_arm64_v8a ANDROID_SDK_ROOT=~/Library/Android/sdk ./install.sh
 ```
 
 ## 설치 결과

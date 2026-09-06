@@ -45,20 +45,20 @@ endif()
 
 set(_iiXmlDependencyPrefixes)
 if(_iiXmlTargetPlatform STREQUAL "macos")
-    list(APPEND _iiXmlDependencyPrefixes "$ENV{HOME}/Qt/6.8.3/macos")
+    list(APPEND _iiXmlDependencyPrefixes "/Volumes/Storage/Qt/6.8.3/macos")
 elseif(_iiXmlTargetPlatform STREQUAL "ios")
     list(APPEND _iiXmlDependencyPrefixes
-        "$ENV{HOME}/Qt/6.8.3/ios"
-        "$ENV{HOME}/Qt/6.8.3/macos")
+        "/Volumes/Storage/Qt/6.8.3/ios"
+        "/Volumes/Storage/Qt/6.8.3/macos")
 elseif(_iiXmlTargetPlatform STREQUAL "android")
     list(APPEND _iiXmlDependencyPrefixes
-        "$ENV{HOME}/Qt/6.8.3/android_arm64_v8a"
-        "$ENV{HOME}/Qt/6.8.3/macos")
+        "/Volumes/Storage/Qt/6.8.3/android_arm64_v8a"
+        "/Volumes/Storage/Qt/6.8.3/macos")
 elseif(_iiXmlTargetPlatform STREQUAL "wasm")
     list(APPEND _iiXmlDependencyPrefixes
-        "$ENV{HOME}/Qt/6.8.3/wasm_multithread"
-        "$ENV{HOME}/Qt/6.8.3/wasm_singlethread"
-        "$ENV{HOME}/Qt/6.8.3/macos")
+        "/Volumes/Storage/Qt/6.8.3/wasm_multithread"
+        "/Volumes/Storage/Qt/6.8.3/wasm_singlethread"
+        "/Volumes/Storage/Qt/6.8.3/macos")
 endif()
 
 list(REVERSE _iiXmlDependencyPrefixes)

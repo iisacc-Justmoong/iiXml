@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="${ROOT_DIR}/build"
 PREFIX="${HOME}/.local/SDK/iiXml"
-QT_ROOT="${HOME}/Qt/6.8.3"
+QT_ROOT="/Volumes/Storage/Qt/6.8.3"
 
 MACOS_QT_PREFIX="${IIXML_MACOS_QT_PREFIX:-${QT_ROOT}/macos}"
 IOS_QT_PREFIX="${IIXML_IOS_QT_PREFIX:-${QT_ROOT}/ios}"

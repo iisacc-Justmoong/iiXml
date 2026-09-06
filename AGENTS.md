@@ -16,7 +16,7 @@
 ## Platform & Framework Policy
 
 프로젝트에서 Qt를 사용하는 모든 빌드 설정, C++ 코드, QML UI는 Qt 6.8.3을 기준으로 작성하고 검증하십시오. 다른 Qt 버전으로 변경해야 하는 경우 이 정책 문서와 관련 빌드 및 테스트 문서를 먼저 갱신하십시오.
-Qt 설치 경로는 사용자 홈의 `~/Qt` 하위 디렉터리를 기준으로 인식하십시오. Qt 경로를 문서화하거나 CMake 설정 예시를 작성할 때도 `~/Qt` 아래의 Qt 6.8.3 설치를 기준으로 설명하십시오.
+Qt 설치 경로는 외장 스토리지의 `/Volumes/Storage/Qt` 하위 디렉터리를 기준으로 인식하십시오. Qt 경로를 문서화하거나 CMake 설정 예시를 작성할 때도 `/Volumes/Storage/Qt` 아래의 Qt 6.8.3 설치를 기준으로 설명하십시오.
 
 ## Coding Style & Naming Conventions
 

@@ -31,8 +31,8 @@ endif()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-if(EXISTS "$ENV{HOME}/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
-    list(PREPEND CMAKE_PREFIX_PATH "$ENV{HOME}/Qt/6.8.3/macos")
+if(EXISTS "/Volumes/Storage/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
+    list(PREPEND CMAKE_PREFIX_PATH "/Volumes/Storage/Qt/6.8.3/macos")
 endif()
 
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)

@@ -30,8 +30,8 @@ int main() {
         return 1;
     }
 
-    if (policy.find("~/Qt") == std::string::npos) {
-        std::cerr << "AGENTS.md must declare ~/Qt as the project Qt path policy.\n";
+    if (policy.find("/Volumes/Storage/Qt") == std::string::npos) {
+        std::cerr << "AGENTS.md must declare /Volumes/Storage/Qt as the project Qt path policy.\n";
         return 1;
     }
 
