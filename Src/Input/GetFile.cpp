@@ -13,7 +13,7 @@
 #include <cstddef>
 #include <exception>
 #include <filesystem>
-#include <fstream>
+#include <iiFileProvider.h>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -34,14 +34,9 @@ std::string to_utf8_string(const QString& value) {
 }
 
 std::optional<std::string> read_file(const std::filesystem::path& file_path) {
-    std::ifstream file(file_path, std::ios::binary);
-    if (!file.is_open()) {
-        return std::nullopt;
-    }
-
-    std::ostringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
+    try {
+        return iiFileProvider::File::read(iiFileProvider::File::pathString(file_path)).toStdString();
+    } catch (const iiFileProvider::FileError &) { return std::nullopt; }
 }
 
 std::string_view consume_matched_declaration(

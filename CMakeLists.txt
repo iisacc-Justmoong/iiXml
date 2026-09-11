@@ -35,6 +35,7 @@ if(EXISTS "/Volumes/Storage/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
     list(PREPEND CMAKE_PREFIX_PATH "/Volumes/Storage/Qt/6.8.3/macos")
 endif()
 
+find_package(iiFileProvider 0.5.0 CONFIG REQUIRED HINTS "$ENV{HOME}/.local/SDK/iiFileProvider")
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 
 add_library(iiXml ${IIXML_LIBRARY_TYPE}
@@ -68,6 +69,8 @@ target_include_directories(iiXml PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
+target_link_libraries(iiXml PRIVATE iiFileProvider::iiFileProvider)
+set_target_properties(iiXml PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 target_link_libraries(iiXml PUBLIC
     Qt6::Core
 )
@@ -133,7 +136,7 @@ add_executable(file_parser_test
     Test/file_parser_test.cpp
 )
 
-target_link_libraries(file_parser_test PRIVATE iiXml)
+target_link_libraries(file_parser_test PRIVATE iiXml iiFileProvider::iiFileProvider)
 
 add_test(NAME file_parser_test COMMAND file_parser_test)
 

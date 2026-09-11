@@ -8,7 +8,7 @@
 
 #include <exception>
 #include <filesystem>
-#include <fstream>
+#include <iiFileProvider.h>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -24,16 +24,8 @@ std::optional<TagValue> FileParser::ParseFile(const std::filesystem::path& file_
     qDebug() << "iiXml::Parser::FileParser::ParseFile begin"
              << "path=" << QString::fromStdString(file_path.string());
     try {
-        std::ifstream file(file_path, std::ios::binary);
-        if (!file.is_open()) {
-            qDebug() << "iiXml::Parser::FileParser::ParseFile failed"
-                     << "reason=file open failed";
-            return std::nullopt;
-        }
-
-        std::ostringstream buffer;
-        buffer << file.rdbuf();
-        const std::string content = buffer.str();
+        const std::string content = iiFileProvider::File::read(
+            iiFileProvider::File::pathString(file_path)).toStdString();
         iiXml::Logging::LogInputSummary(
             "iiXml::Parser::FileParser::ParseFile",
             content
@@ -57,6 +49,10 @@ std::optional<TagValue> FileParser::ParseFile(const std::filesystem::path& file_
                 + " value_size=" + std::to_string(parsed->Value.size())
         );
         return parsed;
+    } catch (const iiFileProvider::FileError& exception) {
+        qDebug() << "iiXml::Parser::FileParser::ParseFile failed"
+                 << "reason=file read failed" << "what=" << exception.what();
+        return std::nullopt;
     } catch (const std::exception& exception) {
         qDebug() << "iiXml::Parser::FileParser::ParseFile exception"
                  << "what=" << exception.what();

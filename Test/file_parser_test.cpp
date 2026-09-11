@@ -1,4 +1,5 @@
 #include <iiXml>
+#include <iiFileProvider.h>
 
 #include <filesystem>
 #include <fstream>
@@ -18,8 +19,7 @@ void expect(bool condition, const char* message) {
 }
 
 void write_file(const std::filesystem::path& path, const std::string& content) {
-    std::ofstream file(path, std::ios::binary);
-    file << content;
+    iiFileProvider::File::write(iiFileProvider::File::pathString(path), QByteArray::fromStdString(content));
 }
 
 void parses_file_content_with_tag_parser() {
@@ -31,14 +31,14 @@ void parses_file_content_with_tag_parser() {
 
     expect(parsed.has_value(), "valid tag file should parse");
     if (!parsed.has_value()) {
-        std::filesystem::remove(path);
+        iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
         return;
     }
 
     expect(parsed->TagName == "number", "file parser should preserve tag name");
     expect(parsed->Value == "42", "file parser should preserve tag value");
 
-    std::filesystem::remove(path);
+    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
 }
 
 void preserves_utf8_file_value() {
@@ -50,20 +50,20 @@ void preserves_utf8_file_value() {
 
     expect(parsed.has_value(), "utf8 tag file should parse");
     if (!parsed.has_value()) {
-        std::filesystem::remove(path);
+        iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
         return;
     }
 
     expect(parsed->Value == "숫자", "file parser should preserve utf8 value");
 
-    std::filesystem::remove(path);
+    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
 }
 
 void returns_empty_for_missing_file() {
     const iiXml::Parser::FileParser parser;
     const std::filesystem::path path = std::filesystem::current_path() / "file_parser_missing.xml";
 
-    std::filesystem::remove(path);
+    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
     expect(!parser.ParseFile(path).has_value(), "missing file should not parse");
 }
 
@@ -75,7 +75,7 @@ void returns_empty_when_tag_parser_rejects_content() {
 
     expect(!parser.ParseFile(path).has_value(), "invalid tag content should not parse");
 
-    std::filesystem::remove(path);
+    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
 }
 
 } // namespace

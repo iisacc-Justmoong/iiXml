@@ -282,6 +282,8 @@ int main() {
         "FileParser::ParseFile should log with qDebug");
     expect(saw("iiXml::Parser::FileParser::ParseFile failed"),
         "FileParser::ParseFile failure should log with qDebug");
+    expect(saw("reason=file read failed"),
+        "provider read failures should retain the file failure diagnostic");
     expect(saw("iiXml::Elements::Doctype::Doctype"),
         "Doctype constructor should log with qDebug");
     expect(saw("iiXml::Elements::Doctype::MatchTopInput"),
