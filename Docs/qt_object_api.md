@@ -1,4 +1,6 @@
-# Qt Object API
+<a id="qt-object-api"></a>
+
+# Qt 객체 API
 
 iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `QObject`를 상속한다.
 
@@ -50,7 +52,9 @@ Result API는 `TagParseResult`와 `TagTreeParseResult`를 반환한다. 각 Resu
 - `TagParsed(const QString& TagName, const QString& Value)`
 - `ParseFailed(const QString& Reason)`
 
-## Doctype
+<a id="doctype"></a>
+
+## 문서 유형
 
 `iiXml::Elements::Doctype`는 `QObject`를 상속한다.
 

@@ -1,4 +1,6 @@
-# Logging
+<a id="logging"></a>
+
+# 벌목 반출
 
 iiXml의 라이브러리 객체와 public 메서드는 Qt 표준 디버그 스트림인 `QDebug`/`qDebug()`로 운영 및 진단 로그를 출력한다.
 
