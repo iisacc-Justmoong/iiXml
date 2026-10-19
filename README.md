@@ -1,5 +1,10 @@
 # iiXml
 
+Package release: **0.1.1** (2026-10-19). This patch packages the current
+source snapshot; build, test and installation evidence is recorded in the SDK
+patch-release report. Earlier versioned feature notes remain historical.
+
+
 iiXml is a C++ library for defining custom XML rules and producing input/output that follows those rules.
 
 Core parser element modules live under `Src/Elements/`. `OpenTag` tracks relaxed tag closure, while `ClosedTag` flags input that starts immediately with a `</tag>` closing marker before a matching opener appears in the same view.

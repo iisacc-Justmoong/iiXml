@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(iiXml VERSION 0.1.0 LANGUAGES CXX)
+project(iiXml VERSION 0.1.1 LANGUAGES CXX)
 
 if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(_sdk_home "$ENV{HOME}")
