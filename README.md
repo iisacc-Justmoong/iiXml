@@ -13,9 +13,9 @@ Core parser element modules live under `Src/Elements/`. `OpenTag` tracks relaxed
 
 ## License
 
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-License-Identifier: MIT
 
-The self-written code and documents of iiXml are distributed under the GNU Affero General Public License version 3 only ( `AGPL-3.0-only` ). The full terms follow [LICENSE](LICENSE).
+The self-written code and documents of iiXml are distributed under the MIT License ( `MIT` ). The full terms follow [LICENSE](LICENSE).
 
 Third-party code, libraries, tools, and models retain their respective licenses and copyright notices, and the repository's license does not replace them.
 
