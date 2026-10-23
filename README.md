@@ -1,5 +1,10 @@
 # iiXml
 
+The C++23 Qt-free package `iiXmlNative` exports `iiXml::Native` and
+`<iiXml/Xml.h>` for bounded UTF-8 pull reading and XML writing. Configure with
+`-DIIXML_BUILD_QT_API=OFF` to avoid finding Qt. The existing QObject API remains
+available independently. See [native contracts](Docs/native.md).
+
 [Windows 빌드 및 실행](Docs/WindowsBuildAndRun.md)
 
 Package release: **0.1.1** (2026-10-19). This patch packages the current

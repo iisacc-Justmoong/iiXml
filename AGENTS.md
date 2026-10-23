@@ -30,6 +30,8 @@ Qt 설치 경로는 외장 스토리지의 `/Volumes/Storage/Qt` 하위 디렉�
 
 ## 코딩 스타일 및 명명 규칙
 
+2026-10-22 사용자의 비GUI Qt 독립 요구에 따라 `Native/`와 `Test/native_test.cpp`는 C++23 표준 타입 기반의 독립 API로 구현한다. 이 영역에는 QObject 상속, Qt 메타 타입, Qt 로깅을 적용하지 않는다. 기존 Qt API의 규칙은 유지하며 `IIXML_BUILD_QT_API=OFF`일 때 Qt를 검색·링크하지 않아야 한다. 네이티브 계약은 `Docs/native.md`를 따른다.
+
 C++ 코드는 4칸 들여쓰기를 사용하고, 헤더에는 공개 API만 노출하십시오. 모든 객체는 QObject를 상속하고, Qt 메타 타입 시스템을 사용하여 C++와 QML 간의 상호 작용을 지원합니다. 모든 객체 및 메서드는 디버깅 로그를 출력해야 한다.
 
 <a id="testing-guidelines"></a>

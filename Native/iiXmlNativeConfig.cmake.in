@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+find_dependency(LibXml2 2.9)
+include("${CMAKE_CURRENT_LIST_DIR}/iiXmlNativeTargets.cmake")
+check_required_components(iiXmlNative)

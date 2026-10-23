@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiXml VERSION 0.1.1 LANGUAGES CXX)
 
+# The native package is selectable without discovering any Qt package. Existing
+# source consumers retain the legacy API unless they opt out explicitly.
+option(IIXML_BUILD_QT_API "Build the legacy QObject XML API" ON)
+include(CTest)
+add_subdirectory(Native)
+if(NOT IIXML_BUILD_QT_API)
+    return()
+endif()
+
 if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(_sdk_home "$ENV{HOME}")
     if(_sdk_home STREQUAL "")

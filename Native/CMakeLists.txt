@@ -1,0 +1,26 @@
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(CTest)
+find_package(LibXml2 2.9 REQUIRED)
+add_library(iiXmlNative STATIC src/iiXml/Xml.cpp)
+add_library(iiXml::Native ALIAS iiXmlNative)
+set_target_properties(iiXmlNative PROPERTIES EXPORT_NAME Native CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON)
+target_compile_features(iiXmlNative PUBLIC cxx_std_23)
+target_include_directories(iiXmlNative PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/iiXmlNative>)
+target_link_libraries(iiXmlNative PRIVATE LibXml2::LibXml2)
+if(BUILD_TESTING)
+    add_executable(iiXmlNativeContracts ../Test/native_test.cpp)
+    target_link_libraries(iiXmlNativeContracts PRIVATE iiXml::Native)
+    add_test(NAME iiXml.Native.Contracts COMMAND iiXmlNativeContracts)
+endif()
+install(TARGETS iiXmlNative EXPORT iiXmlNativeTargets ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES src/iiXml/Xml.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXmlNative/iiXml)
+install(EXPORT iiXmlNativeTargets NAMESPACE iiXml:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXmlNative)
+configure_package_config_file(iiXmlNativeConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/iiXmlNativeConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXmlNative)
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/iiXmlNativeConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/iiXmlNativeConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/iiXmlNativeConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiXmlNative)
+install(FILES ../Docs/native.md DESTINATION ${CMAKE_INSTALL_DATADIR}/iiXml/docs)
