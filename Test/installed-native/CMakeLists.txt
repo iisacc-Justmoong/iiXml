@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.24)
+project(iiXmlInstalledNative LANGUAGES CXX)
+
+find_package(iiXmlNative 0.1 CONFIG REQUIRED)
+find_package(iiXmlMarkup 0.1 CONFIG REQUIRED)
+add_executable(iiXmlInstalledNative ../native_test.cpp)
+target_link_libraries(iiXmlInstalledNative PRIVATE iiXml::Native)
+add_executable(iiXmlInstalledMarkup ../markup_contract_test.cpp)
+target_link_libraries(iiXmlInstalledMarkup PRIVATE iiXml::Markup)
+enable_testing()
+add_test(NAME iiXml.Installed.Native COMMAND iiXmlInstalledNative)
+add_test(NAME iiXml.Installed.Markup COMMAND iiXmlInstalledMarkup)

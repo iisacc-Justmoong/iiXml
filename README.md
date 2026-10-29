@@ -1,5 +1,7 @@
 # iiXml
 
+Native XML sources are in `Native/src/`, with source-preserving markup in `Native/src/Markup/`; see [source layout](docs/SourceLayout.md). Installed include names are unchanged.
+
 The independent `iiXmlMarkup` package exports `iiXml::Markup`: a C++23,
 Qt-free source-preserving tag parser and HTML block range tracker used by
 iiGeneralDocument. It does not depend on iiGeneralDocument or libxml2. See

@@ -366,3 +366,12 @@ target_compile_definitions(project_policy_test PRIVATE
 )
 
 add_test(NAME project_policy_test COMMAND project_policy_test)
+
+if(APPLE)
+    # Tests must resolve the just-built libraries through their own RPATH,
+    # regardless of an installed SDK injected into the shell environment.
+    get_property(_iixml_tests DIRECTORY PROPERTY TESTS)
+    set_property(TEST ${_iixml_tests} APPEND PROPERTY ENVIRONMENT_MODIFICATION
+        "DYLD_LIBRARY_PATH=unset:" "DYLD_FALLBACK_LIBRARY_PATH=unset:"
+        "DYLD_FRAMEWORK_PATH=unset:" "DYLD_FALLBACK_FRAMEWORK_PATH=unset:")
+endif()

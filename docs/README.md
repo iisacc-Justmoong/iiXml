@@ -28,6 +28,7 @@ Markdown is the maintained human source. Agent JSON is a structured, source-trac
 | [`docs/HtmlBlock/install.md`](HtmlBlock/install.md) | [JSON](HtmlBlock/install.agent.json) |
 | [`docs/HtmlBlockIntegration.md`](HtmlBlockIntegration.md) | [JSON](HtmlBlockIntegration.agent.json) |
 | [`docs/Markup.md`](Markup.md) | [JSON](Markup.agent.json) |
+| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |
 | [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |
 | [`docs/closed_tag.md`](closed_tag.md) | [JSON](closed_tag.generated.agent.json) |
 | [`docs/debug_logging.md`](debug_logging.md) | [JSON](debug_logging.generated.agent.json) |

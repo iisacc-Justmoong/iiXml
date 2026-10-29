@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "docs/README.md",
-    "sha256": "d85839cb74df6e44b79945ce6aab9a19fac07954162e85f3b7df98e78cd00a89",
-    "bytes": 3927,
-    "line_count": 47,
+    "sha256": "e37909fdd4af61088b174b2b58df1f63ed2aac28961ef2292f065d2699faf94a",
+    "bytes": 4007,
+    "line_count": 48,
     "encoding": "utf-8",
     "language": "en"
   },
@@ -79,8 +79,8 @@
       "id": "b000008",
       "kind": "table",
       "start_line": 8,
-      "end_line": 46,
-      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.agent.json) |\n| [`AGENTS.md`](../AGENTS.md) | [JSON](entrypoints/AGENTS.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.agent.json) |\n| [`docs/HtmlBlock/ModuleOverview.md`](HtmlBlock/ModuleOverview.md) | [JSON](HtmlBlock/ModuleOverview.agent.json) |\n| [`docs/HtmlBlock/PERFORMANCE.md`](HtmlBlock/PERFORMANCE.md) | [JSON](HtmlBlock/PERFORMANCE.agent.json) |\n| [`docs/HtmlBlock/README.md`](HtmlBlock/README.md) | [JSON](HtmlBlock/README.agent.json) |\n| [`docs/HtmlBlock/WindowsBuildAndRun.md`](HtmlBlock/WindowsBuildAndRun.md) | [JSON](HtmlBlock/WindowsBuildAndRun.agent.json) |\n| [`docs/HtmlBlock/block_html_serializer.md`](HtmlBlock/block_html_serializer.md) | [JSON](HtmlBlock/block_html_serializer.agent.json) |\n| [`docs/HtmlBlock/block_range_tracker.md`](HtmlBlock/block_range_tracker.md) | [JSON](HtmlBlock/block_range_tracker.agent.json) |\n| [`docs/HtmlBlock/combine_block.md`](HtmlBlock/combine_block.md) | [JSON](HtmlBlock/combine_block.agent.json) |\n| [`docs/HtmlBlock/delete_block.md`](HtmlBlock/delete_block.md) | [JSON](HtmlBlock/delete_block.agent.json) |\n| [`docs/HtmlBlock/divide_block.md`](HtmlBlock/divide_block.md) | [JSON](HtmlBlock/divide_block.agent.json) |\n| [`docs/HtmlBlock/documentation-structure.md`](HtmlBlock/documentation-structure.md) | [JSON](HtmlBlock/documentation-structure.agent.json) |\n| [`docs/HtmlBlock/examples.md`](HtmlBlock/examples.md) | [JSON](HtmlBlock/examples.agent.json) |\n| [`docs/HtmlBlock/flatten_block.md`](HtmlBlock/flatten_block.md) | [JSON](HtmlBlock/flatten_block.agent.json) |\n| [`docs/HtmlBlock/get_html.md`](HtmlBlock/get_html.md) | [JSON](HtmlBlock/get_html.agent.json) |\n| [`docs/HtmlBlock/get_tag_info.md`](HtmlBlock/get_tag_info.md) | [JSON](HtmlBlock/get_tag_info.agent.json) |\n| [`docs/HtmlBlock/iixml_to_html.md`](HtmlBlock/iixml_to_html.md) | [JSON](HtmlBlock/iixml_to_html.agent.json) |\n| [`docs/HtmlBlock/install.md`](HtmlBlock/install.md) | [JSON](HtmlBlock/install.agent.json) |\n| [`docs/HtmlBlockIntegration.md`](HtmlBlockIntegration.md) | [JSON](HtmlBlockIntegration.agent.json) |\n| [`docs/Markup.md`](Markup.md) | [JSON](Markup.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/closed_tag.md`](closed_tag.md) | [JSON](closed_tag.generated.agent.json) |\n| [`docs/debug_logging.md`](debug_logging.md) | [JSON](debug_logging.generated.agent.json) |\n| [`docs/doctype.md`](doctype.md) | [JSON](doctype.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n| [`docs/file_parser.md`](file_parser.md) | [JSON](file_parser.generated.agent.json) |\n| [`docs/get_file.md`](get_file.md) | [JSON](get_file.generated.agent.json) |\n| [`docs/get_string_token.md`](get_string_token.md) | [JSON](get_string_token.generated.agent.json) |\n| [`docs/inline_properties.md`](inline_properties.md) | [JSON](inline_properties.generated.agent.json) |\n| [`docs/inline_tag_mutation.md`](inline_tag_mutation.md) | [JSON](inline_tag_mutation.generated.agent.json) |\n| [`docs/input_validator.md`](input_validator.md) | [JSON](input_validator.generated.agent.json) |\n| [`docs/install.md`](install.md) | [JSON](install.generated.agent.json) |\n| [`docs/native.md`](native.md) | [JSON](native.generated.agent.json) |\n| [`docs/open_tag.md`](open_tag.md) | [JSON](open_tag.generated.agent.json) |\n| [`docs/parser.md`](parser.md) | [JSON](parser.generated.agent.json) |\n| [`docs/qt_object_api.md`](qt_object_api.md) | [JSON](qt_object_api.generated.agent.json) |\n",
+      "end_line": 47,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.agent.json) |\n| [`AGENTS.md`](../AGENTS.md) | [JSON](entrypoints/AGENTS.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.agent.json) |\n| [`docs/HtmlBlock/ModuleOverview.md`](HtmlBlock/ModuleOverview.md) | [JSON](HtmlBlock/ModuleOverview.agent.json) |\n| [`docs/HtmlBlock/PERFORMANCE.md`](HtmlBlock/PERFORMANCE.md) | [JSON](HtmlBlock/PERFORMANCE.agent.json) |\n| [`docs/HtmlBlock/README.md`](HtmlBlock/README.md) | [JSON](HtmlBlock/README.agent.json) |\n| [`docs/HtmlBlock/WindowsBuildAndRun.md`](HtmlBlock/WindowsBuildAndRun.md) | [JSON](HtmlBlock/WindowsBuildAndRun.agent.json) |\n| [`docs/HtmlBlock/block_html_serializer.md`](HtmlBlock/block_html_serializer.md) | [JSON](HtmlBlock/block_html_serializer.agent.json) |\n| [`docs/HtmlBlock/block_range_tracker.md`](HtmlBlock/block_range_tracker.md) | [JSON](HtmlBlock/block_range_tracker.agent.json) |\n| [`docs/HtmlBlock/combine_block.md`](HtmlBlock/combine_block.md) | [JSON](HtmlBlock/combine_block.agent.json) |\n| [`docs/HtmlBlock/delete_block.md`](HtmlBlock/delete_block.md) | [JSON](HtmlBlock/delete_block.agent.json) |\n| [`docs/HtmlBlock/divide_block.md`](HtmlBlock/divide_block.md) | [JSON](HtmlBlock/divide_block.agent.json) |\n| [`docs/HtmlBlock/documentation-structure.md`](HtmlBlock/documentation-structure.md) | [JSON](HtmlBlock/documentation-structure.agent.json) |\n| [`docs/HtmlBlock/examples.md`](HtmlBlock/examples.md) | [JSON](HtmlBlock/examples.agent.json) |\n| [`docs/HtmlBlock/flatten_block.md`](HtmlBlock/flatten_block.md) | [JSON](HtmlBlock/flatten_block.agent.json) |\n| [`docs/HtmlBlock/get_html.md`](HtmlBlock/get_html.md) | [JSON](HtmlBlock/get_html.agent.json) |\n| [`docs/HtmlBlock/get_tag_info.md`](HtmlBlock/get_tag_info.md) | [JSON](HtmlBlock/get_tag_info.agent.json) |\n| [`docs/HtmlBlock/iixml_to_html.md`](HtmlBlock/iixml_to_html.md) | [JSON](HtmlBlock/iixml_to_html.agent.json) |\n| [`docs/HtmlBlock/install.md`](HtmlBlock/install.md) | [JSON](HtmlBlock/install.agent.json) |\n| [`docs/HtmlBlockIntegration.md`](HtmlBlockIntegration.md) | [JSON](HtmlBlockIntegration.agent.json) |\n| [`docs/Markup.md`](Markup.md) | [JSON](Markup.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/closed_tag.md`](closed_tag.md) | [JSON](closed_tag.generated.agent.json) |\n| [`docs/debug_logging.md`](debug_logging.md) | [JSON](debug_logging.generated.agent.json) |\n| [`docs/doctype.md`](doctype.md) | [JSON](doctype.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n| [`docs/file_parser.md`](file_parser.md) | [JSON](file_parser.generated.agent.json) |\n| [`docs/get_file.md`](get_file.md) | [JSON](get_file.generated.agent.json) |\n| [`docs/get_string_token.md`](get_string_token.md) | [JSON](get_string_token.generated.agent.json) |\n| [`docs/inline_properties.md`](inline_properties.md) | [JSON](inline_properties.generated.agent.json) |\n| [`docs/inline_tag_mutation.md`](inline_tag_mutation.md) | [JSON](inline_tag_mutation.generated.agent.json) |\n| [`docs/input_validator.md`](input_validator.md) | [JSON](input_validator.generated.agent.json) |\n| [`docs/install.md`](install.md) | [JSON](install.generated.agent.json) |\n| [`docs/native.md`](native.md) | [JSON](native.generated.agent.json) |\n| [`docs/open_tag.md`](open_tag.md) | [JSON](open_tag.generated.agent.json) |\n| [`docs/parser.md`](parser.md) | [JSON](parser.generated.agent.json) |\n| [`docs/qt_object_api.md`](qt_object_api.md) | [JSON](qt_object_api.generated.agent.json) |\n",
       "columns": [
         "Document",
         "Agent JSON"
@@ -171,6 +171,10 @@
           "[JSON](Markup.agent.json)"
         ],
         [
+          "[`docs/SourceLayout.md`](SourceLayout.md)",
+          "[JSON](SourceLayout.agent.json)"
+        ],
+        [
           "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
           "[JSON](WindowsBuildAndRun.generated.agent.json)"
         ],
@@ -239,8 +243,8 @@
     {
       "id": "b000009",
       "kind": "html",
-      "start_line": 47,
-      "end_line": 47,
+      "start_line": 48,
+      "end_line": 48,
       "raw": "<!-- workspace-docs:document-map:end -->\n"
     }
   ],
@@ -562,227 +566,241 @@
       },
       {
         "block_id": "b000008",
+        "label": "`docs/SourceLayout.md`",
+        "target": "SourceLayout.md",
+        "kind": "relative",
+        "line": 31
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "SourceLayout.agent.json",
+        "kind": "relative",
+        "line": 31
+      },
+      {
+        "block_id": "b000008",
         "label": "`docs/WindowsBuildAndRun.md`",
         "target": "WindowsBuildAndRun.md",
         "kind": "relative",
-        "line": 31
+        "line": 32
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "WindowsBuildAndRun.generated.agent.json",
         "kind": "relative",
-        "line": 31
+        "line": 32
       },
       {
         "block_id": "b000008",
         "label": "`docs/closed_tag.md`",
         "target": "closed_tag.md",
         "kind": "relative",
-        "line": 32
+        "line": 33
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "closed_tag.generated.agent.json",
         "kind": "relative",
-        "line": 32
+        "line": 33
       },
       {
         "block_id": "b000008",
         "label": "`docs/debug_logging.md`",
         "target": "debug_logging.md",
         "kind": "relative",
-        "line": 33
+        "line": 34
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "debug_logging.generated.agent.json",
         "kind": "relative",
-        "line": 33
+        "line": 34
       },
       {
         "block_id": "b000008",
         "label": "`docs/doctype.md`",
         "target": "doctype.md",
         "kind": "relative",
-        "line": 34
+        "line": 35
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "doctype.generated.agent.json",
         "kind": "relative",
-        "line": 34
+        "line": 35
       },
       {
         "block_id": "b000008",
         "label": "`docs/documentation-structure.md`",
         "target": "documentation-structure.md",
         "kind": "relative",
-        "line": 35
+        "line": 36
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "documentation-structure.generated.agent.json",
         "kind": "relative",
-        "line": 35
+        "line": 36
       },
       {
         "block_id": "b000008",
         "label": "`docs/file_parser.md`",
         "target": "file_parser.md",
         "kind": "relative",
-        "line": 36
+        "line": 37
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "file_parser.generated.agent.json",
         "kind": "relative",
-        "line": 36
+        "line": 37
       },
       {
         "block_id": "b000008",
         "label": "`docs/get_file.md`",
         "target": "get_file.md",
         "kind": "relative",
-        "line": 37
+        "line": 38
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "get_file.generated.agent.json",
         "kind": "relative",
-        "line": 37
+        "line": 38
       },
       {
         "block_id": "b000008",
         "label": "`docs/get_string_token.md`",
         "target": "get_string_token.md",
         "kind": "relative",
-        "line": 38
+        "line": 39
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "get_string_token.generated.agent.json",
         "kind": "relative",
-        "line": 38
+        "line": 39
       },
       {
         "block_id": "b000008",
         "label": "`docs/inline_properties.md`",
         "target": "inline_properties.md",
         "kind": "relative",
-        "line": 39
+        "line": 40
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "inline_properties.generated.agent.json",
         "kind": "relative",
-        "line": 39
+        "line": 40
       },
       {
         "block_id": "b000008",
         "label": "`docs/inline_tag_mutation.md`",
         "target": "inline_tag_mutation.md",
         "kind": "relative",
-        "line": 40
+        "line": 41
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "inline_tag_mutation.generated.agent.json",
         "kind": "relative",
-        "line": 40
+        "line": 41
       },
       {
         "block_id": "b000008",
         "label": "`docs/input_validator.md`",
         "target": "input_validator.md",
         "kind": "relative",
-        "line": 41
+        "line": 42
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "input_validator.generated.agent.json",
         "kind": "relative",
-        "line": 41
+        "line": 42
       },
       {
         "block_id": "b000008",
         "label": "`docs/install.md`",
         "target": "install.md",
         "kind": "relative",
-        "line": 42
+        "line": 43
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "install.generated.agent.json",
         "kind": "relative",
-        "line": 42
+        "line": 43
       },
       {
         "block_id": "b000008",
         "label": "`docs/native.md`",
         "target": "native.md",
         "kind": "relative",
-        "line": 43
+        "line": 44
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "native.generated.agent.json",
         "kind": "relative",
-        "line": 43
+        "line": 44
       },
       {
         "block_id": "b000008",
         "label": "`docs/open_tag.md`",
         "target": "open_tag.md",
         "kind": "relative",
-        "line": 44
+        "line": 45
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "open_tag.generated.agent.json",
         "kind": "relative",
-        "line": 44
+        "line": 45
       },
       {
         "block_id": "b000008",
         "label": "`docs/parser.md`",
         "target": "parser.md",
         "kind": "relative",
-        "line": 45
+        "line": 46
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "parser.generated.agent.json",
         "kind": "relative",
-        "line": 45
+        "line": 46
       },
       {
         "block_id": "b000008",
         "label": "`docs/qt_object_api.md`",
         "target": "qt_object_api.md",
         "kind": "relative",
-        "line": 46
+        "line": 47
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "qt_object_api.generated.agent.json",
         "kind": "relative",
-        "line": 46
+        "line": 47
       }
     ],
     "tables": [
@@ -876,6 +894,10 @@
           [
             "[`docs/Markup.md`](Markup.md)",
             "[JSON](Markup.agent.json)"
+          ],
+          [
+            "[`docs/SourceLayout.md`](SourceLayout.md)",
+            "[JSON](SourceLayout.agent.json)"
           ],
           [
             "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
