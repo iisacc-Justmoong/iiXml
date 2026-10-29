@@ -1,12 +1,10 @@
 #include <iiXml>
 
-#include <QTemporaryDir>
 #include <QtGlobal>
 #include <QString>
 #include <QStringList>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -40,22 +38,14 @@ bool saw(const QString& token) {
     return false;
 }
 
-void write_file(const QString& path, const std::string& content) {
-    std::ofstream file(path.toStdString(), std::ios::binary);
-    file << content;
-}
-
 void exercises_debug_logged_objects() {
-    QTemporaryDir directory;
-    expect(directory.isValid(), "temporary directory should be valid");
-    if (!directory.isValid()) {
-        return;
-    }
-
-    const QString parser_file = directory.filePath("parser.xml");
-    const QString validated_file = directory.filePath("validated.custom");
-    write_file(parser_file, "<number>42</number>");
-    write_file(validated_file, "<!Doctype XML>\n<XML><number>42</number></XML>");
+    const QString parser_file = "parser.xml";
+    const QString validated_file = "validated.custom";
+    const iiXml::IO::FileReader reader = [](const std::filesystem::path& path) -> std::optional<std::string> {
+        if (path == "parser.xml") return "<number>42</number>";
+        if (path == "validated.custom") return "<!Doctype XML>\n<XML><number>42</number></XML>";
+        return std::nullopt;
+    };
 
     OpenTag open_tag;
     std::vector<std::string> open_tags{"a", "b"};
@@ -84,7 +74,7 @@ void exercises_debug_logged_objects() {
     }
     parser.ParseTag("<number>42</number>");
 
-    iiXml::Parser::FileParser file_parser;
+    iiXml::Parser::FileParser file_parser(reader);
     const auto parsed_file =
         file_parser.ParseFile(std::filesystem::path(parser_file.toStdString()));
     file_parser.ParseFileInput(parser_file);
@@ -106,7 +96,7 @@ void exercises_debug_logged_objects() {
         validator.HasValidTagClosure("<XML><number>1</number></XML>");
     validator.ValidateInput("<!Doctype XML>\n<XML><number>1</number></XML>");
 
-    iiXml::Writer::GetFile get_file;
+    iiXml::Writer::GetFile get_file(reader);
     const auto parsed_xml = get_file.ParseXml("<!Doctype XML>\n<XML><number>1</number></XML>");
     const auto parsed_validated_file =
         get_file.ParseFile(std::filesystem::path(validated_file.toStdString()));
@@ -125,7 +115,7 @@ void exercises_debug_logged_objects() {
         parser.ParseAllDocumentResult("<root><child></root>");
     parser.ParseTag("<number>42</text>");
 
-    const QString missing_file = directory.filePath("missing.xml");
+    const QString missing_file = "missing.xml";
     const auto rejected_file =
         file_parser.ParseFile(std::filesystem::path(missing_file.toStdString()));
     file_parser.ParseFileInput(missing_file);

@@ -1,0 +1,293 @@
+{
+  "format": "iisacc.agent-document-index",
+  "schema_version": 1,
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "documentation_root": "docs",
+  "agent_schema": "docs/agent-document.schema.json",
+  "documents": [
+    {
+      "document_id": "urn:iisacc:document:cdbe9be5098991f7930f581a92f1f70a5a979ed0d907b4edbe42e419987de16b",
+      "source": "AGENT.md",
+      "agent_json": "docs/entrypoints/AGENT.agent.json",
+      "source_sha256": "26c9e26bea1229ce3f0005094b27cb094de28058e59b1b846f1cbdf2c9c19e89",
+      "role": "instructions"
+    },
+    {
+      "document_id": "urn:iisacc:document:b30bd0a9b72544b6ffdb225ef2d01916ffda457c9e6fd8fd22c1117fb706ad81",
+      "source": "AGENTS.md",
+      "agent_json": "docs/entrypoints/AGENTS.agent.json",
+      "source_sha256": "826aa4109dd5d4515b8ef7be1f56e318ea80fe241e66ddaed44d320befbefe2a",
+      "role": "compatibility"
+    },
+    {
+      "document_id": "urn:iisacc:document:07d3531473c7fefa9647754aacac0a435579957780dce64d75dfb7adb2de1d38",
+      "source": "README.md",
+      "agent_json": "docs/entrypoints/README.agent.json",
+      "source_sha256": "112a55dfe992615069bb38307ce7cf711b4c5ce6adee58ffc8f0e43c79a0681b",
+      "role": "overview"
+    },
+    {
+      "document_id": "urn:iisacc:document:1654bee984fd9e51b4a2371b0adedfa6b6fe71ed89fd53506708c5a74762a7fe",
+      "source": "docs/HtmlBlock/ModuleOverview.md",
+      "agent_json": "docs/HtmlBlock/ModuleOverview.agent.json",
+      "source_sha256": "409dc1e3a8e66d4441b85bfcda6b7c7e7886d42c0ae7ac8471b27da396f5729b",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:db96210a515c785dcf564d6495c0b339f88aef160ccbee1583154cbe69bdecb1",
+      "source": "docs/HtmlBlock/PERFORMANCE.md",
+      "agent_json": "docs/HtmlBlock/PERFORMANCE.agent.json",
+      "source_sha256": "446a58d46da8fbe0d957b4e5dbc73406e7974771d3dbe87d058e852963f5a439",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:07961f208f24a1cc90451c6ef08ae9999a4452dfbcc0674d1806fbe2987a8f06",
+      "source": "docs/HtmlBlock/README.md",
+      "agent_json": "docs/HtmlBlock/README.agent.json",
+      "source_sha256": "755d25e978d2b68403950557083f018a9a8bdca1070c99d04e43bb509958792d",
+      "role": "overview"
+    },
+    {
+      "document_id": "urn:iisacc:document:ac3d5456dc1f8b0d464930de08fb4e9f7a0a0c4f77bcbb4e6a8eb03273789c05",
+      "source": "docs/HtmlBlock/WindowsBuildAndRun.md",
+      "agent_json": "docs/HtmlBlock/WindowsBuildAndRun.agent.json",
+      "source_sha256": "4c04f60b662c91e8e0577dcd868ae0f81cefc623063e13bff044b6e6406a7a84",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:db1da03d34d1436da5e4069f8be1379d40b8de832cd1d3840ef7ae10de485e68",
+      "source": "docs/HtmlBlock/block_html_serializer.md",
+      "agent_json": "docs/HtmlBlock/block_html_serializer.agent.json",
+      "source_sha256": "fca544d07203441ca3f836ec421578806fbf64e8263ddf979b1970222211018c",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:355d047ee16b4051a466786741ea479f693423add1b6f42fff01de1071a5a1ad",
+      "source": "docs/HtmlBlock/block_range_tracker.md",
+      "agent_json": "docs/HtmlBlock/block_range_tracker.agent.json",
+      "source_sha256": "03fd249125b81705a27a72439616bc814b122570ff465385929c298c98e99461",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:64073763b4e918915ec1ecb2726e439e4bfabb6a0893089e91acfdbb7d36474c",
+      "source": "docs/HtmlBlock/combine_block.md",
+      "agent_json": "docs/HtmlBlock/combine_block.agent.json",
+      "source_sha256": "62dbaef0bd57a232b448fa8672002468a30aab4c3fc809a0a573712b42cded79",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:2828cf9d141224206647583e96d18f5a64d4006059aa98540baabc01a29f7204",
+      "source": "docs/HtmlBlock/delete_block.md",
+      "agent_json": "docs/HtmlBlock/delete_block.agent.json",
+      "source_sha256": "c37cb852f3727914a200eb4d352c109aa1d2cf3d42c75621b76d051e4fc26d08",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:80c319cdbe0c8e3f0d800959b4526a35884d2f7033789c1f6f225a1e44ada12d",
+      "source": "docs/HtmlBlock/divide_block.md",
+      "agent_json": "docs/HtmlBlock/divide_block.agent.json",
+      "source_sha256": "b95b75d6fcf41f33b01634e5cdd52d767675a7594f2938b71a0749e1808a10b8",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:93c4f5a78a0b5536205dbd1a6acaebd9bf7d516ce21261d0624302a7a9ccba2b",
+      "source": "docs/HtmlBlock/documentation-structure.md",
+      "agent_json": "docs/HtmlBlock/documentation-structure.agent.json",
+      "source_sha256": "70afc1c79a8550cb5194aeeef3bd144cf0d3a7321ee40703c9df6189ba171c1a",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:5d6191c25ba98e2d722498b11da604866af5e54b19dfbb26820c2ce344cc58db",
+      "source": "docs/HtmlBlock/examples.md",
+      "agent_json": "docs/HtmlBlock/examples.agent.json",
+      "source_sha256": "a4982e17edc5b2a83615bf956d9ec5602ba34417cb2b05a88f20ed9b7b10e8ee",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:207d38968c4bffddcbd277d4b2d0e44042b276859959aba203059aaca81e4d92",
+      "source": "docs/HtmlBlock/flatten_block.md",
+      "agent_json": "docs/HtmlBlock/flatten_block.agent.json",
+      "source_sha256": "9b5e983966f3e3eae5cbfeb0097cc5a3bb961653597f04e9f18f7a47808c4fa3",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:c681f9b1daad8a222133bea029da22bbb54ca36919e1898eedfa80ba93653d80",
+      "source": "docs/HtmlBlock/get_html.md",
+      "agent_json": "docs/HtmlBlock/get_html.agent.json",
+      "source_sha256": "a602ef904dd38dd662bc3acd79800160d5a25dce629e840d14b5be12f8fc150d",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:d5f13fb3053bb2e4c3f8edbe5d4b241f9381d0da13e819e0e52e8e1a074f085c",
+      "source": "docs/HtmlBlock/get_tag_info.md",
+      "agent_json": "docs/HtmlBlock/get_tag_info.agent.json",
+      "source_sha256": "795b1ee34083726e922a78cc039f3daaa1a82cf9b70f2d301d0c682c9d447cfe",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:bba4fea35ad61098aa7abafa4061c143b7141ebb47e669e6368ab38c9d421fc5",
+      "source": "docs/HtmlBlock/iixml_to_html.md",
+      "agent_json": "docs/HtmlBlock/iixml_to_html.agent.json",
+      "source_sha256": "6a6d415eb91144df2635d1afa84fc2dd01a3f560945af25bd072045c1a374d94",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:8e6a0a3490f462ead56c460cf6025bc5521cf35c5c50b26581b24b022082b5eb",
+      "source": "docs/HtmlBlock/install.md",
+      "agent_json": "docs/HtmlBlock/install.agent.json",
+      "source_sha256": "2fb89306a8330f3874d97471b989d83a2000e9727767449a13a2f873dd4f16ec",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:d5649de85d28c88d59efa471569041d05731fb11851d8a905c79ad0d6e5183a8",
+      "source": "docs/HtmlBlockIntegration.md",
+      "agent_json": "docs/HtmlBlockIntegration.agent.json",
+      "source_sha256": "9c80b31eafa3ef08f4325f62b53363ca98c4a8b654a7fd366dcecfe861029c77",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:18cc0279d726982c887df010e8179530fc8e579eb904241029a408f66921f298",
+      "source": "docs/Markup.md",
+      "agent_json": "docs/Markup.agent.json",
+      "source_sha256": "62f500c8a2555c7364d53da5e80e1eb768678ac5f62f31ba6743e65cd43e8533",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:39d535c95d899ef7544fae170e907cc8cce6c6ce09df7553a7001d4b4d78695c",
+      "source": "docs/README.md",
+      "agent_json": "docs/README.generated.agent.json",
+      "source_sha256": "d85839cb74df6e44b79945ce6aab9a19fac07954162e85f3b7df98e78cd00a89",
+      "role": "overview"
+    },
+    {
+      "document_id": "urn:iisacc:document:8fb52fcdc6ce0169728e04baea38c2c6f7fc6026e4168209c7e3a0d5d319c928",
+      "source": "docs/WindowsBuildAndRun.md",
+      "agent_json": "docs/WindowsBuildAndRun.generated.agent.json",
+      "source_sha256": "b12b90a304dc0b5ffcae36769df1832a0ca4e07886eff193a61575a17a0c7ef2",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:7b70bc8d69a41260f56b44d56753340e7decfa73e797e99e338fca6a866a1a43",
+      "source": "docs/closed_tag.md",
+      "agent_json": "docs/closed_tag.generated.agent.json",
+      "source_sha256": "2e17f22e07f4a492b61cc202d520a3c0a6b81097c9e5b14469af829048ee8106",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:bc4ac35f307fb21a1a5a7d8a28b6a0cc1394d01f2fb9341a948c31dd3fdc997a",
+      "source": "docs/debug_logging.md",
+      "agent_json": "docs/debug_logging.generated.agent.json",
+      "source_sha256": "25756ceeffcb6ca4ac6094068683552fd3a54735087464176b8aae25b6d0ad92",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:e49406a0002be82eb05b53ceb7c0f45ac016539f66ebd393b946820caf84db85",
+      "source": "docs/doctype.md",
+      "agent_json": "docs/doctype.generated.agent.json",
+      "source_sha256": "fd5afd1f9345cbc81a13e8c0dae4c91a3427f369f6399c82f6b312ae83099678",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:6fafd0202d3e8a4409238f09208ac76720cbb2a22d531fc63b6fd063f11852ed",
+      "source": "docs/documentation-structure.md",
+      "agent_json": "docs/documentation-structure.generated.agent.json",
+      "source_sha256": "1cfb62de79fed1604b31f7fa9d26fb697ad95b380f5cfcca5227d224c637a41d",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:1e1d76b0252629dedfad3a3f9f7f39b85eaf0466c6a4c666213cc1c00954f685",
+      "source": "docs/file_parser.md",
+      "agent_json": "docs/file_parser.generated.agent.json",
+      "source_sha256": "5476e2a68006de598ffeea56f7ad6ee17cd4d99eac417698cf9e61e58f12c12a",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:d010f74e9dfd587dc8e3eaa9d3b8a1438f3e7aec89313eaba4ebbbad9fcd0880",
+      "source": "docs/get_file.md",
+      "agent_json": "docs/get_file.generated.agent.json",
+      "source_sha256": "d67fdee0290254c61f5b4cbbab4619b028381a2b212b1de5e9193724577b09b8",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:3e59079728e203d99fe09ac966aeb841d1148056e785b675098cfc91bc58314f",
+      "source": "docs/get_string_token.md",
+      "agent_json": "docs/get_string_token.generated.agent.json",
+      "source_sha256": "1216b98003fd7651091ba17876996f4933d6534f0ab65caf9f4082d1f2387105",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:45683c8fceca6ba59fa00b5e7b4873c75cd5290b4c088ce31bb7e7239bf11e25",
+      "source": "docs/inline_properties.md",
+      "agent_json": "docs/inline_properties.generated.agent.json",
+      "source_sha256": "1bd087091bb09e2e498ecf511a3f39fae20a87dd5b46d4f95d9274c3e6241393",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:493a224f99a7220444f16cbe1d3bd3e6730a3f3c0e7af9c905bfea69a65a7344",
+      "source": "docs/inline_tag_mutation.md",
+      "agent_json": "docs/inline_tag_mutation.generated.agent.json",
+      "source_sha256": "d4e562644d8b6083c844c9fc9f7bd4328fbf1b38d0fccc722e6f86bf9a9d569c",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:e2f4b0ffbca0210cbab024d54136f6a1a951c466686c4faa8874740eac20051d",
+      "source": "docs/input_validator.md",
+      "agent_json": "docs/input_validator.generated.agent.json",
+      "source_sha256": "108104399be2baea97b867425cfd7357b16662638921331ad70c8109cb5ca778",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:f6b0b7b9e8831cf14699a7551a2a0360c26bbd265329d5c24e3945db7ef18d27",
+      "source": "docs/install.md",
+      "agent_json": "docs/install.generated.agent.json",
+      "source_sha256": "a5d90dcd081e9d43862d389faadb7c8654f3116477ab491441352d4191cc4047",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:5f73d095794e9fbaf89609312031829f51fd48ce6f62a4a298e28350789fbc3d",
+      "source": "docs/native.md",
+      "agent_json": "docs/native.generated.agent.json",
+      "source_sha256": "865e45f560ae23be42ecf852ad9d16c9ff57bcd440788e4c5d83e4deca365e82",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:98cd20520142f2aa78466120f1b0314871d763bc8ba4273ec1d84eb550c6b5ca",
+      "source": "docs/open_tag.md",
+      "agent_json": "docs/open_tag.generated.agent.json",
+      "source_sha256": "a86522555474f38d6b8ed3e8ceea21c0e5e2a45380d7771436e2a9bb61d6bdba",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:a1978167050b66698c7130ccc66012d9931f0ee4be60b91e8193658cb7320ad2",
+      "source": "docs/parser.md",
+      "agent_json": "docs/parser.generated.agent.json",
+      "source_sha256": "982ceae427ec525f0c91921a9f9ac5717edb65c651b905033147f8d74dbd1450",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:698406bf744b99e91265c39ba607aa957ba5d9285142087be1768e4229293c14",
+      "source": "docs/qt_object_api.md",
+      "agent_json": "docs/qt_object_api.generated.agent.json",
+      "source_sha256": "43fdb151131145c4981e536e40d25bb0f94c35e7e15a1849094d2f8cb3d5f8e7",
+      "role": "reference"
+    }
+  ],
+  "layout": {
+    "human_entry": "README.md",
+    "agent_entry": "AGENT.md",
+    "human_format": "markdown",
+    "agent_format": "structured_json",
+    "source_authority": "markdown"
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -4,12 +4,7 @@ project(iiXml VERSION 0.1.1 LANGUAGES CXX)
 # The native package is selectable without discovering any Qt package. Existing
 # source consumers retain the legacy API unless they opt out explicitly.
 option(IIXML_BUILD_QT_API "Build the legacy QObject XML API" ON)
-include(CTest)
-add_subdirectory(Native)
-if(NOT IIXML_BUILD_QT_API)
-    return()
-endif()
-
+option(IIXML_BUILD_HTML_BLOCK "Build the integrated HTML block component" ON)
 if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(_sdk_home "$ENV{HOME}")
     if(_sdk_home STREQUAL "")
@@ -19,8 +14,13 @@ if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         "Installation prefix for iiXml." FORCE)
     unset(_sdk_home)
 endif()
+include(CTest)
+add_subdirectory(Native)
+if(NOT IIXML_BUILD_QT_API)
+    return()
+endif()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
@@ -44,45 +44,111 @@ if(EXISTS "/Volumes/Storage/Qt/6.8.3/macos/lib/cmake/Qt6/Qt6Config.cmake")
     list(PREPEND CMAKE_PREFIX_PATH "/Volumes/Storage/Qt/6.8.3/macos")
 endif()
 
-find_package(iiFileProvider 0.5.0 CONFIG REQUIRED HINTS "$ENV{HOME}/.local/SDK/iiFileProvider")
 find_package(Qt6 6.8.3 EXACT REQUIRED COMPONENTS Core)
 
 add_library(iiXml ${IIXML_LIBRARY_TYPE}
-    iiXml.cpp
-    Src/Elements/ClosedTag.cpp
-    Src/Elements/ClosedTag.h
-    Src/Elements/Doctype.cpp
-    Src/Elements/Doctype.h
-    Src/Elements/InlineProperties.cpp
-    Src/Elements/InlineProperties.h
-    Src/Elements/OpenTag.cpp
-    Src/Elements/OpenTag.h
-    Src/Parser/FileParser.cpp
-    Src/Parser/FileParser.h
-    Src/Parser/TagParser.cpp
-    Src/Parser/TagParser.h
-    Src/Mutation/InlineTagMutation.cpp
-    Src/Mutation/InlineTagMutation.h
-    Src/Input/GetFile.cpp
-    Src/Input/GetFile.h
-    Src/Input/GetStringToken.cpp
-    Src/Input/GetStringToken.h
-    Src/Input/InputValidator.cpp
-    Src/Input/InputValidator.h
-    Src/Logging/XmlLog.cpp
-    Src/Logging/XmlLog.h
+    src/iiXml.cpp
+    src/Elements/ClosedTag.cpp
+    src/Elements/ClosedTag.h
+    src/Elements/Doctype.cpp
+    src/Elements/Doctype.h
+    src/Elements/InlineProperties.cpp
+    src/Elements/InlineProperties.h
+    src/Elements/OpenTag.cpp
+    src/Elements/OpenTag.h
+    src/Parser/FileParser.cpp
+    src/Parser/FileParser.h
+    src/Parser/TagParser.cpp
+    src/Parser/TagParser.h
+    src/Mutation/InlineTagMutation.cpp
+    src/Mutation/InlineTagMutation.h
+    src/Input/GetFile.cpp
+    src/Input/GetFile.h
+    src/Input/FileReader.h
+    src/Input/GetStringToken.cpp
+    src/Input/GetStringToken.h
+    src/Input/InputValidator.cpp
+    src/Input/InputValidator.h
+    src/Logging/XmlLog.cpp
+    src/Logging/XmlLog.h
 )
 
+# Preserve historical <Src/...> consumers with forwarding headers. All installed
+# spellings resolve to one canonical header, including on case-sensitive hosts.
+file(GLOB_RECURSE _iixml_headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+foreach(_header IN LISTS _iixml_headers)
+    file(RELATIVE_PATH _relative "${CMAKE_CURRENT_SOURCE_DIR}/src" "${_header}")
+    if(_relative MATCHES "^Html/" AND NOT IIXML_BUILD_HTML_BLOCK)
+        continue()
+    endif()
+    set(_canonical "${_relative}")
+    set(_compat_kind xml)
+    if(_relative MATCHES "^Html/(.*)$")
+        set(_relative "${CMAKE_MATCH_1}")
+        set(_compat_kind html)
+    endif()
+    get_filename_component(_directory "${CMAKE_CURRENT_BINARY_DIR}/compat/Src/${_relative}" DIRECTORY)
+    file(MAKE_DIRECTORY "${_directory}")
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/compat/Src/${_relative}"
+        "#pragma once\n#include <src/${_canonical}>\n")
+    foreach(_output "src/${_canonical}" "Src/${_relative}")
+        get_filename_component(_directory "${CMAKE_CURRENT_BINARY_DIR}/install-compat/${_compat_kind}/${_output}" DIRECTORY)
+        file(MAKE_DIRECTORY "${_directory}")
+        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/install-compat/${_compat_kind}/${_output}"
+            "#pragma once\n#include <iiXmlDetail/${_canonical}>\n")
+    endforeach()
+endforeach()
+foreach(_name iiXml iiHtmlBlock)
+    if(_name STREQUAL "iiHtmlBlock")
+        set(_canonical "Html/iiHtmlBlock.h")
+    else()
+        set(_canonical "iiXml.h")
+    endif()
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots")
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/${_name}.h"
+        "#pragma once\n#include <iiXmlDetail/${_canonical}>\n")
+endforeach()
+
 target_include_directories(iiXml PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/compat>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_link_libraries(iiXml PRIVATE iiFileProvider::iiFileProvider)
-set_target_properties(iiXml PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_target_properties(iiXml PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE IMPORTED_NO_SYSTEM TRUE)
 target_link_libraries(iiXml PUBLIC
     Qt6::Core
 )
+
+if(IIXML_BUILD_HTML_BLOCK)
+    file(GLOB_RECURSE _html_sources CONFIGURE_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Html/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Html/*.h")
+    add_library(iiXmlHtmlBlock ${IIXML_LIBRARY_TYPE} ${_html_sources})
+    add_library(iiXml::HtmlBlock ALIAS iiXmlHtmlBlock)
+    add_library(iiHtmlBlock::iiHtmlBlock ALIAS iiXmlHtmlBlock)
+    set_target_properties(iiXmlHtmlBlock PROPERTIES EXPORT_NAME HtmlBlock INSTALL_RPATH_USE_LINK_PATH TRUE IMPORTED_NO_SYSTEM TRUE)
+    target_compile_features(iiXmlHtmlBlock PUBLIC cxx_std_23)
+    target_include_directories(iiXmlHtmlBlock PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/Html>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/compat>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+    target_link_libraries(iiXmlHtmlBlock PUBLIC iiXml Qt6::Core)
+    install(TARGETS iiXmlHtmlBlock EXPORT iiXmlTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(FILES src/Html/iiHtmlBlock "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/iiHtmlBlock.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY src/Html/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXmlDetail/Html FILES_MATCHING PATTERN "*.h")
+    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/install-compat/html/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
+    configure_package_config_file(cmake/iiHtmlBlockConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake VERSION 0.1.1 COMPATIBILITY SameMajorVersion)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
+endif()
 
 install(TARGETS iiXml
     EXPORT iiXmlTargets
@@ -91,14 +157,20 @@ install(TARGETS iiXml
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-install(FILES iiXml iiXml.h
+install(FILES src/iiXml "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/iiXml.h"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(DIRECTORY Src/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Src
-    FILES_MATCHING PATTERN "*.h"
+install(DIRECTORY src/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXmlDetail
+    FILES_MATCHING PATTERN "*.h" PATTERN "Html" EXCLUDE
 )
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/install-compat/xml/"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
+install(FILES README.md AGENT.md AGENTS.md LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/iiXml)
+install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DATADIR}/iiXml/docs
+    FILES_MATCHING PATTERN "*.md" PATTERN "*.json" PATTERN "*.iisacc.json" EXCLUDE
+    PATTERN ".*.iisacc-preview" EXCLUDE PATTERN ".iisacc-temporary.lock" EXCLUDE)
 
 install(EXPORT iiXmlTargets
     FILE iiXmlTargets.cmake
@@ -132,6 +204,41 @@ install(FILES
 )
 
 enable_testing()
+if(BUILD_TESTING)
+    add_executable(iiXmlMarkupQtCoexistence Test/markup_qt_coexistence_test.cpp)
+    target_link_libraries(iiXmlMarkupQtCoexistence PRIVATE iiXml iiXml::Markup)
+    add_test(NAME iiXml.Markup.QtCoexistence COMMAND iiXmlMarkupQtCoexistence)
+endif()
+
+if(IIXML_BUILD_HTML_BLOCK)
+    add_executable(HtmlBlockMerge_test tests/HtmlBlockMerge.cpp)
+    target_link_libraries(HtmlBlockMerge_test PRIVATE iiXml::HtmlBlock)
+    add_test(NAME iiXml.HtmlBlockMerge COMMAND HtmlBlockMerge_test)
+    foreach(_case GetTagInfo GetHTML iiXmlToHTML DivideBlock BlockRangeTracker
+            BlockHTMLSerializer DeleteBlock CombineBlock FlattenBlock umbrella_header)
+        add_executable(iiXmlHtml_${_case}_test tests/html/${_case}_test.cpp)
+        target_link_libraries(iiXmlHtml_${_case}_test PRIVATE iiXml::HtmlBlock)
+        if(MSVC)
+            target_compile_options(iiXmlHtml_${_case}_test PRIVATE /UNDEBUG)
+        else()
+            target_compile_options(iiXmlHtml_${_case}_test PRIVATE -UNDEBUG)
+        endif()
+        add_test(NAME iiXml.HtmlBlock.${_case} COMMAND iiXmlHtml_${_case}_test)
+    endforeach()
+    add_executable(iiXmlHtmlExample example/HtmlBlock/ParsedXmlHtmlExample.cpp)
+    target_link_libraries(iiXmlHtmlExample PRIVATE iiXml::HtmlBlock)
+    if(MSVC)
+        target_compile_options(iiXmlHtmlExample PRIVATE /UNDEBUG)
+    else()
+        target_compile_options(iiXmlHtmlExample PRIVATE -UNDEBUG)
+    endif()
+    add_test(NAME iiXml.HtmlBlock.example COMMAND iiXmlHtmlExample)
+    add_test(NAME iiXml.HtmlBlock.installed_consumer
+        COMMAND ${CMAKE_COMMAND} "-DIIXML_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}"
+            "-DIIXML_BINARY=${CMAKE_CURRENT_BINARY_DIR}" "-DQT6_DIR=${Qt6_DIR}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/html/installed_consumer.cmake")
+    set_tests_properties(iiXml.HtmlBlock.installed_consumer PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
+endif()
 
 add_executable(parser_test
     Test/parser_test.cpp
@@ -145,9 +252,12 @@ add_executable(file_parser_test
     Test/file_parser_test.cpp
 )
 
-target_link_libraries(file_parser_test PRIVATE iiXml iiFileProvider::iiFileProvider)
+target_link_libraries(file_parser_test PRIVATE iiXml)
 
 add_test(NAME file_parser_test COMMAND file_parser_test)
+
+add_test(NAME iiXml.sdk_boundary COMMAND ${CMAKE_COMMAND}
+    "-DIIXML_SOURCE=${CMAKE_CURRENT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/Test/sdk_boundary_test.cmake")
 
 add_executable(doctype_test
     Test/doctype_test.cpp

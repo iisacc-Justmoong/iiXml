@@ -1,0 +1,248 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:5d6191c25ba98e2d722498b11da604866af5e54b19dfbb26820c2ce344cc58db",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/examples.md",
+    "sha256": "a4982e17edc5b2a83615bf956d9ec5602ba34417cb2b05a88f20ed9b7b10e8ee",
+    "bytes": 1258,
+    "line_count": 31,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "예제",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 예제\n",
+      "level": 1,
+      "title": "예제"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 4,
+      "raw": "`Example/ParsedXmlHtmlExample.cpp`는 `#include <iiHtmlBlock>` 하나로 파싱된 XML과\nHTML 블록 API를 함께 사용하는 흐름을 보여준다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "## ParsedXmlHtmlExample\n",
+      "level": 2,
+      "title": "ParsedXmlHtmlExample"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "예제는 다음 순서로 동작한다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "list",
+      "start_line": 10,
+      "end_line": 17,
+      "raw": "- `iiHtmlBlock::GetTagInfo`로 XML/iiXml 태그 range와 루트 태그를 조회한다.\n- `iiHtmlBlock::GetHTML`로 XML/iiXml 입력을 HTML 문자열로 변환한다.\n- `iiHtmlBlock::DivideBlock`으로 변환된 HTML 요소 중 블록 요소를 판정한다.\n- `iiHtmlBlock::BlockRangeTracker`로 블록을 원문 range와 추적 ID 기준으로 조회한다.\n- `iiHtmlBlock::BlockHTMLSerializer`로 분할/병합 결과를 HTML 문자열로 직렬화한다.\n- `iiHtmlBlock::DeleteBlock`으로 선택한 블록을 HTML 문자열에서 제거한다.\n- `iiHtmlBlock::CombineBlock`으로 선택한 여러 블록을 하나의 논리 블록으로 병합 취급한다.\n- `iiHtmlBlock::FlattenBlock`으로 전체 블록을 하나의 상위 레이어 블록으로 묶는다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::GetTagInfo`로 XML/iiXml 태그 range와 루트 태그를 조회한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::GetHTML`로 XML/iiXml 입력을 HTML 문자열로 변환한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::DivideBlock`으로 변환된 HTML 요소 중 블록 요소를 판정한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::BlockRangeTracker`로 블록을 원문 range와 추적 ID 기준으로 조회한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::BlockHTMLSerializer`로 분할/병합 결과를 HTML 문자열로 직렬화한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::DeleteBlock`으로 선택한 블록을 HTML 문자열에서 제거한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::CombineBlock`으로 선택한 여러 블록을 하나의 논리 블록으로 병합 취급한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiHtmlBlock::FlattenBlock`으로 전체 블록을 하나의 상위 레이어 블록으로 묶는다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "## 실행\n",
+      "level": 2,
+      "title": "실행"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "fenced_code",
+      "start_line": 21,
+      "end_line": 25,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build --target ParsedXmlHtmlExample\n./build/ParsedXmlHtmlExample\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build --target ParsedXmlHtmlExample\n./build/ParsedXmlHtmlExample\n",
+      "closed": true
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "예제는 CTest에도 등록되어 있어 전체 검증에서 함께 실행된다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 29,
+      "end_line": 31,
+      "raw": "```sh\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "ctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "예제",
+      "anchor": "예제",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "ParsedXmlHtmlExample",
+      "anchor": "parsedxmlhtmlexample",
+      "start_line": 6
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "실행",
+      "anchor": "실행",
+      "start_line": 19
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000013",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build --target ParsedXmlHtmlExample\n./build/ParsedXmlHtmlExample\n"
+      },
+      {
+        "block_id": "b000017",
+        "language": "sh",
+        "code": "ctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

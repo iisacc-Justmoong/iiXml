@@ -1,0 +1,275 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:db1da03d34d1436da5e4069f8be1379d40b8de832cd1d3840ef7ae10de485e68",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/block_html_serializer.md",
+    "sha256": "fca544d07203441ca3f836ec421578806fbf64e8263ddf979b1970222211018c",
+    "bytes": 1943,
+    "line_count": 53,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "BlockHTMLSerializer",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# BlockHTMLSerializer\n",
+      "level": 1,
+      "title": "BlockHTMLSerializer"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 5,
+      "raw": "`Src/Modifier/BlockHTMLSerializer.h`와 `Src/Modifier/BlockHTMLSerializer.cpp`는\n`DivideBlock`의 분할 결과와 `CombineBlock`의 병합 결과를 HTML 문자열 조각으로\n직렬화하는 Modifier 모듈이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 19,
+      "raw": "- `SerializeBlocks()`는 `DivideBlock::ElementInfo` 목록을 문서 순서로 직렬화한다.\n- 중첩 블록이 함께 들어온 경우 이미 출력된 상위 블록 range에 포함된 하위 블록은\n  중복 출력하지 않는다.\n- `SerializeCombinedBlocks()`는 `CombineBlock::CombinedBlock` 목록을 논리 병합 블록\n  조각으로 직렬화한다.\n- `SerializeMergedBlocks()`는 원본 분할 블록 목록에 병합 결과를 적용한 뒤 직렬화한다.\n  병합된 source index는 원본 블록으로 다시 출력하지 않고 `CombinedBlock::raw`로 대체한다.\n- 병합 source index가 원본 블록 범위를 벗어나거나 range가 뒤집힌 입력은 실패하고\n  `GetError()`에 실패 사유를 저장한다.\n- 이 객체는 루트 태그나 비블록 인라인 노드를 새로 생성하지 않는다. 입력된 블록/병합 결과가\n  가진 `raw` 조각을 안정적으로 HTML 문자열로 재구성하는 책임만 가진다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`SerializeBlocks()`는 `DivideBlock::ElementInfo` 목록을 문서 순서로 직렬화한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "중첩 블록이 함께 들어온 경우 이미 출력된 상위 블록 range에 포함된 하위 블록은",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`SerializeCombinedBlocks()`는 `CombineBlock::CombinedBlock` 목록을 논리 병합 블록",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`SerializeMergedBlocks()`는 원본 분할 블록 목록에 병합 결과를 적용한 뒤 직렬화한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "병합 source index가 원본 블록 범위를 벗어나거나 range가 뒤집힌 입력은 실패하고",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "이 객체는 루트 태그나 비블록 인라인 노드를 새로 생성하지 않는다. 입력된 블록/병합 결과가",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 23,
+      "end_line": 39,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::CombineBlock combiner;\niiHtmlBlock::BlockHTMLSerializer serializer;\n\nif (divider.Parse(\"<XML><p>One</p><p>Two</p></XML>\")) {\n    combiner.SetBlocks(divider.GetBlockElements());\n    combiner.SelectRange(0, 1);\n\n    if (combiner.CombineSelected()) {\n        serializer.SerializeCombinedBlocks(combiner.GetCombinedBlocks());\n        // serializer.GetHTMLText() == \"<p>One</p><p>Two</p>\"\n    }\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::CombineBlock combiner;\niiHtmlBlock::BlockHTMLSerializer serializer;\n\nif (divider.Parse(\"<XML><p>One</p><p>Two</p></XML>\")) {\n    combiner.SetBlocks(divider.GetBlockElements());\n    combiner.SelectRange(0, 1);\n\n    if (combiner.CombineSelected()) {\n        serializer.SerializeCombinedBlocks(combiner.GetCombinedBlocks());\n        // serializer.GetHTMLText() == \"<p>One</p><p>Two</p>\"\n    }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "분할 결과만 직렬화할 수도 있다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 43,
+      "end_line": 45,
+      "raw": "```cpp\nserializer.SerializeBlocks(divider.GetBlockElements());\n```\n",
+      "language": "cpp",
+      "code": "serializer.SerializeBlocks(divider.GetBlockElements());\n",
+      "closed": true
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "heading",
+      "start_line": 47,
+      "end_line": 47,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 49,
+      "end_line": 53,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "BlockHTMLSerializer",
+      "anchor": "blockhtmlserializer",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 7
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 21
+    },
+    {
+      "block_id": "b000017",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 47
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000007",
+        "line": 11,
+        "text": "중복 출력하지 않는다.",
+        "basis": "lexical_match",
+        "context": "list"
+      },
+      {
+        "block_id": "b000007",
+        "line": 18,
+        "text": "- 이 객체는 루트 태그나 비블록 인라인 노드를 새로 생성하지 않는다. 입력된 블록/병합 결과가",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000019",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

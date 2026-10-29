@@ -1,0 +1,1474 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:30a0363b93a06d1816038d9b5c630b99757064eb994c1f04abbb86f4caa761f4",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "Docs/qt_object_api.md",
+    "sha256": "43fdb151131145c4981e536e40d25bb0f94c35e7e15a1849094d2f8cb3d5f8e7",
+    "bytes": 6391,
+    "line_count": 203,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "Qt 객체 API",
+    "role": "reference",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "html",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "<a id=\"qt-object-api\"></a>\n"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "heading",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "# Qt 객체 API\n",
+      "level": 1,
+      "title": "Qt 객체 API"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "iiXml의 주요 객체는 Qt 프로젝트에서 직접 연결할 수 있도록 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "heading",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "## 공통 정책\n",
+      "level": 2,
+      "title": "공통 정책"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 12,
+      "raw": "- Qt 6.8.3 `Core` 모듈을 기준으로 빌드한다.\n- CMake는 `/Volumes/Storage/Qt/6.8.3/macos`를 Qt 탐색 경로 앞에 추가한다.\n- 동기 API와 Qt 슬롯/시그널 API를 함께 제공한다. 검증/입력 API의 실패는 상태와 비어 있지 않은 사유 문자열로 반환하거나 방출한다.\n- 모든 라이브러리 객체 생성자와 public 메서드는 `QDebug`/`qDebug()`로 디버깅 로그를 출력한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "Qt 6.8.3 `Core` 모듈을 기준으로 빌드한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "CMake는 `/Volumes/Storage/Qt/6.8.3/macos`를 Qt 탐색 경로 앞에 추가한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "동기 API와 Qt 슬롯/시그널 API를 함께 제공한다. 검증/입력 API의 실패는 상태와 비어 있지 않은 사유 문자열로 반환하거나 방출한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "모든 라이브러리 객체 생성자와 public 메서드는 `QDebug`/`qDebug()`로 디버깅 로그를 출력한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "## TagParser\n",
+      "level": 2,
+      "title": "TagParser"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "`iiXml::Parser::TagParser`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "list",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "- `ParseTag(const QString& input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ParseTag(const QString& input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "동기 API:\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "list",
+      "start_line": 24,
+      "end_line": 29,
+      "raw": "- `Parse(std::string_view Input)`\n- `ParseResult(std::string_view Input)`\n- `ParseAll(std::string_view Input)`\n- `ParseAllResult(std::string_view Input)`\n- `ParseAllDocument(std::string_view Input)`\n- `ParseAllDocumentResult(std::string_view Input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parse(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseResult(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAll(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllResult(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllDocument(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllDocumentResult(std::string_view Input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "`ParseAll()`은 `OpenTag`의 교차 종료 정책을 사용하여 `<a><b></a></b>`에서도 `a`와 `b`를 모두 반환한다. 반환 타입은 `std::vector<TagNode>`이며, 각 노드는 `Range`, `Fields`, `Children`을 가진다. `Value/Raw` 문자열과 field 값은 복사하지 않고 원본 입력의 offset 범위로 제공한다.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 33,
+      "end_line": 33,
+      "raw": "Result API는 `TagParseResult`와 `TagTreeParseResult`를 반환한다. 각 Result는 `Status`, 성공 payload(`Token` 또는 `Nodes`), 실패 위치를 담은 `Diagnostic`을 가진다.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 34,
+      "end_line": 34,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "paragraph",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "`ParseAllDocument()`와 `ParseAllDocumentResult()`는 range 기반 결과를 `TagDocument`로 감싼다. `TagDocument`는 입력 원문을 `Source`에 한 번만 소유하고 `Nodes`에 range 트리를 담기 때문에, 다른 프로젝트의 도메인 객체에 통째로 멤버로 보관할 수 있다. 값 접근은 `RawView()`, `ValueView()`, `FieldNameView()`, `FieldValueView()`로 수행한다.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "list",
+      "start_line": 39,
+      "end_line": 40,
+      "raw": "- `TagParsed(const QString& TagName, const QString& Value)`\n- `ParseFailed(const QString& Reason)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`TagParsed(const QString& TagName, const QString& Value)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseFailed(const QString& Reason)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "heading",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "## FileParser\n",
+      "level": 2,
+      "title": "FileParser"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "paragraph",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "`iiXml::Parser::FileParser`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 47,
+      "end_line": 47,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "list",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "- `ParseFileInput(const QString& FilePath)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ParseFileInput(const QString& FilePath)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "paragraph",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000042",
+      "kind": "blank",
+      "start_line": 51,
+      "end_line": 51,
+      "raw": "\n"
+    },
+    {
+      "id": "b000043",
+      "kind": "list",
+      "start_line": 52,
+      "end_line": 53,
+      "raw": "- `TagParsed(const QString& TagName, const QString& Value)`\n- `ParseFailed(const QString& Reason)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`TagParsed(const QString& TagName, const QString& Value)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseFailed(const QString& Reason)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000044",
+      "kind": "blank",
+      "start_line": 54,
+      "end_line": 54,
+      "raw": "\n"
+    },
+    {
+      "id": "b000045",
+      "kind": "html",
+      "start_line": 55,
+      "end_line": 55,
+      "raw": "<a id=\"doctype\"></a>\n"
+    },
+    {
+      "id": "b000046",
+      "kind": "blank",
+      "start_line": 56,
+      "end_line": 56,
+      "raw": "\n"
+    },
+    {
+      "id": "b000047",
+      "kind": "heading",
+      "start_line": 57,
+      "end_line": 57,
+      "raw": "## 문서 유형\n",
+      "level": 2,
+      "title": "문서 유형"
+    },
+    {
+      "id": "b000048",
+      "kind": "blank",
+      "start_line": 58,
+      "end_line": 58,
+      "raw": "\n"
+    },
+    {
+      "id": "b000049",
+      "kind": "paragraph",
+      "start_line": 59,
+      "end_line": 59,
+      "raw": "`iiXml::Elements::Doctype`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000050",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000051",
+      "kind": "paragraph",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000052",
+      "kind": "blank",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "\n"
+    },
+    {
+      "id": "b000053",
+      "kind": "list",
+      "start_line": 63,
+      "end_line": 63,
+      "raw": "- `MatchTopInput(const QString& input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`MatchTopInput(const QString& input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000054",
+      "kind": "blank",
+      "start_line": 64,
+      "end_line": 64,
+      "raw": "\n"
+    },
+    {
+      "id": "b000055",
+      "kind": "paragraph",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000056",
+      "kind": "blank",
+      "start_line": 66,
+      "end_line": 66,
+      "raw": "\n"
+    },
+    {
+      "id": "b000057",
+      "kind": "list",
+      "start_line": 67,
+      "end_line": 70,
+      "raw": "- `DoctypeMatched(Doctype::Kind Kind, const QString& Raw)`\n- `DoctypeRejected(const QString& Reason)`\n- `XmlDeclarationMatched(const QString& Raw)`\n- `DoctypeDeclarationMatched(const QString& Raw)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`DoctypeMatched(Doctype::Kind Kind, const QString& Raw)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`DoctypeRejected(const QString& Reason)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`XmlDeclarationMatched(const QString& Raw)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`DoctypeDeclarationMatched(const QString& Raw)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000058",
+      "kind": "blank",
+      "start_line": 71,
+      "end_line": 71,
+      "raw": "\n"
+    },
+    {
+      "id": "b000059",
+      "kind": "heading",
+      "start_line": 72,
+      "end_line": 72,
+      "raw": "## OpenTag\n",
+      "level": 2,
+      "title": "OpenTag"
+    },
+    {
+      "id": "b000060",
+      "kind": "blank",
+      "start_line": 73,
+      "end_line": 73,
+      "raw": "\n"
+    },
+    {
+      "id": "b000061",
+      "kind": "paragraph",
+      "start_line": 74,
+      "end_line": 74,
+      "raw": "`iiXml::Elements::OpenTag`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000062",
+      "kind": "blank",
+      "start_line": 75,
+      "end_line": 75,
+      "raw": "\n"
+    },
+    {
+      "id": "b000063",
+      "kind": "paragraph",
+      "start_line": 76,
+      "end_line": 76,
+      "raw": "동기 API:\n"
+    },
+    {
+      "id": "b000064",
+      "kind": "blank",
+      "start_line": 77,
+      "end_line": 77,
+      "raw": "\n"
+    },
+    {
+      "id": "b000065",
+      "kind": "list",
+      "start_line": 78,
+      "end_line": 79,
+      "raw": "- `CloseOpenTag(std::vector<std::string>& OpenTags, std::string_view ClosingTagName)`\n- `ParseOpenTags(std::string_view Input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`CloseOpenTag(std::vector<std::string>& OpenTags, std::string_view ClosingTagName)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseOpenTags(std::string_view Input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000066",
+      "kind": "blank",
+      "start_line": 80,
+      "end_line": 80,
+      "raw": "\n"
+    },
+    {
+      "id": "b000067",
+      "kind": "paragraph",
+      "start_line": 81,
+      "end_line": 81,
+      "raw": "`CloseOpenTag()`는 열린 태그 스택에서 닫는 태그 이름과 같은 항목을 찾아 제거한다. 최상단 태그만 닫는 엄격한 XML 정책이 아니라, `<a><b></a></b>` 같은 iiXml 교차 종료 구조를 허용하는 정책이다. `ParseOpenTags()`는 같은 정책으로 모든 태그를 열림 순서대로 반환하고, 각 항목의 `RawBegin/ValueBegin/ValueEnd/RawEnd`에 원본 offset 범위를 보존한다.\n"
+    },
+    {
+      "id": "b000068",
+      "kind": "blank",
+      "start_line": 82,
+      "end_line": 82,
+      "raw": "\n"
+    },
+    {
+      "id": "b000069",
+      "kind": "heading",
+      "start_line": 83,
+      "end_line": 83,
+      "raw": "## ClosedTag\n",
+      "level": 2,
+      "title": "ClosedTag"
+    },
+    {
+      "id": "b000070",
+      "kind": "blank",
+      "start_line": 84,
+      "end_line": 84,
+      "raw": "\n"
+    },
+    {
+      "id": "b000071",
+      "kind": "paragraph",
+      "start_line": 85,
+      "end_line": 85,
+      "raw": "`iiXml::Elements::ClosedTag`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000072",
+      "kind": "blank",
+      "start_line": 86,
+      "end_line": 86,
+      "raw": "\n"
+    },
+    {
+      "id": "b000073",
+      "kind": "paragraph",
+      "start_line": 87,
+      "end_line": 87,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000074",
+      "kind": "blank",
+      "start_line": 88,
+      "end_line": 88,
+      "raw": "\n"
+    },
+    {
+      "id": "b000075",
+      "kind": "list",
+      "start_line": 89,
+      "end_line": 89,
+      "raw": "- `ParseClosedTag(const QString& Input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ParseClosedTag(const QString& Input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000076",
+      "kind": "blank",
+      "start_line": 90,
+      "end_line": 90,
+      "raw": "\n"
+    },
+    {
+      "id": "b000077",
+      "kind": "paragraph",
+      "start_line": 91,
+      "end_line": 91,
+      "raw": "동기 API:\n"
+    },
+    {
+      "id": "b000078",
+      "kind": "blank",
+      "start_line": 92,
+      "end_line": 92,
+      "raw": "\n"
+    },
+    {
+      "id": "b000079",
+      "kind": "list",
+      "start_line": 93,
+      "end_line": 94,
+      "raw": "- `IsImmediateClosedTag(std::string_view Input)`\n- `MatchImmediate(std::string_view Input, std::size_t SourceOffset = 0)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`IsImmediateClosedTag(std::string_view Input)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`MatchImmediate(std::string_view Input, std::size_t SourceOffset = 0)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000080",
+      "kind": "blank",
+      "start_line": 95,
+      "end_line": 95,
+      "raw": "\n"
+    },
+    {
+      "id": "b000081",
+      "kind": "paragraph",
+      "start_line": 96,
+      "end_line": 96,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000082",
+      "kind": "blank",
+      "start_line": 97,
+      "end_line": 97,
+      "raw": "\n"
+    },
+    {
+      "id": "b000083",
+      "kind": "list",
+      "start_line": 98,
+      "end_line": 100,
+      "raw": "- `ClosedTagFlagged(bool Flag)`\n- `ClosedTagParsed(const QString& TagName, const QString& Raw)`\n- `ClosedTagRejected(const QString& Reason)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ClosedTagFlagged(bool Flag)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ClosedTagParsed(const QString& TagName, const QString& Raw)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ClosedTagRejected(const QString& Reason)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000084",
+      "kind": "blank",
+      "start_line": 101,
+      "end_line": 101,
+      "raw": "\n"
+    },
+    {
+      "id": "b000085",
+      "kind": "paragraph",
+      "start_line": 102,
+      "end_line": 102,
+      "raw": "`ClosedTag`는 입력의 선행 공백 이후 첫 마크업이 `</tag>`인지를 판정한다. 여는 태그 없이 즉시 닫힌 태그가 들어오면 `ClosedTagFlagged(true)`를 방출하고, 아니라면 `ClosedTagFlagged(false)`와 실패 사유를 방출한다.\n"
+    },
+    {
+      "id": "b000086",
+      "kind": "blank",
+      "start_line": 103,
+      "end_line": 103,
+      "raw": "\n"
+    },
+    {
+      "id": "b000087",
+      "kind": "heading",
+      "start_line": 104,
+      "end_line": 104,
+      "raw": "## InlineProperties\n",
+      "level": 2,
+      "title": "InlineProperties"
+    },
+    {
+      "id": "b000088",
+      "kind": "blank",
+      "start_line": 105,
+      "end_line": 105,
+      "raw": "\n"
+    },
+    {
+      "id": "b000089",
+      "kind": "paragraph",
+      "start_line": 106,
+      "end_line": 106,
+      "raw": "`iiXml::Elements::InlineProperties`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000090",
+      "kind": "blank",
+      "start_line": 107,
+      "end_line": 107,
+      "raw": "\n"
+    },
+    {
+      "id": "b000091",
+      "kind": "paragraph",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "동기 API:\n"
+    },
+    {
+      "id": "b000092",
+      "kind": "blank",
+      "start_line": 109,
+      "end_line": 109,
+      "raw": "\n"
+    },
+    {
+      "id": "b000093",
+      "kind": "list",
+      "start_line": 110,
+      "end_line": 110,
+      "raw": "- `Parse(std::string_view opening_tag, std::size_t source_offset = 0)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parse(std::string_view opening_tag, std::size_t source_offset = 0)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000094",
+      "kind": "blank",
+      "start_line": 111,
+      "end_line": 111,
+      "raw": "\n"
+    },
+    {
+      "id": "b000095",
+      "kind": "paragraph",
+      "start_line": 112,
+      "end_line": 112,
+      "raw": "`Parse()`는 여는 태그 안의 다중 attribute를 읽고, 각 속성의 이름 범위, 값 범위, `StringType`/`IntType`/`FloatType`/`BoolType` 타입 정보를 반환한다.\n"
+    },
+    {
+      "id": "b000096",
+      "kind": "blank",
+      "start_line": 113,
+      "end_line": 113,
+      "raw": "\n"
+    },
+    {
+      "id": "b000097",
+      "kind": "heading",
+      "start_line": 114,
+      "end_line": 114,
+      "raw": "## InputValidator\n",
+      "level": 2,
+      "title": "InputValidator"
+    },
+    {
+      "id": "b000098",
+      "kind": "blank",
+      "start_line": 115,
+      "end_line": 115,
+      "raw": "\n"
+    },
+    {
+      "id": "b000099",
+      "kind": "paragraph",
+      "start_line": 116,
+      "end_line": 116,
+      "raw": "`iiXml::Writer::InputValidator`는 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000100",
+      "kind": "blank",
+      "start_line": 117,
+      "end_line": 117,
+      "raw": "\n"
+    },
+    {
+      "id": "b000101",
+      "kind": "paragraph",
+      "start_line": 118,
+      "end_line": 118,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000102",
+      "kind": "blank",
+      "start_line": 119,
+      "end_line": 119,
+      "raw": "\n"
+    },
+    {
+      "id": "b000103",
+      "kind": "list",
+      "start_line": 120,
+      "end_line": 120,
+      "raw": "- `ValidateInput(const QString& input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ValidateInput(const QString& input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000104",
+      "kind": "blank",
+      "start_line": 121,
+      "end_line": 121,
+      "raw": "\n"
+    },
+    {
+      "id": "b000105",
+      "kind": "paragraph",
+      "start_line": 122,
+      "end_line": 122,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000106",
+      "kind": "blank",
+      "start_line": 123,
+      "end_line": 123,
+      "raw": "\n"
+    },
+    {
+      "id": "b000107",
+      "kind": "list",
+      "start_line": 124,
+      "end_line": 129,
+      "raw": "- `ValidationFinished(InputValidator::ValidationExit Result)`\n- `ValidationFailed(InputValidator::ValidationExit Result, const QString& Reason)`\n- `ValidXml()`\n- `InvalidXmlFile()`\n- `InvalidTagClosure()`\n- `ExceptionThrown()`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ValidationFinished(InputValidator::ValidationExit Result)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ValidationFailed(InputValidator::ValidationExit Result, const QString& Reason)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ValidXml()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidXmlFile()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidTagClosure()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ExceptionThrown()`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000108",
+      "kind": "blank",
+      "start_line": 130,
+      "end_line": 130,
+      "raw": "\n"
+    },
+    {
+      "id": "b000109",
+      "kind": "heading",
+      "start_line": 131,
+      "end_line": 131,
+      "raw": "## GetFile\n",
+      "level": 2,
+      "title": "GetFile"
+    },
+    {
+      "id": "b000110",
+      "kind": "blank",
+      "start_line": 132,
+      "end_line": 132,
+      "raw": "\n"
+    },
+    {
+      "id": "b000111",
+      "kind": "paragraph",
+      "start_line": 133,
+      "end_line": 133,
+      "raw": "`iiXml::Writer::GetFile`은 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000112",
+      "kind": "blank",
+      "start_line": 134,
+      "end_line": 134,
+      "raw": "\n"
+    },
+    {
+      "id": "b000113",
+      "kind": "paragraph",
+      "start_line": 135,
+      "end_line": 135,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000114",
+      "kind": "blank",
+      "start_line": 136,
+      "end_line": 136,
+      "raw": "\n"
+    },
+    {
+      "id": "b000115",
+      "kind": "list",
+      "start_line": 137,
+      "end_line": 138,
+      "raw": "- `ReadFile(const QString& FilePath)`\n- `ReadXml(const QString& Input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ReadFile(const QString& FilePath)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ReadXml(const QString& Input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000116",
+      "kind": "blank",
+      "start_line": 139,
+      "end_line": 139,
+      "raw": "\n"
+    },
+    {
+      "id": "b000117",
+      "kind": "paragraph",
+      "start_line": 140,
+      "end_line": 140,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000118",
+      "kind": "blank",
+      "start_line": 141,
+      "end_line": 141,
+      "raw": "\n"
+    },
+    {
+      "id": "b000119",
+      "kind": "list",
+      "start_line": 142,
+      "end_line": 148,
+      "raw": "- `Parsed(const QString& TagName, const QString& Value)`\n- `Failed(GetFile::Status Status, const QString& Reason)`\n- `FileReadFailed()`\n- `InvalidXmlFile()`\n- `InvalidTagClosure()`\n- `ParserRejected()`\n- `ExceptionThrown()`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parsed(const QString& TagName, const QString& Value)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Failed(GetFile::Status Status, const QString& Reason)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`FileReadFailed()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidXmlFile()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidTagClosure()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParserRejected()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ExceptionThrown()`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000120",
+      "kind": "blank",
+      "start_line": 149,
+      "end_line": 149,
+      "raw": "\n"
+    },
+    {
+      "id": "b000121",
+      "kind": "heading",
+      "start_line": 150,
+      "end_line": 150,
+      "raw": "## GetStringToken\n",
+      "level": 2,
+      "title": "GetStringToken"
+    },
+    {
+      "id": "b000122",
+      "kind": "blank",
+      "start_line": 151,
+      "end_line": 151,
+      "raw": "\n"
+    },
+    {
+      "id": "b000123",
+      "kind": "paragraph",
+      "start_line": 152,
+      "end_line": 152,
+      "raw": "`iiXml::Writer::GetStringToken`은 `QObject`를 상속한다.\n"
+    },
+    {
+      "id": "b000124",
+      "kind": "blank",
+      "start_line": 153,
+      "end_line": 153,
+      "raw": "\n"
+    },
+    {
+      "id": "b000125",
+      "kind": "paragraph",
+      "start_line": 154,
+      "end_line": 154,
+      "raw": "`QString` 문자열을 입력으로 받지만, 태그 파서에 바로 넘기지는 않는다. `Doctype` 판정과 `InputValidator` 전체 XML 검증을 통과한 뒤 루트 태그를 파서로 전달한다.\n"
+    },
+    {
+      "id": "b000126",
+      "kind": "blank",
+      "start_line": 155,
+      "end_line": 155,
+      "raw": "\n"
+    },
+    {
+      "id": "b000127",
+      "kind": "paragraph",
+      "start_line": 156,
+      "end_line": 156,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000128",
+      "kind": "blank",
+      "start_line": 157,
+      "end_line": 157,
+      "raw": "\n"
+    },
+    {
+      "id": "b000129",
+      "kind": "list",
+      "start_line": 158,
+      "end_line": 158,
+      "raw": "- `ReadString(const QString& input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ReadString(const QString& input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000130",
+      "kind": "blank",
+      "start_line": 159,
+      "end_line": 159,
+      "raw": "\n"
+    },
+    {
+      "id": "b000131",
+      "kind": "paragraph",
+      "start_line": 160,
+      "end_line": 160,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000132",
+      "kind": "blank",
+      "start_line": 161,
+      "end_line": 161,
+      "raw": "\n"
+    },
+    {
+      "id": "b000133",
+      "kind": "list",
+      "start_line": 162,
+      "end_line": 164,
+      "raw": "- `Parsed(const QString& TagName, const QString& Value)`\n- `Failed(GetStringToken::Status Status, const QString& Reason)`\n- `ParseFailed(const QString& Reason)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parsed(const QString& TagName, const QString& Value)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Failed(GetStringToken::Status Status, const QString& Reason)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseFailed(const QString& Reason)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000134",
+      "kind": "blank",
+      "start_line": 165,
+      "end_line": 165,
+      "raw": "\n"
+    },
+    {
+      "id": "b000135",
+      "kind": "heading",
+      "start_line": 166,
+      "end_line": 166,
+      "raw": "## 사용 예\n",
+      "level": 2,
+      "title": "사용 예"
+    },
+    {
+      "id": "b000136",
+      "kind": "blank",
+      "start_line": 167,
+      "end_line": 167,
+      "raw": "\n"
+    },
+    {
+      "id": "b000137",
+      "kind": "fenced_code",
+      "start_line": 168,
+      "end_line": 179,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Parser::TagParser parser;\n\nQObject::connect(&parser, &iiXml::Parser::TagParser::TagParsed,\n    [](const QString& TagName, const QString& Value) {\n        // TagName, Value 사용\n    });\n\nparser.ParseTag(\"<number>숫자</number>\");\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Parser::TagParser parser;\n\nQObject::connect(&parser, &iiXml::Parser::TagParser::TagParsed,\n    [](const QString& TagName, const QString& Value) {\n        // TagName, Value 사용\n    });\n\nparser.ParseTag(\"<number>숫자</number>\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000138",
+      "kind": "blank",
+      "start_line": 180,
+      "end_line": 180,
+      "raw": "\n"
+    },
+    {
+      "id": "b000139",
+      "kind": "fenced_code",
+      "start_line": 181,
+      "end_line": 195,
+      "raw": "```cpp\niiXml::Writer::InputValidator validator;\n\nQObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidXmlFile,\n    []() {\n        // 유효하지 않은 XML 파일\n    });\n\nQObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidTagClosure,\n    []() {\n        // 올바르지 않은 태그 종료\n    });\n\nvalidator.ValidateInput(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n```\n",
+      "language": "cpp",
+      "code": "iiXml::Writer::InputValidator validator;\n\nQObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidXmlFile,\n    []() {\n        // 유효하지 않은 XML 파일\n    });\n\nQObject::connect(&validator, &iiXml::Writer::InputValidator::InvalidTagClosure,\n    []() {\n        // 올바르지 않은 태그 종료\n    });\n\nvalidator.ValidateInput(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000140",
+      "kind": "blank",
+      "start_line": 196,
+      "end_line": 196,
+      "raw": "\n"
+    },
+    {
+      "id": "b000141",
+      "kind": "heading",
+      "start_line": 197,
+      "end_line": 197,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000142",
+      "kind": "blank",
+      "start_line": 198,
+      "end_line": 198,
+      "raw": "\n"
+    },
+    {
+      "id": "b000143",
+      "kind": "fenced_code",
+      "start_line": 199,
+      "end_line": 203,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000003",
+      "parent_id": null,
+      "level": 1,
+      "title": "Qt 객체 API",
+      "anchor": "qt-객체-api",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000007",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "공통 정책",
+      "anchor": "공통-정책",
+      "start_line": 7
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "TagParser",
+      "anchor": "tagparser",
+      "start_line": 14
+    },
+    {
+      "block_id": "b000033",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "FileParser",
+      "anchor": "fileparser",
+      "start_line": 42
+    },
+    {
+      "block_id": "b000047",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "문서 유형",
+      "anchor": "문서-유형",
+      "start_line": 57
+    },
+    {
+      "block_id": "b000059",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "OpenTag",
+      "anchor": "opentag",
+      "start_line": 72
+    },
+    {
+      "block_id": "b000069",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "ClosedTag",
+      "anchor": "closedtag",
+      "start_line": 83
+    },
+    {
+      "block_id": "b000087",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "InlineProperties",
+      "anchor": "inlineproperties",
+      "start_line": 104
+    },
+    {
+      "block_id": "b000097",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "InputValidator",
+      "anchor": "inputvalidator",
+      "start_line": 114
+    },
+    {
+      "block_id": "b000109",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "GetFile",
+      "anchor": "getfile",
+      "start_line": 131
+    },
+    {
+      "block_id": "b000121",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "GetStringToken",
+      "anchor": "getstringtoken",
+      "start_line": 150
+    },
+    {
+      "block_id": "b000135",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "사용 예",
+      "anchor": "사용-예",
+      "start_line": 166
+    },
+    {
+      "block_id": "b000141",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 197
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000143",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

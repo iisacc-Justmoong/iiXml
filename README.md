@@ -1,11 +1,22 @@
 # iiXml
 
+The independent `iiXmlMarkup` package exports `iiXml::Markup`: a C++23,
+Qt-free source-preserving tag parser and HTML block range tracker used by
+iiGeneralDocument. It does not depend on iiGeneralDocument or libxml2. See
+[the markup contract](docs/Markup.md).
+
+HTML block parsing, conversion, range tracking, serialization and editing are
+owned by iiXml as the optional Qt component `iiXml::HtmlBlock`. Existing
+`<iiHtmlBlock>` headers, the `iiHtmlBlock` namespace and the
+`iiHtmlBlock::iiHtmlBlock` CMake package remain compatibility interfaces.
+See [HTML integration](docs/HtmlBlockIntegration.md).
+
 The C++23 Qt-free package `iiXmlNative` exports `iiXml::Native` and
 `<iiXml/Xml.h>` for bounded UTF-8 pull reading and XML writing. Configure with
 `-DIIXML_BUILD_QT_API=OFF` to avoid finding Qt. The existing QObject API remains
-available independently. See [native contracts](Docs/native.md).
+available independently. See [native contracts](docs/native.md).
 
-[Windows 빌드 및 실행](Docs/WindowsBuildAndRun.md)
+[Windows build and execution](docs/WindowsBuildAndRun.md)
 
 Package release: **0.1.1** (2026-10-19). This patch packages the current
 source snapshot; build, test and installation evidence is recorded in the SDK
@@ -28,6 +39,20 @@ Third-party code, libraries, tools, and models retain their respective licenses 
 
 ## File storage ownership
 
-FileParser and GetFile are iiFileProvider 0.5 passes the bytes read by XML to the parser. I/O of the input path is owned by the provider, while tokenization, syntax validation, and QObject signals are owned by iiXml. File creation, update, and deletion are also combined via the provider API, and back-references are forbidden.
+`FileParser` and `GetFile` accept an application-owned `iiXml::IO::FileReader`.
+The XML library does not discover or link another SDK. The separate
+`example/FileProvider` consumer adapts iiFileProvider to that contract, retaining
+provider-owned file reads and the existing file parsing checks. The default
+constructor has no reader: path-based calls fail until a reader is supplied,
+while in-memory parsing is unchanged. Existing users must pass a reader and
+rebuild both the library and their application; object layout and behavior
+changed. See [FileParser](docs/file_parser.md) and [GetFile](docs/get_file.md).
 
-A read failure by the provider retains the existing `ParseFile failed` logs and the failure return value. macOS validation is executed by `cmake -E env --unset=DYLD_LIBRARY_PATH --unset=DYLD_FRAMEWORK_PATH --unset=DYLD_FALLBACK_LIBRARY_PATH ctest --test-dir build --output-on-failure` to prevent the previous installed library from obscuring the new build. Since the installed shared library preserves the runtime path of private iiFileProvider dependencies, a consumer that links only XML, like iiHtmlBlock, can also load the provider.
+<!-- workspace-docs:readme:start -->
+## Documentation entry points
+
+- Human overview: this English `README.md`.
+- Agent instructions: [AGENT.md](AGENT.md).
+- Human documentation: [documentation index](docs/README.md).
+- Structured agent documentation: [agent index](docs/agent-index.json).
+<!-- workspace-docs:readme:end -->

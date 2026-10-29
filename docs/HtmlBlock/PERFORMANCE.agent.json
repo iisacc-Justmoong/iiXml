@@ -1,0 +1,85 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:db96210a515c785dcf564d6495c0b339f88aef160ccbee1583154cbe69bdecb1",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/PERFORMANCE.md",
+    "sha256": "446a58d46da8fbe0d957b4e5dbc73406e7974771d3dbe87d058e852963f5a439",
+    "bytes": 796,
+    "line_count": 13,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "Serialization costs",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Serialization costs\n",
+      "level": 1,
+      "title": "Serialization costs"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 8,
+      "raw": "The C++23 serializer sorts fragments by start ascending and end descending, then\ntracks the furthest emitted end. Once starts are ordered, this end alone decides\nwhether an earlier emitted range contains the candidate. It avoids scanning and\ncopying all earlier fragments for every candidate. Sorting remains O(n log n),\nfollowed by an O(n) containment pass, including overlapping, nested and empty\nranges. Partial overlaps still produce the same concatenated fragments.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 13,
+      "raw": "Merged serialization already sorts and deduplicates source indexes; membership\nnow uses binary search in that list rather than a full linear scan per block.\nTests compare output with an independent all-prior-ranges oracle and cover\n10,000 adjacent fragments, nested ranges and invalid source indexes.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Serialization costs",
+      "anchor": "serialization-costs",
+      "start_line": 1
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

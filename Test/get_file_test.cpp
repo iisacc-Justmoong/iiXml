@@ -1,10 +1,8 @@
 #include <iiXml>
 
-#include <QTemporaryDir>
 #include <QString>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <optional>
 #include <string>
@@ -18,11 +16,6 @@ void expect(bool condition, const char* message) {
         std::cerr << message << '\n';
         ++failures;
     }
-}
-
-void write_file(const QString& path, const std::string& content) {
-    std::ofstream file(path.toStdString(), std::ios::binary);
-    file << content;
 }
 
 void parses_valid_doctype_xml_text() {
@@ -80,17 +73,12 @@ void parses_xml_declaration_then_arbitrary_doctype_text() {
 }
 
 void parses_file_after_validation() {
-    QTemporaryDir directory;
-    expect(directory.isValid(), "temporary directory should be valid");
-    if (!directory.isValid()) {
-        return;
-    }
-
-    const QString path = directory.filePath("input.xml");
-    write_file(path, "<!Doctype XML>\n<XML><number>42</number></XML>");
-
-    const iiXml::Writer::GetFile input;
-    const iiXml::Writer::GetFileResult result = input.ParseFile(std::filesystem::path(path.toStdString()));
+    const std::filesystem::path path = "input.xml";
+    const iiXml::Writer::GetFile input{[path](const auto& requested) -> std::optional<std::string> {
+        if (requested == path) return "<!Doctype XML>\n<XML><number>42</number></XML>";
+        return std::nullopt;
+    }};
+    const iiXml::Writer::GetFileResult result = input.ParseFile(path);
 
     expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
         "valid XML file should parse");
@@ -105,17 +93,12 @@ void parses_file_after_validation() {
 }
 
 void parses_non_xml_extension_file_after_validation() {
-    QTemporaryDir directory;
-    expect(directory.isValid(), "temporary directory should be valid");
-    if (!directory.isValid()) {
-        return;
-    }
-
-    const QString path = directory.filePath("input.custom_payload");
-    write_file(path, "<!Doctype XML>\n<XML><number>77</number></XML>");
-
-    const iiXml::Writer::GetFile input;
-    const iiXml::Writer::GetFileResult result = input.ParseFile(std::filesystem::path(path.toStdString()));
+    const std::filesystem::path path = "input.custom_payload";
+    const iiXml::Writer::GetFile input{[path](const auto& requested) -> std::optional<std::string> {
+        if (requested == path) return "<!Doctype XML>\n<XML><number>77</number></XML>";
+        return std::nullopt;
+    }};
+    const iiXml::Writer::GetFileResult result = input.ParseFile(path);
 
     expect(result.Status == iiXml::Writer::GetFileStatus::Parsed,
         "valid XML content should parse even when extension is not xml");
@@ -175,7 +158,6 @@ void returns_file_read_failed_for_missing_file() {
     const iiXml::Writer::GetFile input;
     const std::filesystem::path path = std::filesystem::current_path() / "missing_get_file.xml";
 
-    std::filesystem::remove(path);
     const iiXml::Writer::GetFileResult result = input.ParseFile(path);
 
     expect(result.Status == iiXml::Writer::GetFileStatus::FileReadFailed,

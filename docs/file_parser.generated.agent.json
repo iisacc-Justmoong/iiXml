@@ -1,0 +1,271 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:1e1d76b0252629dedfad3a3f9f7f39b85eaf0466c6a4c666213cc1c00954f685",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/file_parser.md",
+    "sha256": "5476e2a68006de598ffeea56f7ad6ee17cd4d99eac417698cf9e61e58f12c12a",
+    "bytes": 1550,
+    "line_count": 46,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "FileParser",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# FileParser\n",
+      "level": 1,
+      "title": "FileParser"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 5,
+      "raw": "`src/Parser/FileParser.h`와 `src/Parser/FileParser.cpp`는 호출자가 제공한\n읽기 함수를 통해 경로에 해당하는 내용을 얻고 기존 태그 파서에 전달한다.\niiXml은 저장소나 다른 SDK를 직접 연결하지 않는다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "## 반환 형식\n",
+      "level": 2,
+      "title": "반환 형식"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "`iiXml::Parser::FileParser::ParseFile()`은 파일 전체를 읽은 뒤 `iiXml::Parser::TagParser::Parse()`에 넘긴다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 10,
+      "end_line": 10,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "fenced_code",
+      "start_line": 11,
+      "end_line": 13,
+      "raw": "```cpp\nstd::optional<iiXml::Parser::TagValue>\n```\n",
+      "language": "cpp",
+      "code": "std::optional<iiXml::Parser::TagValue>\n",
+      "closed": true
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "파일을 열 수 없거나 파일 내용이 태그 파서를 통과하지 못하면 `std::nullopt`를 반환한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "## 사용 예\n",
+      "level": 2,
+      "title": "사용 예"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 21,
+      "end_line": 32,
+      "raw": "```cpp\n#include <iiXml>\n#include \"FileProviderReader.h\" // example/FileProvider/App\n\niiXml::Parser::FileParser parser(fileProviderReader());\nauto parsed = parser.ParseFile(\"input.xml\");\n\nif (parsed.has_value()) {\n    // parsed->TagName\n    // parsed->Value\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n#include \"FileProviderReader.h\" // example/FileProvider/App\n\niiXml::Parser::FileParser parser(fileProviderReader());\nauto parsed = parser.ParseFile(\"input.xml\");\n\nif (parsed.has_value()) {\n    // parsed->TagName\n    // parsed->Value\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 33,
+      "end_line": 33,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 34,
+      "end_line": 38,
+      "raw": "읽기 함수는 경로에 대해 UTF-8 문자열 또는 실패를 뜻하는 `std::nullopt`를\n반환한다. 호출자가 함수와 캡처한 객체의 수명 및 동시 접근을 관리한다. 기본\n생성자로 만든 객체에는 읽기 함수가 없어 경로 입력이 실패한다. 기존 호출자는\n앱에서 iiFileProvider 어댑터를 주입하고 라이브러리와 앱을 다시 빌드해야 한다.\n실제 조합과 테스트는 `example/FileProvider/`를 참고한다.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "heading",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "fenced_code",
+      "start_line": 42,
+      "end_line": 46,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "FileParser",
+      "anchor": "fileparser",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "반환 형식",
+      "anchor": "반환-형식",
+      "start_line": 7
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예",
+      "anchor": "사용-예",
+      "start_line": 19
+    },
+    {
+      "block_id": "b000021",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 40
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 5,
+        "text": "iiXml은 저장소나 다른 SDK를 직접 연결하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000019",
+        "line": 37,
+        "text": "앱에서 iiFileProvider 어댑터를 주입하고 라이브러리와 앱을 다시 빌드해야 한다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000023",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

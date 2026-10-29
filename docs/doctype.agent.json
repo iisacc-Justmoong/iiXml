@@ -1,0 +1,260 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:81be593307e47f720aab2bd4504233940de2af55c1e4f152e078c4cc9899dc88",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "Docs/doctype.md",
+    "sha256": "fd5afd1f9345cbc81a13e8c0dae4c91a3427f369f6399c82f6b312ae83099678",
+    "bytes": 1440,
+    "line_count": 38,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "Doctype 요소",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Doctype 요소\n",
+      "level": 1,
+      "title": "Doctype 요소"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Src/Elements/Doctype.h`와 `Src/Elements/Doctype.cpp`는 XML 문서 상단 선언을 판정한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "## 지원 범위\n",
+      "level": 2,
+      "title": "지원 범위"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 7,
+      "end_line": 11,
+      "raw": "- `<?xml ...?>` 형식의 XML 선언을 문서 상단 선언으로 인식한다.\n- `<!Doctype ...>` 형식의 Doctype 선언을 문서 상단 선언으로 인식한다.\n- Doctype 이름은 `XML`로 고정하지 않는다. `<!Doctype ABCD>`처럼 유효한 이름이면 통과한다.\n- UTF-8 BOM과 선언 앞의 공백은 건너뛴다.\n- 선언이 루트 태그 뒤에 나오거나 닫히지 않은 경우에는 실패한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`<?xml ...?>` 형식의 XML 선언을 문서 상단 선언으로 인식한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`<!Doctype ...>` 형식의 Doctype 선언을 문서 상단 선언으로 인식한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Doctype 이름은 `XML`로 고정하지 않는다. `<!Doctype ABCD>`처럼 유효한 이름이면 통과한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "UTF-8 BOM과 선언 앞의 공백은 건너뛴다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "선언이 루트 태그 뒤에 나오거나 닫히지 않은 경우에는 실패한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 12,
+      "end_line": 12,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "## 사용 예\n",
+      "level": 2,
+      "title": "사용 예"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 15,
+      "end_line": 26,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Elements::Doctype doctype;\nauto result = doctype.MatchTop(\"<!Doctype XML SYSTEM \\\"iixml.dtd\\\">\\n<XML></XML>\");\n\nif (result.Status == iiXml::Elements::DoctypeStatus::Matched &&\n    result.Match.has_value()) {\n    // result.Match->Kind == iiXml::Elements::DoctypeKind::DoctypeDeclaration\n    // result.Match->Raw == \"<!Doctype XML SYSTEM \\\"iixml.dtd\\\">\"\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Elements::Doctype doctype;\nauto result = doctype.MatchTop(\"<!Doctype XML SYSTEM \\\"iixml.dtd\\\">\\n<XML></XML>\");\n\nif (result.Status == iiXml::Elements::DoctypeStatus::Matched &&\n    result.Match.has_value()) {\n    // result.Match->Kind == iiXml::Elements::DoctypeKind::DoctypeDeclaration\n    // result.Match->Raw == \"<!Doctype XML SYSTEM \\\"iixml.dtd\\\">\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "`MatchTop()`은 실패 시에도 빈 `std::optional`만 반환하지 않고 `Status`와 비어 있지 않은 `Reason`을 포함한 `DoctypeResult`를 반환한다. Qt signal이 필요한 경우에는 문자열 slot인 `MatchTopInput()`을 사용한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패, 예외 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "heading",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 33,
+      "end_line": 33,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 34,
+      "end_line": 38,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Doctype 요소",
+      "anchor": "doctype-요소",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "지원 범위",
+      "anchor": "지원-범위",
+      "start_line": 5
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예",
+      "anchor": "사용-예",
+      "start_line": 13
+    },
+    {
+      "block_id": "b000017",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 32
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000007",
+        "line": 9,
+        "text": "- Doctype 이름은 `XML`로 고정하지 않는다. `<!Doctype ABCD>`처럼 유효한 이름이면 통과한다.",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000019",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

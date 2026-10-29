@@ -1,0 +1,275 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:355d047ee16b4051a466786741ea479f693423add1b6f42fff01de1071a5a1ad",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/block_range_tracker.md",
+    "sha256": "03fd249125b81705a27a72439616bc814b122570ff465385929c298c98e99461",
+    "bytes": 2269,
+    "line_count": 55,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "BlockRangeTracker",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# BlockRangeTracker\n",
+      "level": 1,
+      "title": "BlockRangeTracker"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 4,
+      "raw": "`Src/Modifier/BlockRangeTracker.h`와 `Src/Modifier/BlockRangeTracker.cpp`는\n`DivideBlock`이 판정한 블록을 원문 range 단위로 추적하는 Modifier 모듈이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 8,
+      "end_line": 19,
+      "raw": "- `Parse()`는 HTML/iiXml 문서를 받아 블록 목록을 만들고 각 블록에 추적 ID를 부여한다.\n- 공개 `TrackedBlock::raw_begin`, `value_begin`, `value_end`, `raw_end`는 XML 선언과\n  DOCTYPE을 포함한 원문 전체 기준 offset이다.\n- `TrackedBlock::element` 안의 `DivideBlock::ElementInfo`는 기존 API와 같이 파서 본문\n  기준 offset을 유지한다.\n- `Update()`는 새 문서를 다시 파싱하고, 기존 블록과 새 블록을 range와 원문 조각 기준으로\n  맞춰 가능한 경우 기존 추적 ID를 유지한다.\n- `GetBlockById()`와 `GetBlockByRange()`로 특정 블록을 조회한다.\n- `GetInnermostBlockAt()`은 주어진 offset을 포함하는 블록 중 가장 좁은 블록을 반환한다.\n- `GetBlocksOverlapping()`은 지정한 range와 겹치는 모든 추적 블록을 문서 순서로 반환한다.\n- `SetBlocks()`는 이미 나뉜 `DivideBlock::ElementInfo` 목록을 직접 추적 대상으로 등록한다.\n- `Update()` 실패 시 이전 추적 상태는 유지하고 `GetError()`에 실패 사유를 저장한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parse()`는 HTML/iiXml 문서를 받아 블록 목록을 만들고 각 블록에 추적 ID를 부여한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "공개 `TrackedBlock::raw_begin`, `value_begin`, `value_end`, `raw_end`는 XML 선언과",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`TrackedBlock::element` 안의 `DivideBlock::ElementInfo`는 기존 API와 같이 파서 본문",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Update()`는 새 문서를 다시 파싱하고, 기존 블록과 새 블록을 range와 원문 조각 기준으로",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`GetBlockById()`와 `GetBlockByRange()`로 특정 블록을 조회한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`GetInnermostBlockAt()`은 주어진 offset을 포함하는 블록 중 가장 좁은 블록을 반환한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`GetBlocksOverlapping()`은 지정한 range와 겹치는 모든 추적 블록을 문서 순서로 반환한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`SetBlocks()`는 이미 나뉜 `DivideBlock::ElementInfo` 목록을 직접 추적 대상으로 등록한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Update()` 실패 시 이전 추적 상태는 유지하고 `GetError()`에 실패 사유를 저장한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 23,
+      "end_line": 36,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::BlockRangeTracker tracker;\n\nif (tracker.Parse(\"<XML><section><p>One</p></section></XML>\")) {\n    const std::size_t offset = tracker.GetHTMLText().find(\"One\");\n    const iiHtmlBlock::BlockRangeTracker::TrackedBlock* block =\n        tracker.GetInnermostBlockAt(offset);\n\n    // block->element.tag_name == \"p\"\n    // block->raw_begin/raw_end는 원문 전체 기준 range이다.\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::BlockRangeTracker tracker;\n\nif (tracker.Parse(\"<XML><section><p>One</p></section></XML>\")) {\n    const std::size_t offset = tracker.GetHTMLText().find(\"One\");\n    const iiHtmlBlock::BlockRangeTracker::TrackedBlock* block =\n        tracker.GetInnermostBlockAt(offset);\n\n    // block->element.tag_name == \"p\"\n    // block->raw_begin/raw_end는 원문 전체 기준 range이다.\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 38,
+      "end_line": 39,
+      "raw": "문서가 변경된 뒤에는 `Update()`를 사용한다. 원문과 태그 값이 같은 블록은 range가\n이동해도 기존 ID를 유지할 수 있다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 41,
+      "end_line": 47,
+      "raw": "```cpp\ntracker.Parse(\"<XML><p>One</p><p>Two</p></XML>\");\nconst std::size_t one_id = tracker.GetTrackedBlocks()[0].id;\n\ntracker.Update(\"<XML><p>Zero</p><p>One</p><p>Two</p></XML>\");\n// 값이 \"One\"인 블록은 가능한 경우 one_id를 유지한다.\n```\n",
+      "language": "cpp",
+      "code": "tracker.Parse(\"<XML><p>One</p><p>Two</p></XML>\");\nconst std::size_t one_id = tracker.GetTrackedBlocks()[0].id;\n\ntracker.Update(\"<XML><p>Zero</p><p>One</p><p>Two</p></XML>\");\n// 값이 \"One\"인 블록은 가능한 경우 one_id를 유지한다.\n",
+      "closed": true
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "heading",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 51,
+      "end_line": 55,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "BlockRangeTracker",
+      "anchor": "blockrangetracker",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 6
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 21
+    },
+    {
+      "block_id": "b000017",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 49
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000019",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -19,24 +19,24 @@ std::string read_file(const std::string& path) {
 } // namespace
 
 int main() {
-    const std::string policy = read_file(std::string(IIXML_SOURCE_DIR) + "/AGENTS.md");
+    const std::string policy = read_file(std::string(IIXML_SOURCE_DIR) + "/AGENT.md");
     if (policy.find("iiXml") == std::string::npos) {
-        std::cerr << "AGENTS.md must declare iiXml as the project library name.\n";
+        std::cerr << "AGENT.md must declare iiXml as the project library name.\n";
         return 1;
     }
 
     if (policy.find("Qt 6.8.3") == std::string::npos) {
-        std::cerr << "AGENTS.md must declare Qt 6.8.3 as the project Qt policy.\n";
+        std::cerr << "AGENT.md must declare Qt 6.8.3 as the project Qt policy.\n";
         return 1;
     }
 
     if (policy.find("/Volumes/Storage/Qt") == std::string::npos) {
-        std::cerr << "AGENTS.md must declare /Volumes/Storage/Qt as the project Qt path policy.\n";
+        std::cerr << "AGENT.md must declare /Volumes/Storage/Qt as the project Qt path policy.\n";
         return 1;
     }
 
     if (policy.find("Test/<module>_test.cpp") == std::string::npos) {
-        std::cerr << "AGENTS.md must declare Test/ as the project test directory policy.\n";
+        std::cerr << "AGENT.md must declare Test/ as the project test directory policy.\n";
         return 1;
     }
 

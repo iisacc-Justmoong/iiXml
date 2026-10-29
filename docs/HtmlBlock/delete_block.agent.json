@@ -1,0 +1,248 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:2828cf9d141224206647583e96d18f5a64d4006059aa98540baabc01a29f7204",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/delete_block.md",
+    "sha256": "c37cb852f3727914a200eb4d352c109aa1d2cf3d42c75621b76d051e4fc26d08",
+    "bytes": 1741,
+    "line_count": 43,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "DeleteBlock",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# DeleteBlock\n",
+      "level": 1,
+      "title": "DeleteBlock"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 4,
+      "raw": "`Src/Modifier/DeleteBlock.h`와 `Src/Modifier/DeleteBlock.cpp`는 `DivideBlock`이 판정한\n블록 목록 중 지정한 블록을 원본 HTML/iiXml 문자열에서 제거하는 Modifier 모듈이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 8,
+      "end_line": 16,
+      "raw": "- `Parse()`는 HTML/iiXml 문서를 받아 현재 HTML 문자열과 블록 목록을 내부 상태로 저장한다.\n- 블록 판정은 `DivideBlock::GetBlockElements()` 결과를 사용한다.\n- `Delete(index)`는 현재 블록 목록의 인덱스를 받아 해당 블록의 `raw_begin`부터\n  `raw_end`까지를 문서 본문에서 제거한다.\n- 삭제 후 남은 문서를 다시 파싱해 `GetBlocks()`가 현재 문서의 블록 목록을 반환하게 한다.\n- 삭제된 블록의 스냅샷은 `GetDeletedBlocks()`에 누적한다.\n- XML 선언과 DOCTYPE처럼 파서가 본문 range로 취급하지 않는 앞부분은 보존한다.\n- 유효하지 않은 인덱스나 삭제 후 재파싱 실패는 상태를 변경하지 않고 `GetError()`에\n  실패 사유를 저장한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parse()`는 HTML/iiXml 문서를 받아 현재 HTML 문자열과 블록 목록을 내부 상태로 저장한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "블록 판정은 `DivideBlock::GetBlockElements()` 결과를 사용한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Delete(index)`는 현재 블록 목록의 인덱스를 받아 해당 블록의 `raw_begin`부터",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "삭제 후 남은 문서를 다시 파싱해 `GetBlocks()`가 현재 문서의 블록 목록을 반환하게 한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "삭제된 블록의 스냅샷은 `GetDeletedBlocks()`에 누적한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "XML 선언과 DOCTYPE처럼 파서가 본문 range로 취급하지 않는 앞부분은 보존한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "유효하지 않은 인덱스나 삭제 후 재파싱 실패는 상태를 변경하지 않고 `GetError()`에",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 20,
+      "end_line": 31,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::DeleteBlock deleter;\n\nif (deleter.Parse(\"<XML><section><p>One</p><p>Two</p></section></XML>\")) {\n    if (deleter.Delete(1)) {\n        // deleter.GetHTMLText() == \"<XML><section><p>Two</p></section></XML>\"\n        // deleter.GetDeletedBlocks()[0].raw == \"<p>One</p>\"\n    }\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::DeleteBlock deleter;\n\nif (deleter.Parse(\"<XML><section><p>One</p><p>Two</p></section></XML>\")) {\n    if (deleter.Delete(1)) {\n        // deleter.GetHTMLText() == \"<XML><section><p>Two</p></section></XML>\"\n        // deleter.GetDeletedBlocks()[0].raw == \"<p>One</p>\"\n    }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 33,
+      "end_line": 35,
+      "raw": "`ParseHtml(const QString&)` 슬롯은 성공 시 `Parsed(block_count)`, 실패 시\n`DeleteFailed(reason)` 시그널을 내보낸다. `DeleteBlockAt(int)` 슬롯은 성공 시\n`Deleted(deleted_count, html)`, 실패 시 `DeleteFailed(reason)` 시그널을 내보낸다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 39,
+      "end_line": 43,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "DeleteBlock",
+      "anchor": "deleteblock",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 6
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 18
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 37
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000017",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -37,7 +37,7 @@ int main() {
     const std::string install_script = read_file(root + "/install.sh");
     const std::string cmake_lists = read_file(root + "/CMakeLists.txt");
     const std::string config_template = read_file(root + "/cmake/iiXmlConfig.cmake.in");
-    const std::string docs = read_file(root + "/Docs/install.md");
+    const std::string docs = read_file(root + "/docs/install.md");
 
     expect_executable_script_header(install_script);
     expect_contains(install_script, "PREFIX=\"${HOME}/.local/SDK/iiXml\"",
@@ -115,12 +115,14 @@ int main() {
         "CMakeLists.txt must generate a separate root package version.");
     expect_contains(cmake_lists, "ARCH_INDEPENDENT",
         "The root package version must accept both native and WASM consumers.");
-    expect_contains(cmake_lists, "install(FILES iiXml iiXml.h",
+    expect_contains(cmake_lists, "install(FILES src/iiXml \"${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/iiXml.h\"",
         "CMakeLists.txt must install the extensionless <iiXml> umbrella header.");
-    expect_contains(cmake_lists, "install(DIRECTORY Src/",
+    expect_contains(cmake_lists, "install(DIRECTORY src/",
         "CMakeLists.txt must install public module headers.");
-    expect_contains(cmake_lists, "DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Src",
-        "CMakeLists.txt must install module headers without occupying include/iiXml.");
+    expect_contains(cmake_lists, "DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXmlDetail",
+        "CMakeLists.txt must install canonical headers without occupying include/iiXml.");
+    expect_contains(cmake_lists, "install-compat/xml/",
+        "CMakeLists.txt must install forwarding paths for existing consumers.");
 
     expect_contains(config_template, "find_dependency(Qt6 6.8.3 EXACT COMPONENTS Core)",
         "iiXmlConfig.cmake.in must declare the Qt 6.8.3 dependency.");
@@ -137,28 +139,28 @@ int main() {
     expect_contains(config_template, "LINKER:-rpath,${_iiXmlPackageLibraryDirectory}",
         "iiXmlConfig.cmake.in must derive the macOS runtime search path from the relocated package prefix.");
 
-    expect_contains(docs, "./install.sh", "Docs/install.md must document the install script.");
+    expect_contains(docs, "./install.sh", "docs/install.md must document the install script.");
     expect_contains(docs, "macos,ios,android,wasm",
-        "Docs/install.md must document the default all-platform install set.");
+        "docs/install.md must document the default all-platform install set.");
     expect_contains(docs, "IIXML_INSTALL_PLATFORMS=ios ./install.sh",
-        "Docs/install.md must document constrained platform installs.");
+        "docs/install.md must document constrained platform installs.");
     expect_contains(docs, "/opt/homebrew/share/android-commandlinetools",
-        "Docs/install.md must document Homebrew Android SDK discovery.");
+        "docs/install.md must document Homebrew Android SDK discovery.");
     expect_contains(docs, "~/.local/SDK/iiXml/platforms/wasm",
-        "Docs/install.md must document the WASM platform package.");
+        "docs/install.md must document the WASM platform package.");
     expect_contains(docs, "~/.local/SDK/iiXml",
-        "Docs/install.md must document the fixed ~/.local/SDK/iiXml install prefix.");
+        "docs/install.md must document the fixed ~/.local/SDK/iiXml install prefix.");
     expect_contains(docs, "find_package(iiXml CONFIG REQUIRED)",
-        "Docs/install.md must document CMake package loading.");
+        "docs/install.md must document CMake package loading.");
     expect_contains(docs, "CMake 3.24",
-        "Docs/install.md must document the minimum supported CMake version.");
+        "docs/install.md must document the minimum supported CMake version.");
     expect_contains(docs, "32-bit WASM",
-        "Docs/install.md must document architecture-independent root dispatch.");
+        "docs/install.md must document architecture-independent root dispatch.");
     expect_contains(docs, "DYLD_LIBRARY_PATH",
-        "Docs/install.md must document that installed macOS consumers need no runtime environment override.");
-    expect_contains(docs, "iiXml::iiXml", "Docs/install.md must document the imported target.");
+        "docs/install.md must document that installed macOS consumers need no runtime environment override.");
+    expect_contains(docs, "iiXml::iiXml", "docs/install.md must document the imported target.");
     expect_contains(docs, "#include <iiXml>",
-        "Docs/install.md must document extensionless umbrella include usage.");
+        "docs/install.md must document extensionless umbrella include usage.");
 
     return failures == 0 ? 0 : 1;
 }

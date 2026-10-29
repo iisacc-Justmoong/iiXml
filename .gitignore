@@ -45,3 +45,6 @@ xcuserdata/
 out
 gen
 build*/
+**/.iisacc-temporary.lock
+**/.*.iisacc-preview
+**/*.iisacc.json

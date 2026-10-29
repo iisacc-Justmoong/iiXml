@@ -1,0 +1,256 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:80c319cdbe0c8e3f0d800959b4526a35884d2f7033789c1f6f225a1e44ada12d",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/divide_block.md",
+    "sha256": "b95b75d6fcf41f33b01634e5cdd52d767675a7594f2938b71a0749e1808a10b8",
+    "bytes": 1624,
+    "line_count": 42,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "DivideBlock",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# DivideBlock\n",
+      "level": 1,
+      "title": "DivideBlock"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 4,
+      "raw": "`Src/Modifier/DivideBlock.h`와 `Src/Modifier/DivideBlock.cpp`는 파싱된 HTML/iiXml 태그\nrange를 순회하면서 각 요소가 블록 단위인지 판정하는 Modifier 모듈이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 8,
+      "end_line": 17,
+      "raw": "- 내부 파싱은 `Src/Parser/GetTagInfo.*`의 range 목록을 사용한다.\n- `section`, `div`, `p`, `article`, `nav`, `ul`, `li` 같은 기본 HTML 블록 태그는\n  블록 요소로 판정한다.\n- 태그명 판정은 ASCII 대소문자를 구분하지 않는다.\n- `style=\"display: block\"` 또는 `display=block`처럼 명시적 display 값이 있으면\n  기본 태그 판정보다 우선한다.\n- 명시적 display 값이 `inline`이면 `div` 같은 기본 블록 태그도 블록으로 보지 않는다.\n- 알 수 없는 커스텀 태그는 기본적으로 인라인으로 보고, 명시적 `display: block`\n  또는 `display=block`이 있을 때만 블록으로 판정한다.\n- 파싱 실패 시 이전 요소 목록을 제거하고 `GetError()`에 실패 사유를 저장한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "내부 파싱은 `Src/Parser/GetTagInfo.*`의 range 목록을 사용한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`section`, `div`, `p`, `article`, `nav`, `ul`, `li` 같은 기본 HTML 블록 태그는",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "태그명 판정은 ASCII 대소문자를 구분하지 않는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`style=\"display: block\"` 또는 `display=block`처럼 명시적 display 값이 있으면",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "명시적 display 값이 `inline`이면 `div` 같은 기본 블록 태그도 블록으로 보지 않는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "알 수 없는 커스텀 태그는 기본적으로 인라인으로 보고, 명시적 `display: block`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "파싱 실패 시 이전 요소 목록을 제거하고 `GetError()`에 실패 사유를 저장한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 21,
+      "end_line": 31,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\n\nif (divider.Parse(\"<XML><section><span>text</span></section></XML>\")) {\n    // divider.GetElements()[1].tag_name == \"section\"\n    // divider.GetElements()[1].is_block == true\n    // divider.GetBlockElements().size() == 1\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\n\nif (divider.Parse(\"<XML><section><span>text</span></section></XML>\")) {\n    // divider.GetElements()[1].tag_name == \"section\"\n    // divider.GetElements()[1].is_block == true\n    // divider.GetBlockElements().size() == 1\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 33,
+      "end_line": 34,
+      "raw": "이미 `GetTagInfo::RangeInfo`를 가지고 있다면 전체 입력을 다시 저장하지 않고\n`iiHtmlBlock::DivideBlock::IsBlockElement(range)`로 같은 규칙을 적용할 수 있다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 38,
+      "end_line": 42,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "DivideBlock",
+      "anchor": "divideblock",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 6
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 19
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 36
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000007",
+        "line": 11,
+        "text": "- 태그명 판정은 ASCII 대소문자를 구분하지 않는다.",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000017",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

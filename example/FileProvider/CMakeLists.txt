@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.24)
+# iisdk:consumer-application
+project(iiXmlFileProviderConsumer LANGUAGES CXX)
+include(CTest)
+find_package(iiXml 0.1 CONFIG REQUIRED)
+find_package(iiFileProvider 0.5 CONFIG REQUIRED)
+find_package(iiFileProviderNative 0.6 CONFIG REQUIRED)
+add_executable(iiXmlFileProviderTests tests/file_parser_test.cpp)
+target_compile_features(iiXmlFileProviderTests PRIVATE cxx_std_23)
+target_include_directories(iiXmlFileProviderTests PRIVATE App)
+target_link_libraries(iiXmlFileProviderTests PRIVATE iiXml::iiXml iiFileProvider::iiFileProvider iiFileProvider::Native)
+add_test(NAME iiXml.FileProvider COMMAND iiXmlFileProviderTests)
+set_tests_properties(iiXml.FileProvider PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")

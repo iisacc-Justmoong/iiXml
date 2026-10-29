@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+if((NOT DEFINED iiXml_DIR OR iiXml_DIR STREQUAL "" OR iiXml_DIR MATCHES "-NOTFOUND$")
+        AND EXISTS "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@/cmake/iiXml/iiXmlConfig.cmake")
+    set(iiXml_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@/cmake/iiXml")
+endif()
+find_dependency(iiXml 0.1 CONFIG COMPONENTS HtmlBlock)
+if(NOT TARGET iiHtmlBlock::iiHtmlBlock)
+    add_library(iiHtmlBlock::iiHtmlBlock INTERFACE IMPORTED)
+    set_property(TARGET iiHtmlBlock::iiHtmlBlock PROPERTY INTERFACE_LINK_LIBRARIES iiXml::HtmlBlock)
+endif()
+check_required_components(iiHtmlBlock)

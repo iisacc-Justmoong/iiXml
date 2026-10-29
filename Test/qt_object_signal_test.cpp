@@ -1,10 +1,8 @@
 #include <iiXml>
 
 #include <QObject>
-#include <QTemporaryDir>
 #include <QString>
 
-#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -17,11 +15,6 @@ void expect(bool condition, const char* message) {
         std::cerr << message << '\n';
         ++failures;
     }
-}
-
-void writes_file(const QString& path, const std::string& content) {
-    std::ofstream file(path.toStdString(), std::ios::binary);
-    file << content;
 }
 
 void tag_parser_emits_parsed_signal() {
@@ -59,16 +52,11 @@ void tag_parser_emits_failure_signal() {
 }
 
 void file_parser_emits_parsed_signal() {
-    QTemporaryDir directory;
-    expect(directory.isValid(), "temporary directory should be valid");
-    if (!directory.isValid()) {
-        return;
-    }
-
-    const QString path = directory.filePath("input.xml");
-    writes_file(path, "<number>42</number>");
-
-    iiXml::Parser::FileParser parser;
+    const QString path = "input.xml";
+    iiXml::Parser::FileParser parser([](const std::filesystem::path& requested) -> std::optional<std::string> {
+        if (requested == "input.xml") return "<number>42</number>";
+        return std::nullopt;
+    });
     bool emitted = false;
     QString TagName;
     QString value;

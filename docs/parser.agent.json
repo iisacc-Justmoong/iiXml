@@ -1,0 +1,480 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:201cdcb5fb40da417582e9a636463fb35031f8d248c0506009edeae1bc34e464",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "Docs/parser.md",
+    "sha256": "982ceae427ec525f0c91921a9f9ac5717edb65c651b905033147f8d74dbd1450",
+    "bytes": 7111,
+    "line_count": 125,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "Parser 모듈",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Parser 모듈\n",
+      "level": 1,
+      "title": "Parser 모듈"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Src/Parser/` 모듈은 iiXml 커스텀 XML 규약의 입력 문자열에서 단일 여는 태그와 닫는 태그를 인식한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "## 태그 파서\n",
+      "level": 2,
+      "title": "태그 파서"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "`iiXml::Parser::TagParser`는 하나의 태그 쌍을 읽어 `TagName`과 `Value`를 반환한다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "fenced_code",
+      "start_line": 9,
+      "end_line": 19,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Parser::TagParser parser;\nauto parsed = parser.Parse(\"<number>숫자</number>\");\n\nif (parsed.has_value()) {\n    // parsed->TagName == \"number\"\n    // parsed->Value == \"숫자\"\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Parser::TagParser parser;\nauto parsed = parser.Parse(\"<number>숫자</number>\");\n\nif (parsed.has_value()) {\n    // parsed->TagName == \"number\"\n    // parsed->Value == \"숫자\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "실패 사유와 위치가 필요한 호출자는 `ParseResult()`를 사용한다. 이 API는 `std::optional`만 반환하지 않고 상태, payload, 진단 정보를 구조화해서 제공한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "fenced_code",
+      "start_line": 23,
+      "end_line": 31,
+      "raw": "```cpp\nauto result = parser.ParseResult(\"<number>숫자</text>\");\n\nif (result.Status == iiXml::Parser::TagParseStatus::ClosingTagMismatch) {\n    // result.Token.has_value() == false\n    // result.Diagnostic.Reason == \"closing tag mismatch\"\n    // result.Diagnostic.Offset, Line, Column, Context 사용 가능\n}\n```\n",
+      "language": "cpp",
+      "code": "auto result = parser.ParseResult(\"<number>숫자</text>\");\n\nif (result.Status == iiXml::Parser::TagParseStatus::ClosingTagMismatch) {\n    // result.Token.has_value() == false\n    // result.Diagnostic.Reason == \"closing tag mismatch\"\n    // result.Diagnostic.Offset, Line, Column, Context 사용 가능\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 33,
+      "end_line": 33,
+      "raw": "`ParseAll()`은 입력 안의 태그 쌍을 모두 읽어 `std::vector<TagNode>`로 반환한다. 각 노드는 `Range`, `Fields`, `Children`을 가진다. 이 API는 `iiXml::Elements::OpenTag`의 완화된 교차 종료 규칙을 사용하므로, `<a><b></a></b>`에서도 `a`와 `b`를 모두 보존한다. 태그 수는 두 개로 제한하지 않으며, 여러 스타일 태그와 문단 태그가 교차해도 모든 태그를 반환한다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 34,
+      "end_line": 34,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 35,
+      "end_line": 48,
+      "raw": "```cpp\niiXml::Parser::TagParser parser;\nstd::string_view input = \"<a><b></a></b>\";\nauto parsed = parser.ParseAll(input);\n\nif (parsed.has_value()) {\n    // (*parsed)[0].Range.TagName == \"a\"\n    // input.substr((*parsed)[0].Range.RawBegin,\n    //     (*parsed)[0].Range.RawEnd - (*parsed)[0].Range.RawBegin) == \"<a><b></a>\"\n    // (*parsed)[1].Range.TagName == \"b\"\n    // input.substr((*parsed)[1].Range.RawBegin,\n    //     (*parsed)[1].Range.RawEnd - (*parsed)[1].Range.RawBegin) == \"<b></a></b>\"\n}\n```\n",
+      "language": "cpp",
+      "code": "iiXml::Parser::TagParser parser;\nstd::string_view input = \"<a><b></a></b>\";\nauto parsed = parser.ParseAll(input);\n\nif (parsed.has_value()) {\n    // (*parsed)[0].Range.TagName == \"a\"\n    // input.substr((*parsed)[0].Range.RawBegin,\n    //     (*parsed)[0].Range.RawEnd - (*parsed)[0].Range.RawBegin) == \"<a><b></a>\"\n    // (*parsed)[1].Range.TagName == \"b\"\n    // input.substr((*parsed)[1].Range.RawBegin,\n    //     (*parsed)[1].Range.RawEnd - (*parsed)[1].Range.RawBegin) == \"<b></a></b>\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "`ParseAllResult()`는 전체 태그 트리 파싱을 Result 형태로 반환한다.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 51,
+      "end_line": 51,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "fenced_code",
+      "start_line": 52,
+      "end_line": 59,
+      "raw": "```cpp\nauto result = parser.ParseAllResult(input);\n\nif (result.Status == iiXml::Parser::TagTreeParseStatus::Parsed &&\n    result.Nodes.has_value()) {\n    // (*result.Nodes)[0].Range.TagName == \"contents\"\n}\n```\n",
+      "language": "cpp",
+      "code": "auto result = parser.ParseAllResult(input);\n\nif (result.Status == iiXml::Parser::TagTreeParseStatus::Parsed &&\n    result.Nodes.has_value()) {\n    // (*result.Nodes)[0].Range.TagName == \"contents\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "`ParseAllDocument()`와 `ParseAllDocumentResult()`는 range 결과를 통째로 저장하거나 다른 객체에 멤버로 임베딩할 수 있는 `TagDocument`로 반환한다. `TagDocument`는 원본 입력을 `Source`에 한 번만 소유하고, `Nodes`에는 기존 `TagNode` range 트리를 그대로 담는다. 따라서 큰 문서에서도 태그마다 `Raw`/`Value` 문자열을 반복 복제하지 않으며, 호출자는 원본 입력 문자열의 수명을 별도로 관리하지 않아도 된다.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "fenced_code",
+      "start_line": 63,
+      "end_line": 72,
+      "raw": "```cpp\nauto result = parser.ParseAllDocument(\"<a><b></a></b>\");\n\nif (result.has_value()) {\n    const auto& first = result->Nodes[0];\n    // first.Range.TagName == \"a\"\n    // result->ValueView(first) == \"<b>\"\n    // result->RawView(first) == \"<a><b></a>\"\n}\n```\n",
+      "language": "cpp",
+      "code": "auto result = parser.ParseAllDocument(\"<a><b></a></b>\");\n\nif (result.has_value()) {\n    const auto& first = result->Nodes[0];\n    // first.Range.TagName == \"a\"\n    // result->ValueView(first) == \"<b>\"\n    // result->RawView(first) == \"<a><b></a>\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 73,
+      "end_line": 73,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "paragraph",
+      "start_line": 74,
+      "end_line": 74,
+      "raw": "정상 중첩된 입력은 `Children`으로 계층화된다. 여는 태그의 attribute는 `Fields`로 제공하며, attribute 값도 원본 입력의 offset 범위로 보존한다.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 75,
+      "end_line": 75,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "fenced_code",
+      "start_line": 76,
+      "end_line": 94,
+      "raw": "```cpp\nstd::string_view input =\n    \"<contents id=\\\"abc\\\"><body><paragraph order=1 visible=true>one</paragraph></body></contents>\";\nauto parsed = parser.ParseAll(input);\n\nif (parsed.has_value()) {\n    const auto& contents = (*parsed)[0];\n    // contents.Range.TagName == \"contents\"\n    // contents.Fields[0].Name == \"id\"\n    // input.substr(contents.Fields[0].ValueBegin,\n    //     contents.Fields[0].ValueEnd - contents.Fields[0].ValueBegin) == \"abc\"\n    // contents.Children[0].Range.TagName == \"body\"\n    // contents.Children[0].Children[0].Range.TagName == \"paragraph\"\n    // contents.Children[0].Children[0].Fields[0].ValueType\n    //     == iiXml::Elements::InlinePropertyType::IntType\n    // contents.Children[0].Children[0].Fields[1].ValueType\n    //     == iiXml::Elements::InlinePropertyType::BoolType\n}\n```\n",
+      "language": "cpp",
+      "code": "std::string_view input =\n    \"<contents id=\\\"abc\\\"><body><paragraph order=1 visible=true>one</paragraph></body></contents>\";\nauto parsed = parser.ParseAll(input);\n\nif (parsed.has_value()) {\n    const auto& contents = (*parsed)[0];\n    // contents.Range.TagName == \"contents\"\n    // contents.Fields[0].Name == \"id\"\n    // input.substr(contents.Fields[0].ValueBegin,\n    //     contents.Fields[0].ValueEnd - contents.Fields[0].ValueBegin) == \"abc\"\n    // contents.Children[0].Range.TagName == \"body\"\n    // contents.Children[0].Children[0].Range.TagName == \"paragraph\"\n    // contents.Children[0].Children[0].Fields[0].ValueType\n    //     == iiXml::Elements::InlinePropertyType::IntType\n    // contents.Children[0].Children[0].Fields[1].ValueType\n    //     == iiXml::Elements::InlinePropertyType::BoolType\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 95,
+      "end_line": 95,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "heading",
+      "start_line": 96,
+      "end_line": 96,
+      "raw": "## 현재 계약\n",
+      "level": 2,
+      "title": "현재 계약"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 97,
+      "end_line": 97,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "list",
+      "start_line": 98,
+      "end_line": 115,
+      "raw": "- `Parse()` 입력은 `<tag>value</tag>` 형태의 단일 태그 쌍이어야 한다.\n- `ParseResult()`는 `TagParseResult`를 반환한다. `Status`는 `Parsed`, `EmptyInput`, `MissingOpeningBracket`, `OpeningTagNotClosed`, `InvalidTagName`, `InputShorterThanClosingTag`, `ClosingTagMismatch`, `ExceptionThrown` 중 하나다.\n- `TagParseResult::Token`은 성공 시에만 존재한다. 실패 시에는 `Diagnostic`의 `Reason`, `Offset`, `Line`, `Column`, `Context`로 구조화된 실패 정보를 제공한다.\n- `ParseAll()`은 여러 태그를 계층 노드로 반환하고, 각 노드의 `Range.ValueBegin/ValueEnd`와 `Range.RawBegin/RawEnd`에는 자기 닫기 태그까지 전진한 원본 offset 범위를 보존한다.\n- `ParseAllResult()`는 `TagTreeParseResult`를 반환한다. `Status`는 `Parsed`, `OpenTagParserRejected`, `HierarchyBuildFailed`, `ExceptionThrown` 중 하나이며, 성공 시 `Nodes`에 계층 노드를 담는다.\n- `ParseAllDocument()`는 `TagDocument`를 반환한다. `TagDocument::Source`는 입력 전체를 한 번 소유하고, `TagDocument::Nodes`는 그 입력을 가리키는 range 트리를 담는다.\n- `ParseAllDocumentResult()`는 `TagDocumentResult`를 반환한다. 성공 시 `Document`가 존재하고, 실패 시 `Status`와 `Diagnostic`은 range 파서 실패 정보를 그대로 전달한다.\n- `TagDocument::RawView()`, `ValueView()`, `FieldNameView()`, `FieldValueView()`는 `Source`와 range offset으로 `std::string_view`를 만들어 반환한다. 이 view는 `TagDocument` 객체가 살아 있는 동안만 유효하다.\n- 정상 포함 관계가 성립하는 태그는 `Children`에 배치한다. 교차 종료 때문에 포함 관계가 성립하지 않는 태그들은 같은 계층의 독립 노드로 남긴다.\n- 여는 태그의 attribute는 `Fields`에 배치하며, 필드 이름과 값 범위, `StringType`/`IntType`/`FloatType`/`BoolType` 타입 정보를 제공한다.\n- 열린 태그 프로세스는 짝 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `TagNode`의 `Range`와 `Fields`가 확정된다.\n- 태그 매칭은 태그 이름 기준이며, 같은 이름이 여러 번 열려 있으면 가장 최근에 열린 같은 이름 태그가 먼저 닫힌다.\n- 태그 이름은 영문자 또는 `_`로 시작하고, 이후에는 영문자, 숫자, `_`, `-`, `.`, `:`를 사용할 수 있다.\n- 입력 문자열의 바깥쪽 공백은 무시하지만, 태그 내부 값의 공백은 보존한다.\n- 닫는 태그가 없거나 여는 태그와 닫는 태그 이름이 다르면 `std::nullopt`를 반환한다.\n- `ParseAll()`에서 닫히지 않은 열린 태그가 남으면 `std::nullopt`를 반환한다.\n- 속성의 의미 분석과 XML 이스케이프 해석은 아직 수행하지 않는다.\n- 생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패 로그를 출력한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parse()` 입력은 `<tag>value</tag>` 형태의 단일 태그 쌍이어야 한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseResult()`는 `TagParseResult`를 반환한다. `Status`는 `Parsed`, `EmptyInput`, `MissingOpeningBracket`, `OpeningTagNotClosed`, `InvalidTagName`, `InputShorterThanClosingTag`, `ClosingTagMismatch`, `ExceptionThrown` 중 하나다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`TagParseResult::Token`은 성공 시에만 존재한다. 실패 시에는 `Diagnostic`의 `Reason`, `Offset`, `Line`, `Column`, `Context`로 구조화된 실패 정보를 제공한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAll()`은 여러 태그를 계층 노드로 반환하고, 각 노드의 `Range.ValueBegin/ValueEnd`와 `Range.RawBegin/RawEnd`에는 자기 닫기 태그까지 전진한 원본 offset 범위를 보존한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllResult()`는 `TagTreeParseResult`를 반환한다. `Status`는 `Parsed`, `OpenTagParserRejected`, `HierarchyBuildFailed`, `ExceptionThrown` 중 하나이며, 성공 시 `Nodes`에 계층 노드를 담는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllDocument()`는 `TagDocument`를 반환한다. `TagDocument::Source`는 입력 전체를 한 번 소유하고, `TagDocument::Nodes`는 그 입력을 가리키는 range 트리를 담는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAllDocumentResult()`는 `TagDocumentResult`를 반환한다. 성공 시 `Document`가 존재하고, 실패 시 `Status`와 `Diagnostic`은 range 파서 실패 정보를 그대로 전달한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`TagDocument::RawView()`, `ValueView()`, `FieldNameView()`, `FieldValueView()`는 `Source`와 range offset으로 `std::string_view`를 만들어 반환한다. 이 view는 `TagDocument` 객체가 살아 있는 동안만 유효하다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "정상 포함 관계가 성립하는 태그는 `Children`에 배치한다. 교차 종료 때문에 포함 관계가 성립하지 않는 태그들은 같은 계층의 독립 노드로 남긴다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "여는 태그의 attribute는 `Fields`에 배치하며, 필드 이름과 값 범위, `StringType`/`IntType`/`FloatType`/`BoolType` 타입 정보를 제공한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "열린 태그 프로세스는 짝 닫기 태그를 만나기 전까지 완료되지 않으며, 완료된 뒤에만 `TagNode`의 `Range`와 `Fields`가 확정된다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "태그 매칭은 태그 이름 기준이며, 같은 이름이 여러 번 열려 있으면 가장 최근에 열린 같은 이름 태그가 먼저 닫힌다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "태그 이름은 영문자 또는 `_`로 시작하고, 이후에는 영문자, 숫자, `_`, `-`, `.`, `:`를 사용할 수 있다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "입력 문자열의 바깥쪽 공백은 무시하지만, 태그 내부 값의 공백은 보존한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "닫는 태그가 없거나 여는 태그와 닫는 태그 이름이 다르면 `std::nullopt`를 반환한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParseAll()`에서 닫히지 않은 열린 태그가 남으면 `std::nullopt`를 반환한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "속성의 의미 분석과 XML 이스케이프 해석은 아직 수행하지 않는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패 로그를 출력한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 116,
+      "end_line": 116,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "heading",
+      "start_line": 117,
+      "end_line": 117,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 118,
+      "end_line": 118,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 119,
+      "end_line": 119,
+      "raw": "다음 명령으로 빌드와 테스트를 실행한다.\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 120,
+      "end_line": 120,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "fenced_code",
+      "start_line": 121,
+      "end_line": 125,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Parser 모듈",
+      "anchor": "parser-모듈",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "태그 파서",
+      "anchor": "태그-파서",
+      "start_line": 5
+    },
+    {
+      "block_id": "b000031",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "현재 계약",
+      "anchor": "현재-계약",
+      "start_line": 96
+    },
+    {
+      "block_id": "b000035",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 117
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000033",
+        "line": 114,
+        "text": "- 속성의 의미 분석과 XML 이스케이프 해석은 아직 수행하지 않는다.",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000039",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:ed4b30e1ce1dd6a6de9f3fe897fef3ef932c97244562f505ce1458a247647d40",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "Docs/file_parser.md",
+    "sha256": "240d24e607e358c300ddcc99cb047a43489b57ac29befaaad05303e55aeec2b2",
+    "bytes": 882,
+    "line_count": 37,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "FileParser",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# FileParser\n",
+      "level": 1,
+      "title": "FileParser"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Src/Parser/FileParser.h`와 `Src/Parser/FileParser.cpp`는 파일 경로를 입력으로 받아 파일 내용을 기존 태그 파서에 전달한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "## 반환 형식\n",
+      "level": 2,
+      "title": "반환 형식"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "`iiXml::Parser::FileParser::ParseFile()`은 파일 전체를 읽은 뒤 `iiXml::Parser::TagParser::Parse()`에 넘긴다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "fenced_code",
+      "start_line": 9,
+      "end_line": 11,
+      "raw": "```cpp\nstd::optional<iiXml::Parser::TagValue>\n```\n",
+      "language": "cpp",
+      "code": "std::optional<iiXml::Parser::TagValue>\n",
+      "closed": true
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 12,
+      "end_line": 12,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "파일을 열 수 없거나 파일 내용이 태그 파서를 통과하지 못하면 `std::nullopt`를 반환한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "## 사용 예\n",
+      "level": 2,
+      "title": "사용 예"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "fenced_code",
+      "start_line": 19,
+      "end_line": 29,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Parser::FileParser parser;\nauto parsed = parser.ParseFile(\"input.xml\");\n\nif (parsed.has_value()) {\n    // parsed->TagName\n    // parsed->Value\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Parser::FileParser parser;\nauto parsed = parser.ParseFile(\"input.xml\");\n\nif (parsed.has_value()) {\n    // parsed->TagName\n    // parsed->Value\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "heading",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "fenced_code",
+      "start_line": 33,
+      "end_line": 37,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "FileParser",
+      "anchor": "fileparser",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "반환 형식",
+      "anchor": "반환-형식",
+      "start_line": 5
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예",
+      "anchor": "사용-예",
+      "start_line": 17
+    },
+    {
+      "block_id": "b000019",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 31
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000021",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

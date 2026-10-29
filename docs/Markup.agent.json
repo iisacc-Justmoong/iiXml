@@ -1,0 +1,114 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:18cc0279d726982c887df010e8179530fc8e579eb904241029a408f66921f298",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Markup.md",
+    "sha256": "62f500c8a2555c7364d53da5e80e1eb768678ac5f62f31ba6743e65cd43e8533",
+    "bytes": 1321,
+    "line_count": 18,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "Qt 없는 소스 보존 마크업",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Qt 없는 소스 보존 마크업\n",
+      "level": 1,
+      "title": "Qt 없는 소스 보존 마크업"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 8,
+      "raw": "`iiXmlMarkup` 패키지의 `iiXml::Markup`은 C++23 태그 파서와 HTML 블록 범위\n추적기를 제공한다. `<iiXml/Markup/TagParser.h>`와\n`<iiXml/Markup/BlockRangeTracker.h>`를 포함하고 해당 CMake 대상을 연결한다.\n기존 `iiXml::Native`의 libxml2 기반 스트림 XML API 및 Qt 기반 호환 API와는\n별도의 계약이다. 이 대상에는 Qt, libxml2 또는 iiGeneralDocument 연결이 없다.\n전체 iiXml 빌드에는 별도 Native 대상 때문에 libxml2가 필요할 수 있다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 14,
+      "raw": "파싱은 입력 바이트와 범위를 보존하며, 중첩 태그 및 속성을 표현한다. 블록\n추적기는 원본 범위를 기준으로 안정적인 식별자를 갱신한다. HTML 블록 범위는\n교차하는 태그를 다룰 수 있지만, iiGeneralDocument의 XML 트리는 단일 루트와\n겹치지 않는 계층을 추가로 요구한다. 이 API는 브라우저 HTML5 오류 복구나\nDTD·엔티티 확장을 제공한다고 약속하지 않는다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 16,
+      "end_line": 18,
+      "raw": "`iiXml.Markup.Contracts`는 중첩, Unicode, 갱신 후 식별자, 잘못된 입력 및\n실패 시 보존 동작을 확인한다. 호환되는 기존 Qt 기반 파서는 별도 인터페이스로\n계속 제공되며, 이 구성요소가 모든 파서 계약을 대체한다고 가정하지 않는다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Qt 없는 소스 보존 마크업",
+      "anchor": "qt-없는-소스-보존-마크업",
+      "start_line": 1
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000005",
+        "line": 14,
+        "text": "DTD·엔티티 확장을 제공한다고 약속하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000007",
+        "line": 18,
+        "text": "계속 제공되며, 이 구성요소가 모든 파서 계약을 대체한다고 가정하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -1,0 +1,546 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:f6b0b7b9e8831cf14699a7551a2a0360c26bbd265329d5c24e3945db7ef18d27",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/install.md",
+    "sha256": "a5d90dcd081e9d43862d389faadb7c8654f3116477ab491441352d4191cc4047",
+    "bytes": 5192,
+    "line_count": 96,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "설치",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 설치\n",
+      "level": 1,
+      "title": "설치"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 6,
+      "raw": "`install.sh`는 기본적으로 iiXml을 현재 macOS 호스트에서 사용하는 전 플랫폼 집합\n`macos,ios,android,wasm` 기준으로 설치한다. macOS 호환 설치 위치는 기존과 같은\n`~/.local/SDK/iiXml`이고, 플랫폼별 설치물은 `~/.local/SDK/iiXml/platforms/<platform>` 아래에 둔다.\n설치 위치는 고정이며 다른 prefix를 받지 않는다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "## 전제 조건\n",
+      "level": 2,
+      "title": "전제 조건"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 10,
+      "end_line": 18,
+      "raw": "- `cmake --fresh`를 지원하는 CMake 3.24 이상이 필요하다.\n- Qt 6.8.3은 `/Volumes/Storage/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.\n- iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `/Volumes/Storage/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.\n- Android 패키지를 만들려면 Qt Android kit, Android SDK, Android NDK가 필요하다.\n  스크립트는 Apple Silicon Homebrew의 `/opt/homebrew/share/android-commandlinetools`와\n  `/opt/homebrew/share/android-ndk`도 자동 탐지한다.\n- WASM 패키지를 만들려면 Qt WASM kit와 emsdk의 `Emscripten.cmake`가 필요하다.\n- 기본 자동 플랫폼 목록에서 보조 툴체인을 찾지 못한 플랫폼은 건너뛴다. `IIXML_INSTALL_PLATFORMS`로\n  명시한 플랫폼은 전제 조건이 없으면 실패한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`cmake --fresh`를 지원하는 CMake 3.24 이상이 필요하다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Qt 6.8.3은 `/Volumes/Storage/Qt/6.8.3/macos` 아래에 설치되어 있어야 한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "iOS 패키지를 만들려면 Qt 6.8.3 iOS kit가 `/Volumes/Storage/Qt/6.8.3/ios` 아래에 설치되어 있어야 한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Android 패키지를 만들려면 Qt Android kit, Android SDK, Android NDK가 필요하다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "WASM 패키지를 만들려면 Qt WASM kit와 emsdk의 `Emscripten.cmake`가 필요하다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "기본 자동 플랫폼 목록에서 보조 툴체인을 찾지 못한 플랫폼은 건너뛴다. `IIXML_INSTALL_PLATFORMS`로",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "## 실행\n",
+      "level": 2,
+      "title": "실행"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 22,
+      "end_line": 24,
+      "raw": "```sh\n./install.sh\n```\n",
+      "language": "sh",
+      "code": "./install.sh\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 25,
+      "end_line": 25,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "스크립트는 항상 루트의 `build/` 디렉터리를 사용한다. 기존 `CMakeCache.txt`가 다른 소스 또는 빌드 경로를 가리키면 오래된 빌드 트리로 보고 `build/`를 제거한 뒤 새로 구성한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "list",
+      "start_line": 28,
+      "end_line": 34,
+      "raw": "1. macOS 패키지를 `cmake --fresh -S . -B build`로 구성한다.\n2. macOS 라이브러리를 빌드하고 `ctest --test-dir build --output-on-failure`로 테스트를 실행한다.\n3. macOS 패키지를 `~/.local/SDK/iiXml`과 `~/.local/SDK/iiXml/platforms/macos`에 설치한다.\n4. iOS 패키지를 Qt iOS toolchain으로 `build/platforms/ios`에 구성하고 Release target을 빌드한다.\n5. Android 패키지를 Qt Android toolchain으로 `build/platforms/android`에 구성하고 target을 빌드한다.\n6. WASM 패키지를 Qt WASM toolchain으로 `build/platforms/wasm`에 구성하며 `IIXML_BUILD_SHARED=OFF`로 정적 라이브러리를 만든다.\n7. 각 cross package를 `~/.local/SDK/iiXml/platforms/<platform>`에 설치한다.\n",
+      "items": [
+        {
+          "marker": "1.",
+          "text": "macOS 패키지를 `cmake --fresh -S . -B build`로 구성한다.",
+          "checked": null
+        },
+        {
+          "marker": "2.",
+          "text": "macOS 라이브러리를 빌드하고 `ctest --test-dir build --output-on-failure`로 테스트를 실행한다.",
+          "checked": null
+        },
+        {
+          "marker": "3.",
+          "text": "macOS 패키지를 `~/.local/SDK/iiXml`과 `~/.local/SDK/iiXml/platforms/macos`에 설치한다.",
+          "checked": null
+        },
+        {
+          "marker": "4.",
+          "text": "iOS 패키지를 Qt iOS toolchain으로 `build/platforms/ios`에 구성하고 Release target을 빌드한다.",
+          "checked": null
+        },
+        {
+          "marker": "5.",
+          "text": "Android 패키지를 Qt Android toolchain으로 `build/platforms/android`에 구성하고 target을 빌드한다.",
+          "checked": null
+        },
+        {
+          "marker": "6.",
+          "text": "WASM 패키지를 Qt WASM toolchain으로 `build/platforms/wasm`에 구성하며 `IIXML_BUILD_SHARED=OFF`로 정적 라이브러리를 만든다.",
+          "checked": null
+        },
+        {
+          "marker": "7.",
+          "text": "각 cross package를 `~/.local/SDK/iiXml/platforms/<platform>`에 설치한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "임시로 일부 플랫폼만 다시 설치해야 한다면 다음처럼 환경 변수로 제한할 수 있다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 38,
+      "end_line": 40,
+      "raw": "```sh\nIIXML_INSTALL_PLATFORMS=ios ./install.sh\n```\n",
+      "language": "sh",
+      "code": "IIXML_INSTALL_PLATFORMS=ios ./install.sh\n",
+      "closed": true
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "WASM 또는 Android 툴체인이 기본 위치에 없다면 다음 변수로 지정할 수 있다.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "fenced_code",
+      "start_line": 44,
+      "end_line": 47,
+      "raw": "```sh\nIIXML_EMSDK_ROOT=~/emsdk ./install.sh\nIIXML_ANDROID_QT_PREFIX=/Volumes/Storage/Qt/6.8.3/android_arm64_v8a ANDROID_SDK_ROOT=~/Library/Android/sdk ./install.sh\n```\n",
+      "language": "sh",
+      "code": "IIXML_EMSDK_ROOT=~/emsdk ./install.sh\nIIXML_ANDROID_QT_PREFIX=/Volumes/Storage/Qt/6.8.3/android_arm64_v8a ANDROID_SDK_ROOT=~/Library/Android/sdk ./install.sh\n",
+      "closed": true
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "heading",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "## 설치 결과\n",
+      "level": 2,
+      "title": "설치 결과"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "list",
+      "start_line": 51,
+      "end_line": 59,
+      "raw": "- `~/.local/SDK/iiXml/lib`: iiXml 공유 라이브러리\n- `~/.local/SDK/iiXml/include/iiXml`: `#include <iiXml>`용 umbrella 헤더\n- `~/.local/SDK/iiXml/include/iiXml.h`: 기존 파일명 기반 umbrella 헤더\n- `~/.local/SDK/iiXml/include/Src`: 모듈별 공개 헤더\n- `~/.local/SDK/iiXml/lib/cmake/iiXml`: `iiXmlConfig.cmake`와 export target 파일\n- `~/.local/SDK/iiXml/platforms/macos`: macOS 전용 패키지 mirror\n- `~/.local/SDK/iiXml/platforms/ios`: iOS 전용 패키지\n- `~/.local/SDK/iiXml/platforms/android`: Android 전용 패키지\n- `~/.local/SDK/iiXml/platforms/wasm`: WASM 전용 정적 패키지\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/lib`: iiXml 공유 라이브러리",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/include/iiXml`: `#include <iiXml>`용 umbrella 헤더",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/include/iiXml.h`: 기존 파일명 기반 umbrella 헤더",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/include/Src`: 모듈별 공개 헤더",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/lib/cmake/iiXml`: `iiXmlConfig.cmake`와 export target 파일",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/platforms/macos`: macOS 전용 패키지 mirror",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/platforms/ios`: iOS 전용 패키지",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/platforms/android`: Android 전용 패키지",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`~/.local/SDK/iiXml/platforms/wasm`: WASM 전용 정적 패키지",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "heading",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "## CMake 사용 예\n",
+      "level": 2,
+      "title": "CMake 사용 예"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 63,
+      "end_line": 63,
+      "raw": "설치 후 다른 Qt 프로젝트에서는 다음처럼 가져온다.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 64,
+      "end_line": 64,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "fenced_code",
+      "start_line": 65,
+      "end_line": 72,
+      "raw": "```cmake\nlist(PREPEND CMAKE_PREFIX_PATH \"$ENV{HOME}/.local/SDK/iiXml\")\n\nfind_package(iiXml CONFIG REQUIRED)\n\nadd_executable(app main.cpp)\ntarget_link_libraries(app PRIVATE iiXml::iiXml)\n```\n",
+      "language": "cmake",
+      "code": "list(PREPEND CMAKE_PREFIX_PATH \"$ENV{HOME}/.local/SDK/iiXml\")\n\nfind_package(iiXml CONFIG REQUIRED)\n\nadd_executable(app main.cpp)\ntarget_link_libraries(app PRIVATE iiXml::iiXml)\n",
+      "closed": true
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 73,
+      "end_line": 73,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "paragraph",
+      "start_line": 74,
+      "end_line": 74,
+      "raw": "코드에서는 다음처럼 단일 umbrella 헤더를 사용한다.\n"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 75,
+      "end_line": 75,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "fenced_code",
+      "start_line": 76,
+      "end_line": 78,
+      "raw": "```cpp\n#include <iiXml>\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n",
+      "closed": true
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 79,
+      "end_line": 79,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "paragraph",
+      "start_line": 80,
+      "end_line": 89,
+      "raw": "`iiXml::iiXml` imported target은 include path와 Qt `Core` 링크 의존성을 함께 제공한다.\nmacOS 패키지는 CMake가 일반 package 경로에 자동으로 추가하는 RPATH를 사용한다. `LIBRARY_PATH`로\npackage 경로가 implicit link directory가 되어 자동 RPATH가 생략되는 환경에서는 imported target이\n현재 package prefix의 `lib` 경로만 보완한다. 따라서 중복 RPATH나 별도의 `DYLD_LIBRARY_PATH` 없이 실행된다.\n루트 `iiXmlConfig.cmake`는 소비 프로젝트의 `CMAKE_SYSTEM_NAME`을 기준으로 플랫폼 패키지를\n먼저 찾는다. iOS, Android, WASM 구성에서는 대응하는\n`~/.local/SDK/iiXml/platforms/<platform>/lib/cmake/iiXml/iiXmlConfig.cmake`로 위임하므로,\ncross build가 macOS 라이브러리를 잘못 링크하는 경로를 막는다.\n루트 패키지의 버전 파일은 64비트 네이티브와 32-bit WASM을 함께 선택할 수 있도록\n아키텍처 독립형으로 게시하며, 플랫폼별 버전 파일은 각 바이너리의 포인터 크기 검사를 유지한다.\n"
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 90,
+      "end_line": 90,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "paragraph",
+      "start_line": 91,
+      "end_line": 92,
+      "raw": "소스 저장소는 `Workspace/SDK/iiXml`이다. 직접 CMake를 구성해도 기본 설치\nprefix는 `~/.local/SDK/iiXml`이며, 명시한 `CMAKE_INSTALL_PREFIX`는 유지한다.\n"
+    },
+    {
+      "id": "b000042",
+      "kind": "blank",
+      "start_line": 93,
+      "end_line": 93,
+      "raw": "\n"
+    },
+    {
+      "id": "b000043",
+      "kind": "paragraph",
+      "start_line": 94,
+      "end_line": 96,
+      "raw": "기본 SDK prefix는 이 저장소를 단독 구성할 때만 적용한다. `add_subdirectory()`로\n포함한 상위 프로젝트의 설치 prefix는 유지하고, `HOME`이 비어 있으면\n`USERPROFILE`을 사용자 홈으로 사용한다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "설치",
+      "anchor": "설치",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "전제 조건",
+      "anchor": "전제-조건",
+      "start_line": 8
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "실행",
+      "anchor": "실행",
+      "start_line": 20
+    },
+    {
+      "block_id": "b000025",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "설치 결과",
+      "anchor": "설치-결과",
+      "start_line": 49
+    },
+    {
+      "block_id": "b000029",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "CMake 사용 예",
+      "anchor": "cmake-사용-예",
+      "start_line": 61
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000017",
+        "line": 36,
+        "text": "임시로 일부 플랫폼만 다시 설치해야 한다면 다음처럼 환경 변수로 제한할 수 있다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000011",
+        "language": "sh",
+        "code": "./install.sh\n"
+      },
+      {
+        "block_id": "b000019",
+        "language": "sh",
+        "code": "IIXML_INSTALL_PLATFORMS=ios ./install.sh\n"
+      },
+      {
+        "block_id": "b000023",
+        "language": "sh",
+        "code": "IIXML_EMSDK_ROOT=~/emsdk ./install.sh\nIIXML_ANDROID_QT_PREFIX=/Volumes/Storage/Qt/6.8.3/android_arm64_v8a ANDROID_SDK_ROOT=~/Library/Android/sdk ./install.sh\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

@@ -1,90 +1,70 @@
 #include <iiXml>
-#include <iiFileProvider.h>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 namespace {
-
 int failures = 0;
-
 void expect(bool condition, const char* message) {
-    if (!condition) {
-        std::cerr << message << '\n';
-        ++failures;
-    }
+    if (!condition) { std::cerr << message << '\n'; ++failures; }
 }
 
-void write_file(const std::filesystem::path& path, const std::string& content) {
-    iiFileProvider::File::write(iiFileProvider::File::pathString(path), QByteArray::fromStdString(content));
+iiXml::IO::FileReader fixture_reader() {
+    return [](const std::filesystem::path& path) -> std::optional<std::string> {
+        if (path == "valid.xml") return "<number>42</number>";
+        if (path == "utf8.xml") return "<number>숫자</number>";
+        if (path == "invalid.xml") return "<number>42</text>";
+        if (path == "validated.xml") return "<!Doctype XML>\n<XML><number>42</number></XML>";
+        return std::nullopt;
+    };
 }
 
 void parses_file_content_with_tag_parser() {
-    const std::filesystem::path path = std::filesystem::current_path() / "file_parser_valid.xml";
-    write_file(path, "<number>42</number>");
-
-    const iiXml::Parser::FileParser parser;
-    const std::optional<iiXml::Parser::TagValue> parsed = parser.ParseFile(path);
-
+    const iiXml::Parser::FileParser parser(fixture_reader());
+    const auto parsed = parser.ParseFile("valid.xml");
     expect(parsed.has_value(), "valid tag file should parse");
-    if (!parsed.has_value()) {
-        iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
-        return;
+    if (parsed) {
+        expect(parsed->TagName == "number", "file parser should preserve tag name");
+        expect(parsed->Value == "42", "file parser should preserve tag value");
     }
-
-    expect(parsed->TagName == "number", "file parser should preserve tag name");
-    expect(parsed->Value == "42", "file parser should preserve tag value");
-
-    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
 }
-
 void preserves_utf8_file_value() {
-    const std::filesystem::path path = std::filesystem::current_path() / "file_parser_utf8.xml";
-    write_file(path, "<number>숫자</number>");
-
-    const iiXml::Parser::FileParser parser;
-    const std::optional<iiXml::Parser::TagValue> parsed = parser.ParseFile(path);
-
-    expect(parsed.has_value(), "utf8 tag file should parse");
-    if (!parsed.has_value()) {
-        iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
-        return;
-    }
-
-    expect(parsed->Value == "숫자", "file parser should preserve utf8 value");
-
-    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
+    const iiXml::Parser::FileParser parser(fixture_reader());
+    const auto parsed = parser.ParseFile("utf8.xml");
+    expect(parsed.has_value(), "UTF-8 tag file should parse");
+    if (parsed) expect(parsed->Value == "숫자", "file parser should preserve UTF-8 value");
 }
-
-void returns_empty_for_missing_file() {
-    const iiXml::Parser::FileParser parser;
-    const std::filesystem::path path = std::filesystem::current_path() / "file_parser_missing.xml";
-
-    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
-    expect(!parser.ParseFile(path).has_value(), "missing file should not parse");
+void rejects_missing_invalid_and_unconfigured_inputs() {
+    const iiXml::Parser::FileParser parser(fixture_reader());
+    expect(!parser.ParseFile("missing.xml"), "missing file should not parse");
+    expect(!parser.ParseFile("invalid.xml"), "invalid tag content should not parse");
+    const iiXml::Parser::FileParser unconfigured;
+    expect(!unconfigured.ParseFile("valid.xml"), "an absent reader should fail closed");
+    const iiXml::Writer::GetFile validated(fixture_reader());
+    const auto result = validated.ParseFile("validated.xml");
+    expect(result.Status == iiXml::Writer::GetFileStatus::Parsed, "validated file should parse");
+    const iiXml::Writer::GetFile no_reader;
+    expect(no_reader.ParseFile("validated.xml").Status == iiXml::Writer::GetFileStatus::FileReadFailed,
+           "validated parser should report an absent reader");
 }
-
-void returns_empty_when_tag_parser_rejects_content() {
-    const std::filesystem::path path = std::filesystem::current_path() / "file_parser_invalid.xml";
-    write_file(path, "<number>42</text>");
-
-    const iiXml::Parser::FileParser parser;
-
-    expect(!parser.ParseFile(path).has_value(), "invalid tag content should not parse");
-
-    iiFileProvider::File::remove(iiFileProvider::File::pathString(path));
+void reader_exceptions_do_not_escape() {
+    const iiXml::IO::FileReader reader = [](const auto&) -> std::optional<std::string> {
+        throw std::runtime_error("storage failure");
+    };
+    const iiXml::Parser::FileParser parser(reader);
+    const iiXml::Writer::GetFile validated(reader);
+    expect(!parser.ParseFile("any"), "parser should report a reader exception");
+    expect(validated.ParseFile("any").Status == iiXml::Writer::GetFileStatus::ExceptionThrown,
+           "validated parser should report a reader exception");
 }
-
-} // namespace
-
+}
 int main() {
     parses_file_content_with_tag_parser();
     preserves_utf8_file_value();
-    returns_empty_for_missing_file();
-    returns_empty_when_tag_parser_rejects_content();
-
+    rejects_missing_invalid_and_unconfigured_inputs();
+    reader_exceptions_do_not_escape();
     return failures == 0 ? 0 : 1;
 }

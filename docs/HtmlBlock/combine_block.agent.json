@@ -1,0 +1,242 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:64073763b4e918915ec1ecb2726e439e4bfabb6a0893089e91acfdbb7d36474c",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/combine_block.md",
+    "sha256": "62dbaef0bd57a232b448fa8672002468a30aab4c3fc809a0a573712b42cded79",
+    "bytes": 1804,
+    "line_count": 48,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "CombineBlock",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# CombineBlock\n",
+      "level": 1,
+      "title": "CombineBlock"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 5,
+      "raw": "`Src/Modifier/CombineBlock.h`와 `Src/Modifier/CombineBlock.cpp`는 `DivideBlock`으로\n나뉜 블록 목록에서 여러 블록을 선택하고, 선택 묶음을 하나의 논리 블록으로 병합\n취급하는 Modifier 모듈이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 21,
+      "raw": "- 입력 블록은 `SetBlocks()`로 받으며 보통 `DivideBlock::GetBlockElements()` 결과를\n  전달한다.\n- `Select()`, `SelectRange()`, `Deselect()`, `ClearSelection()`으로 병합할 블록\n  인덱스를 관리한다.\n- `CombineSelected()`는 선택된 두 개 이상의 블록을 `CombinedBlock` 하나로 저장한다.\n- 병합은 원본 HTML 문자열을 재작성하지 않는다. 원본 블록 목록은 유지하고, 병합\n  결과에 선택 인덱스와 선택된 블록 스냅샷을 함께 저장한다.\n- `CombinedBlock::raw`와 `CombinedBlock::value`는 선택된 블록의 원문과 값을 선택\n  순서가 아니라 원본 인덱스 순서로 이어 붙인다.\n- `raw_begin`, `raw_end`, `value_begin`, `value_end`는 선택된 블록들이 차지하는 전체\n  offset 범위를 나타낸다.\n- 선택 블록이 두 개 미만이거나 인덱스가 범위를 벗어나면 실패하고 `GetError()`에\n  사유를 저장한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "입력 블록은 `SetBlocks()`로 받으며 보통 `DivideBlock::GetBlockElements()` 결과를",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Select()`, `SelectRange()`, `Deselect()`, `ClearSelection()`으로 병합할 블록",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`CombineSelected()`는 선택된 두 개 이상의 블록을 `CombinedBlock` 하나로 저장한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "병합은 원본 HTML 문자열을 재작성하지 않는다. 원본 블록 목록은 유지하고, 병합",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`CombinedBlock::raw`와 `CombinedBlock::value`는 선택된 블록의 원문과 값을 선택",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`raw_begin`, `raw_end`, `value_begin`, `value_end`는 선택된 블록들이 차지하는 전체",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "선택 블록이 두 개 미만이거나 인덱스가 범위를 벗어나면 실패하고 `GetError()`에",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 25,
+      "end_line": 40,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::CombineBlock combiner;\n\nif (divider.Parse(\"<XML><section><p>One</p><p>Two</p></section></XML>\")) {\n    combiner.SetBlocks(divider.GetBlockElements());\n    combiner.SelectRange(1, 2);\n\n    if (combiner.CombineSelected()) {\n        // combiner.GetCombinedBlocks()[0].source_indexes == {1, 2}\n        // combiner.GetCombinedBlocks()[0].raw == \"<p>One</p><p>Two</p>\"\n    }\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::CombineBlock combiner;\n\nif (divider.Parse(\"<XML><section><p>One</p><p>Two</p></section></XML>\")) {\n    combiner.SetBlocks(divider.GetBlockElements());\n    combiner.SelectRange(1, 2);\n\n    if (combiner.CombineSelected()) {\n        // combiner.GetCombinedBlocks()[0].source_indexes == {1, 2}\n        // combiner.GetCombinedBlocks()[0].raw == \"<p>One</p><p>Two</p>\"\n    }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "heading",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 44,
+      "end_line": 48,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "CombineBlock",
+      "anchor": "combineblock",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 7
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 23
+    },
+    {
+      "block_id": "b000013",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 42
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000007",
+        "line": 14,
+        "text": "- 병합은 원본 HTML 문자열을 재작성하지 않는다. 원본 블록 목록은 유지하고, 병합",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000015",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

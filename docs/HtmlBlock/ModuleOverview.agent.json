@@ -1,0 +1,982 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:1654bee984fd9e51b4a2371b0adedfa6b6fe71ed89fd53506708c5a74762a7fe",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/ModuleOverview.md",
+    "sha256": "409dc1e3a8e66d4441b85bfcda6b7c7e7886d42c0ae7ac8471b27da396f5729b",
+    "bytes": 6842,
+    "line_count": 119,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "iiHtmlBlock",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "quote",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "> Historical iiHtmlBlock documentation, preserved after integration into iiXml. Current build and package instructions are in [HTML block integration](../HtmlBlockIntegration.md).\n"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "heading",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "# iiHtmlBlock\n",
+      "level": 1,
+      "title": "iiHtmlBlock"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "[Windows build and execution](WindowsBuildAndRun.md)\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 7,
+      "end_line": 9,
+      "raw": "Package release: **0.1.1** (2026-10-19). This patch packages the current\nsource snapshot; build, test and installation evidence is recorded in the SDK\npatch-release report. Earlier versioned feature notes remain historical.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 10,
+      "end_line": 11,
+      "raw": "\n\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 12,
+      "end_line": 12,
+      "raw": "`iiHtmlBlock` is a Qt6.8.3/C++20 shared library for converting `iiXml` input into HTML blocks and manipulating them. The public C++ API resides under the `iiHtmlBlock` namespace.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "## GetTagInfo\n",
+      "level": 2,
+      "title": "GetTagInfo"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "`Src/Parser/GetTagInfo.*` accepts an XML string and stores the first root tag's value and fields as internal state in a way compatible with `iiXml::Parser::TagParser`. The full tag hierarchy is queried through `GetTags()`/`GetRoot()`, while the first root tag's value and fields are queried through `GetValue()` and `GetFields()`. iiXml structures that are difficult to represent with a tree alone, such as crossing closing tags, are preserved as the original offset ranges in `GetRanges()`. The XML declaration and DOCTYPE preceding the body tags are not tag ranges and are therefore removed before parsing.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "See `get_tag_info.md` for details.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "heading",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "## GetHTML\n",
+      "level": 2,
+      "title": "GetHTML"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "`Src/Parser/GetHTML.*` accepts `iiXml` and other XML strings and determines them as HTML tag strings. Tag names are not transformed, and tags like `paragraph`, `XML`, `CustomTag` are also returned as custom HTML tags with their original names. Unknown tags are also kept with their input names. For example, `unknownName` is returned as `<unknownName>...</unknownName>`, and `OtherWidget` is returned as `<OtherWidget>...</OtherWidget>`.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "See `get_html.md` for details.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 25,
+      "end_line": 25,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "heading",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "## iiXmlToHTML\n",
+      "level": 2,
+      "title": "iiXmlToHTML"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "`Src/Modifier/iiXmlToHTML.*` uses the determination rules of `GetHTML` to transform iiXml / XML input into HTML string. Tag names are not transformed and are kept with their input names.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "paragraph",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "See `iixml_to_html.md` for details.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "heading",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "## DivideBlock\n",
+      "level": 2,
+      "title": "DivideBlock"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 33,
+      "end_line": 33,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 34,
+      "end_line": 34,
+      "raw": "`Src/Modifier/DivideBlock.*` determines whether each element is a block unit based on the tag range parsed by `GetTagInfo`. It recognizes the default HTML block tag, and explicit display values like `style=\"display: block\"` or `display=block` take precedence over the default tag determination. Unknown custom tags are considered blocks only when an explicit display value exists.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "paragraph",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "See `divide_block.md` for details.\n"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "heading",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "## BlockRangeTracker\n",
+      "level": 2,
+      "title": "BlockRangeTracker"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "`Src/Modifier/BlockRangeTracker.*` tracks blocks determined by `DivideBlock` in units of the original text range. Each block is assigned a tracking ID, and a specific block can be looked up or blocks overlapping a given offset/range can be found based on the offset relative to the entire original text. `Update()` maintains existing block IDs when possible while reparsing the new document.\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "paragraph",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "See `block_range_tracker.md` for details.\n"
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "heading",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "## BlockHTMLSerializer\n",
+      "level": 2,
+      "title": "BlockHTMLSerializer"
+    },
+    {
+      "id": "b000042",
+      "kind": "blank",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "\n"
+    },
+    {
+      "id": "b000043",
+      "kind": "paragraph",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "`Src/Modifier/BlockHTMLSerializer.*` serializes the split results of `DivideBlock` and the merge results of `CombineBlock` into HTML string fragments. Nested blocks are not duplicated; they are output only once as included in the parent block, and the merge results are used as logical block fragments `CombinedBlock::raw`.\n"
+    },
+    {
+      "id": "b000044",
+      "kind": "blank",
+      "start_line": 47,
+      "end_line": 47,
+      "raw": "\n"
+    },
+    {
+      "id": "b000045",
+      "kind": "paragraph",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "See `block_html_serializer.md` for details.\n"
+    },
+    {
+      "id": "b000046",
+      "kind": "blank",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "\n"
+    },
+    {
+      "id": "b000047",
+      "kind": "heading",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "## DeleteBlock\n",
+      "level": 2,
+      "title": "DeleteBlock"
+    },
+    {
+      "id": "b000048",
+      "kind": "blank",
+      "start_line": 51,
+      "end_line": 51,
+      "raw": "\n"
+    },
+    {
+      "id": "b000049",
+      "kind": "paragraph",
+      "start_line": 52,
+      "end_line": 52,
+      "raw": "`Src/Modifier/DeleteBlock.*` removes the specified block from the original HTML / iiXml string in the block list divided by `DivideBlock`. After deletion, the remaining document is reparsed to update the current block list, and the deleted block snapshot can be looked up at `GetDeletedBlocks()`.\n"
+    },
+    {
+      "id": "b000050",
+      "kind": "blank",
+      "start_line": 53,
+      "end_line": 53,
+      "raw": "\n"
+    },
+    {
+      "id": "b000051",
+      "kind": "paragraph",
+      "start_line": 54,
+      "end_line": 54,
+      "raw": "See `delete_block.md` for details.\n"
+    },
+    {
+      "id": "b000052",
+      "kind": "blank",
+      "start_line": 55,
+      "end_line": 55,
+      "raw": "\n"
+    },
+    {
+      "id": "b000053",
+      "kind": "heading",
+      "start_line": 56,
+      "end_line": 56,
+      "raw": "## CombineBlock\n",
+      "level": 2,
+      "title": "CombineBlock"
+    },
+    {
+      "id": "b000054",
+      "kind": "blank",
+      "start_line": 57,
+      "end_line": 57,
+      "raw": "\n"
+    },
+    {
+      "id": "b000055",
+      "kind": "paragraph",
+      "start_line": 58,
+      "end_line": 58,
+      "raw": "`Src/Modifier/CombineBlock.*` selects multiple blocks from the block list divided by `DivideBlock` and treats the selected group as a single logical block for merging. Merging saves the selection indices and the selected block snapshots to `CombinedBlock` without rewriting the original HTML.\n"
+    },
+    {
+      "id": "b000056",
+      "kind": "blank",
+      "start_line": 59,
+      "end_line": 59,
+      "raw": "\n"
+    },
+    {
+      "id": "b000057",
+      "kind": "paragraph",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "See `combine_block.md` for details.\n"
+    },
+    {
+      "id": "b000058",
+      "kind": "blank",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "\n"
+    },
+    {
+      "id": "b000059",
+      "kind": "heading",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "## FlattenBlock\n",
+      "level": 2,
+      "title": "FlattenBlock"
+    },
+    {
+      "id": "b000060",
+      "kind": "blank",
+      "start_line": 63,
+      "end_line": 63,
+      "raw": "\n"
+    },
+    {
+      "id": "b000061",
+      "kind": "paragraph",
+      "start_line": 64,
+      "end_line": 64,
+      "raw": "`Src/Modifier/FlattenBlock.*` groups all blocks of the document into a single parent group block layer while maintaining each block. Each block remains as an individual `ElementInfo` while simultaneously being treated as a block included in a single `LayerBlock` group.\n"
+    },
+    {
+      "id": "b000062",
+      "kind": "blank",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "\n"
+    },
+    {
+      "id": "b000063",
+      "kind": "paragraph",
+      "start_line": 66,
+      "end_line": 66,
+      "raw": "See `flatten_block.md` for details.\n"
+    },
+    {
+      "id": "b000064",
+      "kind": "blank",
+      "start_line": 67,
+      "end_line": 67,
+      "raw": "\n"
+    },
+    {
+      "id": "b000065",
+      "kind": "html",
+      "start_line": 68,
+      "end_line": 68,
+      "raw": "<a id=\"설치\"></a>\n"
+    },
+    {
+      "id": "b000066",
+      "kind": "blank",
+      "start_line": 69,
+      "end_line": 69,
+      "raw": "\n"
+    },
+    {
+      "id": "b000067",
+      "kind": "heading",
+      "start_line": 70,
+      "end_line": 70,
+      "raw": "## Install\n",
+      "level": 2,
+      "title": "Install"
+    },
+    {
+      "id": "b000068",
+      "kind": "blank",
+      "start_line": 71,
+      "end_line": 71,
+      "raw": "\n"
+    },
+    {
+      "id": "b000069",
+      "kind": "paragraph",
+      "start_line": 72,
+      "end_line": 72,
+      "raw": "`install.sh` builds, tests, and installs at once in the same manner as iiXml, and installs iiHtmlBlock as macOS, iOS, Android, WASM packages. The compatible root prefix for macOS is `~/.local/SDK/iiHtmlBlock`, and platform-specific packages are placed in `~/.local/SDK/iiHtmlBlock/platforms/<platform>`. After installation, the consuming project can separately add the `iiXml` prefix without using the standard install layout, or can directly import `find_package(iiHtmlBlock CONFIG REQUIRED)` or the install config file `include()`. The root config delegates to the platform package corresponding to the CMake target system to prevent the host dylib from being incorrectly linked in cross-compilation.\n"
+    },
+    {
+      "id": "b000070",
+      "kind": "blank",
+      "start_line": 73,
+      "end_line": 73,
+      "raw": "\n"
+    },
+    {
+      "id": "b000071",
+      "kind": "paragraph",
+      "start_line": 74,
+      "end_line": 74,
+      "raw": "Targets specified by the consumer `iiXml_DIR` or already retrieved `iiXml::iiXml` are preserved. Automatic platform discovery is used only when there is no explicit selection, and XML packages using new iiFileProvider CRUD hierarchies are not reverted to the previous `.local` installation. `installed_dependency_selection_test` reads the actual installation package as a separate CMake consumer to verify that this selection is maintained.\n"
+    },
+    {
+      "id": "b000072",
+      "kind": "blank",
+      "start_line": 75,
+      "end_line": 75,
+      "raw": "\n"
+    },
+    {
+      "id": "b000073",
+      "kind": "paragraph",
+      "start_line": 76,
+      "end_line": 76,
+      "raw": "See `install.md` for details.\n"
+    },
+    {
+      "id": "b000074",
+      "kind": "blank",
+      "start_line": 77,
+      "end_line": 77,
+      "raw": "\n"
+    },
+    {
+      "id": "b000075",
+      "kind": "html",
+      "start_line": 78,
+      "end_line": 78,
+      "raw": "<a id=\"사용-예시\"></a>\n"
+    },
+    {
+      "id": "b000076",
+      "kind": "blank",
+      "start_line": 79,
+      "end_line": 79,
+      "raw": "\n"
+    },
+    {
+      "id": "b000077",
+      "kind": "heading",
+      "start_line": 80,
+      "end_line": 80,
+      "raw": "## Usage Examples\n",
+      "level": 2,
+      "title": "Usage Examples"
+    },
+    {
+      "id": "b000078",
+      "kind": "blank",
+      "start_line": 81,
+      "end_line": 81,
+      "raw": "\n"
+    },
+    {
+      "id": "b000079",
+      "kind": "fenced_code",
+      "start_line": 82,
+      "end_line": 90,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::GetHTML html;\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::BlockRangeTracker tracker;\niiHtmlBlock::BlockHTMLSerializer serializer;\niiHtmlBlock::DeleteBlock deleter;\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::GetHTML html;\niiHtmlBlock::DivideBlock divider;\niiHtmlBlock::BlockRangeTracker tracker;\niiHtmlBlock::BlockHTMLSerializer serializer;\niiHtmlBlock::DeleteBlock deleter;\n",
+      "closed": true
+    },
+    {
+      "id": "b000080",
+      "kind": "blank",
+      "start_line": 91,
+      "end_line": 91,
+      "raw": "\n"
+    },
+    {
+      "id": "b000081",
+      "kind": "paragraph",
+      "start_line": 92,
+      "end_line": 92,
+      "raw": "Runnable examples are in `Example/ParsedXmlHtmlExample.cpp`, and they show together the parsed XML range, HTML transformation results, block splitting, range tracking, block serialization, block deletion, selection merging, and the full layering flow. See `examples.md` for details.\n"
+    },
+    {
+      "id": "b000082",
+      "kind": "blank",
+      "start_line": 93,
+      "end_line": 93,
+      "raw": "\n"
+    },
+    {
+      "id": "b000083",
+      "kind": "html",
+      "start_line": 94,
+      "end_line": 94,
+      "raw": "<a id=\"검증\"></a>\n"
+    },
+    {
+      "id": "b000084",
+      "kind": "blank",
+      "start_line": 95,
+      "end_line": 95,
+      "raw": "\n"
+    },
+    {
+      "id": "b000085",
+      "kind": "heading",
+      "start_line": 96,
+      "end_line": 96,
+      "raw": "## Verification\n",
+      "level": 2,
+      "title": "Verification"
+    },
+    {
+      "id": "b000086",
+      "kind": "blank",
+      "start_line": 97,
+      "end_line": 97,
+      "raw": "\n"
+    },
+    {
+      "id": "b000087",
+      "kind": "fenced_code",
+      "start_line": 98,
+      "end_line": 102,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    },
+    {
+      "id": "b000088",
+      "kind": "blank",
+      "start_line": 103,
+      "end_line": 103,
+      "raw": "\n"
+    },
+    {
+      "id": "b000089",
+      "kind": "heading",
+      "start_line": 104,
+      "end_line": 104,
+      "raw": "## License\n",
+      "level": 2,
+      "title": "License"
+    },
+    {
+      "id": "b000090",
+      "kind": "blank",
+      "start_line": 105,
+      "end_line": 105,
+      "raw": "\n"
+    },
+    {
+      "id": "b000091",
+      "kind": "paragraph",
+      "start_line": 106,
+      "end_line": 106,
+      "raw": "SPDX-License-Identifier: MIT\n"
+    },
+    {
+      "id": "b000092",
+      "kind": "blank",
+      "start_line": 107,
+      "end_line": 107,
+      "raw": "\n"
+    },
+    {
+      "id": "b000093",
+      "kind": "paragraph",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "The self-written code and documentation of iiHtmlBlock are distributed under the MIT License. The license text is in [LICENSE](../../LICENSE).\n"
+    },
+    {
+      "id": "b000094",
+      "kind": "blank",
+      "start_line": 109,
+      "end_line": 109,
+      "raw": "\n"
+    },
+    {
+      "id": "b000095",
+      "kind": "paragraph",
+      "start_line": 110,
+      "end_line": 110,
+      "raw": "Third-party code, libraries, tools, and model weights retain their own individual licenses.\n"
+    },
+    {
+      "id": "b000096",
+      "kind": "blank",
+      "start_line": 111,
+      "end_line": 111,
+      "raw": "\n"
+    },
+    {
+      "id": "b000097",
+      "kind": "html",
+      "start_line": 112,
+      "end_line": 112,
+      "raw": "<!-- workspace-docs:readme:start -->\n"
+    },
+    {
+      "id": "b000098",
+      "kind": "heading",
+      "start_line": 113,
+      "end_line": 113,
+      "raw": "## Documentation entry points\n",
+      "level": 2,
+      "title": "Documentation entry points"
+    },
+    {
+      "id": "b000099",
+      "kind": "blank",
+      "start_line": 114,
+      "end_line": 114,
+      "raw": "\n"
+    },
+    {
+      "id": "b000100",
+      "kind": "list",
+      "start_line": 115,
+      "end_line": 118,
+      "raw": "- Human overview: this English `README.md`.\n- Agent instructions: [AGENT.md](../../AGENT.md).\n- Human documentation: [documentation index](README.md).\n- Structured agent documentation: [agent index](../agent-index.json).\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "Human overview: this English `README.md`.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Agent instructions: [AGENT.md](../../AGENT.md).",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Human documentation: [documentation index](README.md).",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Structured agent documentation: [agent index](../agent-index.json).",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000101",
+      "kind": "html",
+      "start_line": 119,
+      "end_line": 119,
+      "raw": "<!-- workspace-docs:readme:end -->\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000003",
+      "parent_id": null,
+      "level": 1,
+      "title": "iiHtmlBlock",
+      "anchor": "iihtmlblock",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "GetTagInfo",
+      "anchor": "gettaginfo",
+      "start_line": 14
+    },
+    {
+      "block_id": "b000017",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "GetHTML",
+      "anchor": "gethtml",
+      "start_line": 20
+    },
+    {
+      "block_id": "b000023",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "iiXmlToHTML",
+      "anchor": "iixmltohtml",
+      "start_line": 26
+    },
+    {
+      "block_id": "b000029",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "DivideBlock",
+      "anchor": "divideblock",
+      "start_line": 32
+    },
+    {
+      "block_id": "b000035",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "BlockRangeTracker",
+      "anchor": "blockrangetracker",
+      "start_line": 38
+    },
+    {
+      "block_id": "b000041",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "BlockHTMLSerializer",
+      "anchor": "blockhtmlserializer",
+      "start_line": 44
+    },
+    {
+      "block_id": "b000047",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "DeleteBlock",
+      "anchor": "deleteblock",
+      "start_line": 50
+    },
+    {
+      "block_id": "b000053",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "CombineBlock",
+      "anchor": "combineblock",
+      "start_line": 56
+    },
+    {
+      "block_id": "b000059",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "FlattenBlock",
+      "anchor": "flattenblock",
+      "start_line": 62
+    },
+    {
+      "block_id": "b000067",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "Install",
+      "anchor": "install",
+      "start_line": 70
+    },
+    {
+      "block_id": "b000077",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "Usage Examples",
+      "anchor": "usage-examples",
+      "start_line": 80
+    },
+    {
+      "block_id": "b000085",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "Verification",
+      "anchor": "verification",
+      "start_line": 96
+    },
+    {
+      "block_id": "b000089",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "License",
+      "anchor": "license",
+      "start_line": 104
+    },
+    {
+      "block_id": "b000098",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "Documentation entry points",
+      "anchor": "documentation-entry-points",
+      "start_line": 113
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000069",
+        "line": 72,
+        "text": "`install.sh` builds, tests, and installs at once in the same manner as iiXml, and installs iiHtmlBlock as macOS, iOS, Android, WASM packages. The compatible root prefix for macOS is `~/.local/SDK/iiHtmlBlock`, and platform-specific packages are placed in `~/.local/SDK/iiHtmlBlock/platforms/<platform>`. After installation, the consuming project can separately add the `iiXml` prefix without using the standard install layout, or can directly import `find_package(iiHtmlBlock CONFIG REQUIRED)` or the install config file `include()`. The root config delegates to the platform package corresponding to the CMake target system to prevent the host dylib from being incorrectly linked in cross-compilation.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000087",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [
+      {
+        "block_id": "b000001",
+        "label": "HTML block integration",
+        "target": "../HtmlBlockIntegration.md",
+        "kind": "relative",
+        "line": 1
+      },
+      {
+        "block_id": "b000005",
+        "label": "Windows build and execution",
+        "target": "WindowsBuildAndRun.md",
+        "kind": "relative",
+        "line": 5
+      },
+      {
+        "block_id": "b000093",
+        "label": "LICENSE",
+        "target": "../../LICENSE",
+        "kind": "relative",
+        "line": 108
+      },
+      {
+        "block_id": "b000100",
+        "label": "AGENT.md",
+        "target": "../../AGENT.md",
+        "kind": "relative",
+        "line": 116
+      },
+      {
+        "block_id": "b000100",
+        "label": "documentation index",
+        "target": "README.md",
+        "kind": "relative",
+        "line": 117
+      },
+      {
+        "block_id": "b000100",
+        "label": "agent index",
+        "target": "../agent-index.json",
+        "kind": "relative",
+        "line": 118
+      }
+    ],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

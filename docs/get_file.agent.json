@@ -1,0 +1,550 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:c81f68fb29262e35dc5426c0ce4a92421c52fe11a8236dfc53449ac61efced94",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "Docs/get_file.md",
+    "sha256": "04d1432fef839c802ec1f5f341235bcd4b7c0b8f4fd0e3b26a51cf015beec4fa",
+    "bytes": 3139,
+    "line_count": 83,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "GetFile",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# GetFile\n",
+      "level": 1,
+      "title": "GetFile"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Src/Input/GetFile.h`와 `Src/Input/GetFile.cpp`는 XML 입력을 검증한 뒤 파서로 넘기는 입력기이다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "## 처리 순서\n",
+      "level": 2,
+      "title": "처리 순서"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "`iiXml::Writer::GetFile`은 다음 순서로 입력을 처리한다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 12,
+      "raw": "1. 파일 경로를 받은 경우 파일 전체를 읽는다.\n2. `iiXml::Elements::Doctype`로 문서 상단 선언을 판정한다.\n3. `iiXml::Writer::InputValidator`로 전체 태그 종료 상태를 판정한다.\n4. XML 선언과 Doctype 선언을 제거한 뒤 남은 루트 태그를 `iiXml::Parser::TagParser`로 넘긴다.\n",
+      "items": [
+        {
+          "marker": "1.",
+          "text": "파일 경로를 받은 경우 파일 전체를 읽는다.",
+          "checked": null
+        },
+        {
+          "marker": "2.",
+          "text": "`iiXml::Elements::Doctype`로 문서 상단 선언을 판정한다.",
+          "checked": null
+        },
+        {
+          "marker": "3.",
+          "text": "`iiXml::Writer::InputValidator`로 전체 태그 종료 상태를 판정한다.",
+          "checked": null
+        },
+        {
+          "marker": "4.",
+          "text": "XML 선언과 Doctype 선언을 제거한 뒤 남은 루트 태그를 `iiXml::Parser::TagParser`로 넘긴다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 14,
+      "end_line": 14,
+      "raw": "첫 줄에 `<?xml version=\"...\"?>` 선언이 있으면 문서 상단 선언으로 판정한다. 그 다음 줄의 `<!Doctype ABCD>` 같은 Doctype 이름은 `XML`로 고정하지 않고 유효한 이름이면 통과한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "파일 확장자는 판정 조건이 아니다. `.xml`, `.iixml`, `.txt`, 확장자가 없는 파일처럼 어떤 이름이든 파일 내용이 XML 선언 또는 Doctype 선언과 태그 종료 검증을 통과하면 실질적인 XML 입력으로 처리한다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "태그 종료 검증은 `iiXml::Elements::OpenTag`의 완화 정책을 사용한다. 예를 들어 `<a><b></a></b>`처럼 표준 XML에서는 허용되지 않는 교차 종료 구조도 iiXml 입력으로 통과할 수 있으며, 루트 태그 값은 원본 내부 문자열 그대로 보존된다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "heading",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "## 동기 API\n",
+      "level": 2,
+      "title": "동기 API"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 22,
+      "end_line": 25,
+      "raw": "```cpp\niiXml::Writer::GetFile input;\nauto result = input.ParseFile(\"input.xml\");\n```\n",
+      "language": "cpp",
+      "code": "iiXml::Writer::GetFile input;\nauto result = input.ParseFile(\"input.xml\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "fenced_code",
+      "start_line": 27,
+      "end_line": 29,
+      "raw": "```cpp\nauto result = input.ParseXml(\"<?xml version=\\\"1.0\\\"?>\\n<!Doctype ABCD>\\n<ABCD><number>1</number></ABCD>\");\n```\n",
+      "language": "cpp",
+      "code": "auto result = input.ParseXml(\"<?xml version=\\\"1.0\\\"?>\\n<!Doctype ABCD>\\n<ABCD><number>1</number></ABCD>\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "반환값은 `iiXml::Writer::GetFileResult`이다.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "list",
+      "start_line": 33,
+      "end_line": 38,
+      "raw": "- `Parsed`: 파서까지 통과했으며 `Token`에 태그 파서 결과가 들어 있다.\n- `FileReadFailed`: 파일을 열 수 없다.\n- `InvalidXmlFile`: `Doctype` 객체를 통과하지 못했다.\n- `InvalidTagClosure`: `InputValidator`를 통과하지 못했다.\n- `ParserRejected`: 검증은 통과했지만 현재 태그 파서가 입력을 토큰화하지 못했다.\n- `ExceptionThrown`: 입력 처리 중 예외가 발생했다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parsed`: 파서까지 통과했으며 `Token`에 태그 파서 결과가 들어 있다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`FileReadFailed`: 파일을 열 수 없다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidXmlFile`: `Doctype` 객체를 통과하지 못했다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidTagClosure`: `InputValidator`를 통과하지 못했다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParserRejected`: 검증은 통과했지만 현재 태그 파서가 입력을 토큰화하지 못했다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ExceptionThrown`: 입력 처리 중 예외가 발생했다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "paragraph",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "`GetFileResult`는 실패 시에도 비어 있는 반환값으로 끝나지 않는다. 실패한 경우 `Token`은 없을 수 있지만, `Status`와 비어 있지 않은 `Reason`은 항상 반환된다.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 41,
+      "end_line": 41,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패, 예외 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "heading",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "## Qt 슬롯/시그널 API\n",
+      "level": 2,
+      "title": "Qt 슬롯/시그널 API"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "paragraph",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "슬롯:\n"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 47,
+      "end_line": 47,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "list",
+      "start_line": 48,
+      "end_line": 49,
+      "raw": "- `ReadFile(const QString& FilePath)`\n- `ReadXml(const QString& Input)`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`ReadFile(const QString& FilePath)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ReadXml(const QString& Input)`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 51,
+      "end_line": 51,
+      "raw": "시그널:\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 52,
+      "end_line": 52,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "list",
+      "start_line": 53,
+      "end_line": 59,
+      "raw": "- `Parsed(const QString& TagName, const QString& Value)`\n- `Failed(GetFile::Status Status, const QString& Reason)`\n- `FileReadFailed()`\n- `InvalidXmlFile()`\n- `InvalidTagClosure()`\n- `ParserRejected()`\n- `ExceptionThrown()`\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Parsed(const QString& TagName, const QString& Value)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`Failed(GetFile::Status Status, const QString& Reason)`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`FileReadFailed()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidXmlFile()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidTagClosure()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ParserRejected()`",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ExceptionThrown()`",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "heading",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "## 예시\n",
+      "level": 2,
+      "title": "예시"
+    },
+    {
+      "id": "b000042",
+      "kind": "blank",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "\n"
+    },
+    {
+      "id": "b000043",
+      "kind": "fenced_code",
+      "start_line": 63,
+      "end_line": 75,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Writer::GetFile input;\n\nQObject::connect(&input, &iiXml::Writer::GetFile::Parsed,\n    [](const QString& TagName, const QString& Value) {\n        // TagName == \"XML\"\n        // Value == \"<number>1</number>\"\n    });\n\ninput.ReadXml(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Writer::GetFile input;\n\nQObject::connect(&input, &iiXml::Writer::GetFile::Parsed,\n    [](const QString& TagName, const QString& Value) {\n        // TagName == \"XML\"\n        // Value == \"<number>1</number>\"\n    });\n\ninput.ReadXml(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000044",
+      "kind": "blank",
+      "start_line": 76,
+      "end_line": 76,
+      "raw": "\n"
+    },
+    {
+      "id": "b000045",
+      "kind": "heading",
+      "start_line": 77,
+      "end_line": 77,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000046",
+      "kind": "blank",
+      "start_line": 78,
+      "end_line": 78,
+      "raw": "\n"
+    },
+    {
+      "id": "b000047",
+      "kind": "fenced_code",
+      "start_line": 79,
+      "end_line": 83,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "GetFile",
+      "anchor": "getfile",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "처리 순서",
+      "anchor": "처리-순서",
+      "start_line": 5
+    },
+    {
+      "block_id": "b000017",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "동기 API",
+      "anchor": "동기-api",
+      "start_line": 20
+    },
+    {
+      "block_id": "b000031",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Qt 슬롯/시그널 API",
+      "anchor": "qt-슬롯시그널-api",
+      "start_line": 44
+    },
+    {
+      "block_id": "b000041",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "예시",
+      "anchor": "예시",
+      "start_line": 61
+    },
+    {
+      "block_id": "b000045",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 77
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000047",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

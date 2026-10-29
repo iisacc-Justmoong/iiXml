@@ -1,0 +1,377 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:bc4ac35f307fb21a1a5a7d8a28b6a0cc1394d01f2fb9341a948c31dd3fdc997a",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/debug_logging.md",
+    "sha256": "25756ceeffcb6ca4ac6094068683552fd3a54735087464176b8aae25b6d0ad92",
+    "bytes": 3155,
+    "line_count": 55,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "벌목 반출",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "html",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "<a id=\"logging\"></a>\n"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "heading",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "# 벌목 반출\n",
+      "level": 1,
+      "title": "벌목 반출"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "iiXml의 라이브러리 객체와 public 메서드는 Qt 표준 디버그 스트림인 `QDebug`/`qDebug()`로 운영 및 진단 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "heading",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "## 정책\n",
+      "level": 2,
+      "title": "정책"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 20,
+      "raw": "- 객체 생성자는 생성 로그를 출력한다.\n- public 동기 메서드와 Qt 슬롯은 진입 로그를 출력한다.\n- 입력 로그는 `input` 이벤트로 출력하며 입력 크기, 라인 수, 짧은 preview를 포함한다.\n- 파싱 진행 로그는 `parsing` 이벤트로 출력하며 이벤트명, offset, line, column, 주변 context를 포함한다.\n- 출력 로그는 `output` 이벤트로 출력하며 성공/실패 상태와 반환 결과 요약을 포함한다.\n- 성공, 실패, 예외 반환 지점은 상태와 사유를 로그로 출력한다.\n- 단순 실패 반환(`std::nullopt`, `false`)을 사용하는 기존 API도 실패 직전에 `qDebug()` 로그를 출력한다.\n- XML 입력 전문과 출력 값 전문은 기본 로그에 남기지 않고 입력 크기, 상태, 태그 이름, 값 크기 같은 메타데이터와 짧은 snippet만 출력한다.\n- 파싱 실패 로그는 `reason`, `offset`, `line`, `column`, `context`를 함께 출력한다.\n- `offset`과 `column`은 입력 `std::string_view`의 byte 기준 위치다. UTF-8 문자는 보존하지만 column 계산은 byte offset 계약과 맞춘다.\n- `context`는 실패 위치 주변의 짧은 snippet만 남기며, 개행과 탭은 `\\n`, `\\t`처럼 escape해서 한 줄 로그로 유지한다.\n- 공통 로그 구현은 `Src/Logging/XmlLog.h`와 `Src/Logging/XmlLog.cpp`에 둔다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "객체 생성자는 생성 로그를 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "public 동기 메서드와 Qt 슬롯은 진입 로그를 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "입력 로그는 `input` 이벤트로 출력하며 입력 크기, 라인 수, 짧은 preview를 포함한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "파싱 진행 로그는 `parsing` 이벤트로 출력하며 이벤트명, offset, line, column, 주변 context를 포함한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "출력 로그는 `output` 이벤트로 출력하며 성공/실패 상태와 반환 결과 요약을 포함한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "성공, 실패, 예외 반환 지점은 상태와 사유를 로그로 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "단순 실패 반환(`std::nullopt`, `false`)을 사용하는 기존 API도 실패 직전에 `qDebug()` 로그를 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "XML 입력 전문과 출력 값 전문은 기본 로그에 남기지 않고 입력 크기, 상태, 태그 이름, 값 크기 같은 메타데이터와 짧은 snippet만 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "파싱 실패 로그는 `reason`, `offset`, `line`, `column`, `context`를 함께 출력한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`offset`과 `column`은 입력 `std::string_view`의 byte 기준 위치다. UTF-8 문자는 보존하지만 column 계산은 byte offset 계약과 맞춘다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`context`는 실패 위치 주변의 짧은 snippet만 남기며, 개행과 탭은 `\\n`, `\\t`처럼 escape해서 한 줄 로그로 유지한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "공통 로그 구현은 `Src/Logging/XmlLog.h`와 `Src/Logging/XmlLog.cpp`에 둔다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "## 예시\n",
+      "level": 2,
+      "title": "예시"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "fenced_code",
+      "start_line": 24,
+      "end_line": 27,
+      "raw": "```cpp\niiXml::Writer::GetFile input;\nauto result = input.ParseXml(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n```\n",
+      "language": "cpp",
+      "code": "iiXml::Writer::GetFile input;\nauto result = input.ParseXml(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\n",
+      "closed": true
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "위 호출은 `iiXml::Writer::GetFile::ParseXml begin`, `input`, `parsing`, `output` 로그를 `qDebug()`로 출력한다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "정상 파싱 로그는 다음과 같은 진단 필드를 포함한다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 32,
+      "end_line": 32,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 33,
+      "end_line": 37,
+      "raw": "```text\niiXml::Parser::TagParser::Parse input input_size= 19 line_count= 1 preview= <number>42</number>\niiXml::Parser::TagParser::Parse parsing event= opening_tag offset= 0 line= 1 column= 1 context= <number>42</number>\niiXml::Parser::TagParser::Parse output status= parsed summary= tag=number value_size=2 raw_size=19\n```\n",
+      "language": "text",
+      "code": "iiXml::Parser::TagParser::Parse input input_size= 19 line_count= 1 preview= <number>42</number>\niiXml::Parser::TagParser::Parse parsing event= opening_tag offset= 0 line= 1 column= 1 context= <number>42</number>\niiXml::Parser::TagParser::Parse output status= parsed summary= tag=number value_size=2 raw_size=19\n",
+      "closed": true
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "파싱 실패 예시는 다음과 같은 진단 필드를 포함한다.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "fenced_code",
+      "start_line": 41,
+      "end_line": 43,
+      "raw": "```text\niiXml::Parser::TagParser::Parse failed reason= closing tag mismatch offset= 11 line= 1 column= 12 context= <number>42</text>\n```\n",
+      "language": "text",
+      "code": "iiXml::Parser::TagParser::Parse failed reason= closing tag mismatch offset= 11 line= 1 column= 12 context= <number>42</text>\n",
+      "closed": true
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "라이브러리 로딩/초기 확인이 필요한 경우 `Launch()`를 호출한다. `Launch()`는 표준 출력 대신 `qDebug()`로 `iiXml::Launch library Launch` 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "heading",
+      "start_line": 47,
+      "end_line": 47,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "`debug_log_test`는 `qInstallMessageHandler`로 `qDebug()` 메시지를 수집하고 주요 객체와 public 메서드가 성공/실패 로그를 출력하는지 확인한다. `debug_diagnostics_test`는 입력, 파싱, 출력 로그와 실패 로그에 `reason`, `offset`, `line`, `column`, `context`가 포함되는지 확인한다. 예외 처리 경로도 각 public 메서드에 `exception` 로그를 둔다.\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "fenced_code",
+      "start_line": 51,
+      "end_line": 55,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000003",
+      "parent_id": null,
+      "level": 1,
+      "title": "벌목 반출",
+      "anchor": "벌목-반출",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000007",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "정책",
+      "anchor": "정책",
+      "start_line": 7
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "예시",
+      "anchor": "예시",
+      "start_line": 22
+    },
+    {
+      "block_id": "b000027",
+      "parent_id": "b000003",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 47
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [
+      {
+        "block_id": "b000031",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

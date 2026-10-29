@@ -1,0 +1,275 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:d5f13fb3053bb2e4c3f8edbe5d4b241f9381d0da13e819e0e52e8e1a074f085c",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/HtmlBlock/get_tag_info.md",
+    "sha256": "795b1ee34083726e922a78cc039f3daaa1a82cf9b70f2d301d0c682c9d447cfe",
+    "bytes": 1981,
+    "line_count": 47,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "GetTagInfo",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# GetTagInfo\n",
+      "level": 1,
+      "title": "GetTagInfo"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 4,
+      "raw": "`Src/Parser/GetTagInfo.h`와 `Src/Parser/GetTagInfo.cpp`는 XML 문자열을 받아\n`iiXml` 파서와 호환되는 방식으로 태그 값과 필드를 파싱해 객체 내부에 저장한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "## 책임\n",
+      "level": 2,
+      "title": "책임"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 8,
+      "end_line": 17,
+      "raw": "- XML 원문은 설치된 `~/.local/SDK`의 `iiXml::iiXml` 타깃과 공개 헤더 `iiXml.h`를 통해 해석한다.\n- 내부 파싱은 `iiXml::Parser::TagParser::ParseAll()`을 사용한다.\n- 본문 태그 앞의 XML 선언과 DOCTYPE은 태그 range가 아니므로 파싱 전에 제거한다.\n- 첫 번째 루트 태그의 이름, 원문, 값, 필드 목록을 빠른 조회용 상태로 저장한다.\n- 전체 루트 태그 목록과 자식 태그 계층은 `GetTags()`와 `GetRoot()`로 조회한다.\n- `iiXml`의 range 모델을 보존하기 위해 모든 태그의 `raw_begin`, `value_begin`,\n  `value_end`, `raw_end`와 원문 조각을 `GetRanges()`로 조회할 수 있다.\n- `<paragraph><bold>...</paragraph></bold>` 같은 iiXml의 교차 종료 구조는 트리만으로\n  완전히 표현하지 않고, 겹치는 range 목록으로 원본 구조를 보존한다.\n- 파싱 실패 시 이전 성공 상태를 제거하고 `GetError()`에 실패 사유를 저장한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "XML 원문은 설치된 `~/.local/SDK`의 `iiXml::iiXml` 타깃과 공개 헤더 `iiXml.h`를 통해 해석한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "내부 파싱은 `iiXml::Parser::TagParser::ParseAll()`을 사용한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "본문 태그 앞의 XML 선언과 DOCTYPE은 태그 range가 아니므로 파싱 전에 제거한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "첫 번째 루트 태그의 이름, 원문, 값, 필드 목록을 빠른 조회용 상태로 저장한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "전체 루트 태그 목록과 자식 태그 계층은 `GetTags()`와 `GetRoot()`로 조회한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`iiXml`의 range 모델을 보존하기 위해 모든 태그의 `raw_begin`, `value_begin`,",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`<paragraph><bold>...</paragraph></bold>` 같은 iiXml의 교차 종료 구조는 트리만으로",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "파싱 실패 시 이전 성공 상태를 제거하고 `GetError()`에 실패 사유를 저장한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "## 사용 예시\n",
+      "level": 2,
+      "title": "사용 예시"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "fenced_code",
+      "start_line": 21,
+      "end_line": 33,
+      "raw": "```cpp\n#include <iiHtmlBlock>\n\niiHtmlBlock::GetTagInfo info;\n\nif (info.Parse(\"<XML id=\\\"main\\\" order=7><body>Hello</body></XML>\")) {\n    // info.GetTagName() == \"XML\"\n    // info.GetValue() == \"<body>Hello</body>\"\n    // info.GetFields()[0].name == \"id\"\n    // info.GetFields()[0].value == \"main\"\n    // info.GetRanges()[0].tag_name == \"XML\"\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiHtmlBlock>\n\niiHtmlBlock::GetTagInfo info;\n\nif (info.Parse(\"<XML id=\\\"main\\\" order=7><body>Hello</body></XML>\")) {\n    // info.GetTagName() == \"XML\"\n    // info.GetValue() == \"<body>Hello</body>\"\n    // info.GetFields()[0].name == \"id\"\n    // info.GetFields()[0].value == \"main\"\n    // info.GetRanges()[0].tag_name == \"XML\"\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 34,
+      "end_line": 34,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 35,
+      "end_line": 36,
+      "raw": "`ParseXml(const QString&)` 슬롯을 사용하면 성공 시 `Parsed(tag_name, value)`,\n실패 시 `ParseFailed(reason)` 시그널을 내보낸다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "## 빌드와 검증\n",
+      "level": 2,
+      "title": "빌드와 검증"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 40,
+      "end_line": 41,
+      "raw": "`iiXml` 설치본은 `~/.local/SDK` 아래의 CMake 패키지로 찾는다. 빌드는 반드시 저장소의\n`build/` 디렉터리를 사용한다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "fenced_code",
+      "start_line": 43,
+      "end_line": 47,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "GetTagInfo",
+      "anchor": "gettaginfo",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "책임",
+      "anchor": "책임",
+      "start_line": 6
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예시",
+      "anchor": "사용-예시",
+      "start_line": 19
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "빌드와 검증",
+      "anchor": "빌드와-검증",
+      "start_line": 38
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000017",
+        "line": 40,
+        "text": "`iiXml` 설치본은 `~/.local/SDK` 아래의 CMake 패키지로 찾는다. 빌드는 반드시 저장소의",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000019",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

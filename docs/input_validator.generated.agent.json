@@ -1,0 +1,374 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:e2f4b0ffbca0210cbab024d54136f6a1a951c466686c4faa8874740eac20051d",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/input_validator.md",
+    "sha256": "108104399be2baea97b867425cfd7357b16662638921331ad70c8109cb5ca778",
+    "bytes": 2323,
+    "line_count": 59,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "InputValidator",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# InputValidator\n",
+      "level": 1,
+      "title": "InputValidator"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Src/Input/InputValidator.h`와 `Src/Input/InputValidator.cpp`는 XML 입력의 종료 상태를 판정한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "## 반환 상태\n",
+      "level": 2,
+      "title": "반환 상태"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "`iiXml::Writer::InputValidator::Validate()`는 다음 순서로 입력을 검증한다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "list",
+      "start_line": 9,
+      "end_line": 10,
+      "raw": "1. `iiXml::Elements::Doctype`으로 문서 상단 선언을 판정한다.\n2. 상단 선언을 통과한 경우 태그 열림/닫힘 쌍을 판정한다.\n",
+      "items": [
+        {
+          "marker": "1.",
+          "text": "`iiXml::Elements::Doctype`으로 문서 상단 선언을 판정한다.",
+          "checked": null
+        },
+        {
+          "marker": "2.",
+          "text": "상단 선언을 통과한 경우 태그 열림/닫힘 쌍을 판정한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 11,
+      "end_line": 11,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 12,
+      "end_line": 12,
+      "raw": "반환값은 `iiXml::Writer::ValidationExit`이다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "list",
+      "start_line": 14,
+      "end_line": 17,
+      "raw": "- `Valid`: 유효한 입력이다.\n- `InvalidXmlFile`: `Doctype` 객체를 통과하지 못한 입력이다.\n- `InvalidTagClosure`: `InputValidator`의 태그 종료 검증을 통과하지 못한 입력이다.\n- `ExceptionThrown`: 검증 중 예외가 발생했다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "`Valid`: 유효한 입력이다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidXmlFile`: `Doctype` 객체를 통과하지 못한 입력이다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`InvalidTagClosure`: `InputValidator`의 태그 종료 검증을 통과하지 못한 입력이다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`ExceptionThrown`: 검증 중 예외가 발생했다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "실패 사유가 필요한 경우 `ValidateResult()`를 사용한다. 반환값은 `iiXml::Writer::ValidationResult`이며, `Exit`와 비어 있지 않은 `Reason`을 포함한다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "생성자와 public 메서드는 `QDebug`/`qDebug()`로 진입, 성공, 실패, 예외 로그를 출력한다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "heading",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "## 사용 예\n",
+      "level": 2,
+      "title": "사용 예"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "fenced_code",
+      "start_line": 25,
+      "end_line": 43,
+      "raw": "```cpp\n#include <iiXml>\n\niiXml::Writer::InputValidator validator;\nauto result = validator.Validate(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\nauto detailed = validator.ValidateResult(\"<XML><number>1</number></XML>\");\n\nif (result == iiXml::Writer::ValidationExit::InvalidXmlFile) {\n    // 유효하지 않은 XML 파일\n}\n\nif (detailed.Exit == iiXml::Writer::ValidationExit::InvalidXmlFile) {\n    // detailed.Reason에 실패 사유가 들어 있다.\n}\n\nif (result == iiXml::Writer::ValidationExit::InvalidTagClosure) {\n    // 올바르지 않은 태그 종료\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml>\n\niiXml::Writer::InputValidator validator;\nauto result = validator.Validate(\"<!Doctype XML>\\n<XML><number>1</number></XML>\");\nauto detailed = validator.ValidateResult(\"<XML><number>1</number></XML>\");\n\nif (result == iiXml::Writer::ValidationExit::InvalidXmlFile) {\n    // 유효하지 않은 XML 파일\n}\n\nif (detailed.Exit == iiXml::Writer::ValidationExit::InvalidXmlFile) {\n    // detailed.Reason에 실패 사유가 들어 있다.\n}\n\nif (result == iiXml::Writer::ValidationExit::InvalidTagClosure) {\n    // 올바르지 않은 태그 종료\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "heading",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "## 태그 종료 규칙\n",
+      "level": 2,
+      "title": "태그 종료 규칙"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 46,
+      "end_line": 46,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "list",
+      "start_line": 47,
+      "end_line": 51,
+      "raw": "- 시작 태그와 종료 태그는 `iiXml::Elements::OpenTag` 정책으로 판정한다.\n- 닫는 태그는 태그 이름으로 매칭하며, 같은 이름이 여러 번 열려 있으면 가장 최근에 열린 같은 이름 태그를 닫는다.\n- 따라서 `<a><b></a></b>`처럼 태그가 교차 종료되는 구조는 iiXml 입력으로 허용한다. 이는 표준 XML의 엄격한 중첩 규칙과 다르다.\n- `<tag />` 형식의 자체 종료 태그는 별도 종료 태그를 요구하지 않는다.\n- 주석, CDATA, 처리 명령, Doctype 선언은 태그 종료 스택에서 제외한다.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "시작 태그와 종료 태그는 `iiXml::Elements::OpenTag` 정책으로 판정한다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "닫는 태그는 태그 이름으로 매칭하며, 같은 이름이 여러 번 열려 있으면 가장 최근에 열린 같은 이름 태그를 닫는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "따라서 `<a><b></a></b>`처럼 태그가 교차 종료되는 구조는 iiXml 입력으로 허용한다. 이는 표준 XML의 엄격한 중첩 규칙과 다르다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "`<tag />` 형식의 자체 종료 태그는 별도 종료 태그를 요구하지 않는다.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "주석, CDATA, 처리 명령, Doctype 선언은 태그 종료 스택에서 제외한다.",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 52,
+      "end_line": 52,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "heading",
+      "start_line": 53,
+      "end_line": 53,
+      "raw": "## 검증\n",
+      "level": 2,
+      "title": "검증"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 54,
+      "end_line": 54,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "fenced_code",
+      "start_line": 55,
+      "end_line": 59,
+      "raw": "```sh\ncmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "InputValidator",
+      "anchor": "inputvalidator",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "반환 상태",
+      "anchor": "반환-상태",
+      "start_line": 5
+    },
+    {
+      "block_id": "b000019",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "사용 예",
+      "anchor": "사용-예",
+      "start_line": 23
+    },
+    {
+      "block_id": "b000023",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "태그 종료 규칙",
+      "anchor": "태그-종료-규칙",
+      "start_line": 45
+    },
+    {
+      "block_id": "b000027",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "검증",
+      "anchor": "검증",
+      "start_line": 53
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000025",
+        "line": 50,
+        "text": "- `<tag />` 형식의 자체 종료 태그는 별도 종료 태그를 요구하지 않는다.",
+        "basis": "lexical_match",
+        "context": "list"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000029",
+        "language": "sh",
+        "code": "cmake -S . -B build\ncmake --build build\nctest --test-dir build --output-on-failure\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}
