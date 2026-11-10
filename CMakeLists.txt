@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiXml VERSION 0.1.1 LANGUAGES CXX)
+option(BUILD_SHARED_LIBS "Build native XML components as shared libraries" ON)
+if(EMSCRIPTEN AND BUILD_SHARED_LIBS)
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
+endif()
 
 # The native package is selectable without discovering any Qt package. Existing
 # source consumers retain the legacy API unless they opt out explicitly.
@@ -24,13 +28,29 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-if(EMSCRIPTEN)
-    set(IIXML_BUILD_SHARED_DEFAULT OFF)
-else()
-    set(IIXML_BUILD_SHARED_DEFAULT ON)
-endif()
+set(IIXML_BUILD_SHARED_DEFAULT ${BUILD_SHARED_LIBS})
 
 option(IIXML_BUILD_SHARED "Build iiXml as a shared library." ${IIXML_BUILD_SHARED_DEFAULT})
+if(EMSCRIPTEN AND IIXML_BUILD_SHARED)
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
+endif()
+function(iixml_configure_legacy_shared target)
+    if(NOT IIXML_BUILD_SHARED)
+        return()
+    endif()
+    if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+        set_target_properties(${target} PROPERTIES FRAMEWORK TRUE FRAMEWORK_VERSION A
+            MACOSX_FRAMEWORK_IDENTIFIER "com.iisacc.${target}")
+    elseif(APPLE)
+        set_property(TARGET ${target} APPEND PROPERTY INSTALL_RPATH "@loader_path")
+    elseif(UNIX AND NOT EMSCRIPTEN)
+        set_property(TARGET ${target} APPEND PROPERTY INSTALL_RPATH "$ORIGIN")
+    endif()
+    if(EMSCRIPTEN)
+        target_compile_options(${target} PRIVATE -fPIC -sSIDE_MODULE=1)
+        target_link_options(${target} PRIVATE -sSIDE_MODULE=1)
+    endif()
+endfunction()
 
 set(IIXML_LIBRARY_TYPE STATIC)
 if(IIXML_BUILD_SHARED)
@@ -72,6 +92,7 @@ add_library(iiXml ${IIXML_LIBRARY_TYPE}
     src/Logging/XmlLog.cpp
     src/Logging/XmlLog.h
 )
+iixml_configure_legacy_shared(iiXml)
 
 # Preserve historical <Src/...> consumers with forwarding headers. All installed
 # spellings resolve to one canonical header, including on case-sensitive hosts.
@@ -126,6 +147,7 @@ if(IIXML_BUILD_HTML_BLOCK)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Html/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Html/*.h")
     add_library(iiXmlHtmlBlock ${IIXML_LIBRARY_TYPE} ${_html_sources})
+    iixml_configure_legacy_shared(iiXmlHtmlBlock)
     add_library(iiXml::HtmlBlock ALIAS iiXmlHtmlBlock)
     add_library(iiHtmlBlock::iiHtmlBlock ALIAS iiXmlHtmlBlock)
     set_target_properties(iiXmlHtmlBlock PROPERTIES EXPORT_NAME HtmlBlock INSTALL_RPATH_USE_LINK_PATH TRUE IMPORTED_NO_SYSTEM TRUE)
@@ -139,7 +161,8 @@ if(IIXML_BUILD_HTML_BLOCK)
     install(TARGETS iiXmlHtmlBlock EXPORT iiXmlTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR})
     install(FILES src/Html/iiHtmlBlock "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/iiHtmlBlock.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
     install(DIRECTORY src/Html/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiXmlDetail/Html FILES_MATCHING PATTERN "*.h")
     install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/install-compat/html/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
@@ -155,6 +178,7 @@ install(TARGETS iiXml
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 install(FILES src/iiXml "${CMAKE_CURRENT_BINARY_DIR}/install-compat/roots/iiXml.h"

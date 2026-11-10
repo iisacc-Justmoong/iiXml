@@ -1,5 +1,14 @@
 @PACKAGE_INIT@
+if(EMSCRIPTEN)
+    # Emscripten supports side modules although its CMake toolchain defaults
+    # the shared-library capability to false.
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
+endif()
+set(_iixml_native_python_source "@PACKAGE_IIXML_MATRIX_PYTHON_DIR@/iixml_matrix.py")
 include(CMakeFindDependencyMacro)
 find_dependency(LibXml2 2.9)
 include("${CMAKE_CURRENT_LIST_DIR}/iiXmlNativeTargets.cmake")
+if(TARGET iiXml::MatrixC)
+    set_and_check(iiXmlNative_MATRIX_PYTHON_SOURCE "${_iixml_native_python_source}")
+endif()
 check_required_components(iiXmlNative)

@@ -10,6 +10,7 @@ Markdown is the maintained human source. Agent JSON is a structured, source-trac
 | [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.agent.json) |
 | [`AGENTS.md`](../AGENTS.md) | [JSON](entrypoints/AGENTS.agent.json) |
 | [`README.md`](../README.md) | [JSON](entrypoints/README.agent.json) |
+| [`docs/DynamicLinking.md`](DynamicLinking.md) | [JSON](DynamicLinking.agent.json) |
 | [`docs/HtmlBlock/ModuleOverview.md`](HtmlBlock/ModuleOverview.md) | [JSON](HtmlBlock/ModuleOverview.agent.json) |
 | [`docs/HtmlBlock/PERFORMANCE.md`](HtmlBlock/PERFORMANCE.md) | [JSON](HtmlBlock/PERFORMANCE.agent.json) |
 | [`docs/HtmlBlock/README.md`](HtmlBlock/README.md) | [JSON](HtmlBlock/README.agent.json) |
@@ -28,6 +29,7 @@ Markdown is the maintained human source. Agent JSON is a structured, source-trac
 | [`docs/HtmlBlock/install.md`](HtmlBlock/install.md) | [JSON](HtmlBlock/install.agent.json) |
 | [`docs/HtmlBlockIntegration.md`](HtmlBlockIntegration.md) | [JSON](HtmlBlockIntegration.agent.json) |
 | [`docs/Markup.md`](Markup.md) | [JSON](Markup.agent.json) |
+| [`docs/Matrix.md`](Matrix.md) | [JSON](Matrix.agent.json) |
 | [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |
 | [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |
 | [`docs/closed_tag.md`](closed_tag.md) | [JSON](closed_tag.generated.agent.json) |

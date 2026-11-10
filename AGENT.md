@@ -10,6 +10,9 @@ HTML 블록 변환·편집은 iiXml::HtmlBlock 구성요소가 소유한다. 기
 공개 헤더와 네임스페이스는 호환 계약으로 유지한다. Qt 없는 iiXml::Native는
 이 구성요소와 독립적으로 빌드되어야 한다. 새 소스는 src/에 둔다.
 
+다차원 숫자 행렬과 XML 변환은 Qt 없는 `iiXml::Native`가 소유하며 계약은
+`docs/Matrix.md`를 따른다. Python 인터페이스는 같은 네이티브 연산을 호출한다.
+
 ## 보존한 AGENTS.md 프로젝트 지침
 
 <a id="repository-guidelines"></a>

@@ -1,0 +1,411 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:aa07d99e9149a3973294b7807c71940d19390b6c715aa741c5cdf7bd252d0cd1",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiXml",
+    "name": "iiXml",
+    "root": "SDK/iiXml",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Matrix.md",
+    "sha256": "a530359ee9ada40a526416e58499ce8f70ad928dda70547ff27b5242195afbff",
+    "bytes": 7708,
+    "line_count": 143,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "Numeric matrices and XML",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Numeric matrices and XML\n",
+      "level": 1,
+      "title": "Numeric matrices and XML"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 6,
+      "raw": "`iiXml::Native` provides an immutable, row-major numeric matrix and a separate\nXML codec. `<iiXml/Matrix.h>` requires C++23; `<iiXml/MatrixXml.h>` adds XML\nconversion. Link to `iiXml::Native` with `find_package(iiXmlNative CONFIG\nREQUIRED)`. No Qt dependency is introduced.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "## Shape and values\n",
+      "level": 2,
+      "title": "Shape and values"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 19,
+      "raw": "`ii::xml::Matrix::create(shape, values)` accepts a vector of dimensions and a\nflat vector of `Number`, a variant of `int64_t` and `double`. The product of\ndimensions must equal the value count. An empty shape is a scalar containing\none value; any zero dimension denotes an empty matrix. Dimension-product\noverflow, non-finite doubles and invalid counts are errors. `reshape` preserves\nthe flat order and value types, returning a new matrix. `at` requires exactly\none in-range index per dimension, with the last dimension changing fastest.\nThe C++ `Number` constructor rejects `bool` at compile time.\nAfter a move, `valid()` reports whether the source retains a usable matrix;\noperations on an invalid moved-from source return an `invalid_state` error.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "fenced_code",
+      "start_line": 21,
+      "end_line": 37,
+      "raw": "```cpp\n#include <iiXml/Matrix.h>\n#include <iiXml/MatrixXml.h>\n#include <array>\n\nusing namespace ii::xml;\nauto matrix = Matrix::create({2, 2}, {Number{std::int64_t{1}}, Number{2.5},\n                                      Number{std::int64_t{3}}, Number{4.0}});\nif (matrix) {\n    auto reshaped = matrix->reshape({4});\n    auto xml = matrix_to_xml(*matrix);\n    auto row_sums = matrix->sum(-1);\n    auto product = matrix->tensordot(*matrix, std::array<std::ptrdiff_t, 1>{1},\n                                    std::array<std::ptrdiff_t, 1>{0});\n    // Check each MatrixResult before using it; failures contain a code and message.\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiXml/Matrix.h>\n#include <iiXml/MatrixXml.h>\n#include <array>\n\nusing namespace ii::xml;\nauto matrix = Matrix::create({2, 2}, {Number{std::int64_t{1}}, Number{2.5},\n                                      Number{std::int64_t{3}}, Number{4.0}});\nif (matrix) {\n    auto reshaped = matrix->reshape({4});\n    auto xml = matrix_to_xml(*matrix);\n    auto row_sums = matrix->sum(-1);\n    auto product = matrix->tensordot(*matrix, std::array<std::ptrdiff_t, 1>{1},\n                                    std::array<std::ptrdiff_t, 1>{0});\n    // Check each MatrixResult before using it; failures contain a code and message.\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "## Arithmetic\n",
+      "level": 2,
+      "title": "Arithmetic"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 40,
+      "end_line": 40,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 41,
+      "end_line": 43,
+      "raw": "`add`, `subtract`, `multiply`, and `divide` apply element by element to equal\nshapes; an empty-shape scalar can also be combined with any matrix. Operations\nreturn new values and leave their operands unchanged.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 44,
+      "end_line": 44,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 45,
+      "end_line": 49,
+      "raw": "`matmul` multiplies the final two dimensions and broadcasts leading batch\ndimensions when they are equal or either is one. Rank-one operands are treated\nas a row or column vector respectively, with the temporary dimension removed\nfrom the result; two vectors produce a rank-zero matrix. A rank-zero operand or\nincompatible inner/batch dimensions is an error.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 50,
+      "end_line": 50,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 51,
+      "end_line": 55,
+      "raw": "`tensordot` contracts explicitly paired axes: the axis lists must have equal\nlength and each paired dimension must match. The result dimensions are the\nuncontracted left dimensions followed by the uncontracted right dimensions,\neach in their original order. Empty axis lists compute an outer product. A\nzero-sized contracted dimension produces integer zero in every output cell.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 56,
+      "end_line": 56,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 57,
+      "end_line": 65,
+      "raw": "`sum()` and `mean()` without arguments retain their existing scalar return\nvalues and reduce all entries. Axis overloads accept one or more signed axes;\nnegative axes count from the end. Duplicate or out-of-range axes are errors.\nThe returned matrix drops reduced dimensions unless `keep_dimensions` is true,\nin which case each reduced dimension is one. An empty axis list returns an\nunchanged matrix. For an empty reduction, `sum` produces zeros and `mean` is\nan error when at least one output cell exists; an empty output is returned\nwithout an error. The sum of a wholly empty matrix is zero, and its whole-matrix\nmean is an error.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 66,
+      "end_line": 66,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 67,
+      "end_line": 75,
+      "raw": "Integer-only operations produce checked signed 64-bit integers, except an\ninexact integer division produces a double. Floating-point operations use\nbinary64 and reject non-finite inputs and results. Converting an integer to\ndouble for mixed arithmetic or fractional division is allowed only when that\ninteger is exactly representable; otherwise the operation reports an error.\nInteger overflow, division by zero, incompatible shapes and invalid indices\nare errors. A reduction or matrix multiplication reports overflow as soon as an\nintermediate operation overflows. Floating-point rounding and underflow follow\nthe platform's double arithmetic.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 76,
+      "end_line": 76,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "heading",
+      "start_line": 77,
+      "end_line": 77,
+      "raw": "## C interface\n",
+      "level": 2,
+      "title": "C interface"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 78,
+      "end_line": 78,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 79,
+      "end_line": 85,
+      "raw": "When the Python bridge is enabled, `<iiXml/MatrixC.h>` and the exported CMake\ntarget `iiXml::MatrixC` provide the same operations through opaque handles and\ntagged integer/real values. Check each nonzero return code and read the\nthread-local `iixml_matrix_error()` immediately. Destroy handles with\n`iixml_matrix_destroy` and free generated XML with `iixml_matrix_free_string`.\nAxis reductions use `iixml_matrix_reduce_axes`; tensor contraction uses\n`iixml_matrix_tensordot` with a separate signed axis array for each input.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 86,
+      "end_line": 86,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "heading",
+      "start_line": 87,
+      "end_line": 87,
+      "raw": "## XML representation\n",
+      "level": 2,
+      "title": "XML representation"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 88,
+      "end_line": 88,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 89,
+      "end_line": 91,
+      "raw": "`matrix_from_xml` and `matrix_to_xml` use the existing bounded `Reader` and\n`Writer`. The format is a `<matrix>` root with a mandatory `shape` attribute,\ncontaining zero or more ordered `<value>` children:\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 92,
+      "end_line": 92,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "fenced_code",
+      "start_line": 93,
+      "end_line": 95,
+      "raw": "```xml\n<matrix shape=\"2 2\"><value type=\"integer\">1</value><value type=\"real\">2.5</value><value>3</value><value>4</value></matrix>\n```\n",
+      "language": "xml",
+      "code": "<matrix shape=\"2 2\"><value type=\"integer\">1</value><value type=\"real\">2.5</value><value>3</value><value>4</value></matrix>\n",
+      "closed": true
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 96,
+      "end_line": 96,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "paragraph",
+      "start_line": 97,
+      "end_line": 106,
+      "raw": "Dimensions are unsigned decimal integers separated by XML whitespace; the\nempty attribute represents a scalar. Values are finite decimal integers or\nreals, including decimal exponents. Surrounding XML whitespace is ignored.\nAn omitted `type` infers an integer for integer syntax and a real for decimal\nor exponent syntax; `type=\"integer\"` and `type=\"real\"` select explicitly.\nThe writer emits these explicit types and enough digits for a binary64\nround-trip. Unexpected elements, attributes, namespaces, nonnumeric values,\ncount mismatches and unsupported type names are rejected. XML comments and\nprocessing instructions are ignored; nested value elements are not allowed.\nInput/output and parser limits are the `ii::xml::Limits` supplied by the caller.\n"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 107,
+      "end_line": 107,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "heading",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "## Python\n",
+      "level": 2,
+      "title": "Python"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 109,
+      "end_line": 109,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 110,
+      "end_line": 132,
+      "raw": "The standard-library-only `iixml_matrix` module uses the `iiXmlMatrixC` shared\nlibrary built by the project. It exposes `Matrix(shape, values)`, `shape`,\n`values`, `at`, `reshape`, `from_xml`, `to_xml`, scalar and matrix arithmetic,\n`matmul`, `tensordot`, `sum`, and `mean`. `sum(axis=..., keepdims=...)` and\n`mean(axis=..., keepdims=...)` accept one integer axis or a sequence of axes;\nomitting the axis preserves the scalar-returning behavior. When `keepdims=True`\nwith no axis, the result is a matrix with every original axis retained at size\none. `tensordot(other, left_axes, right_axes)` accepts one axis or a sequence\nfor each input. Python booleans are rejected, as are integers\noutside signed 64-bit range. Errors are surfaced as `MatrixError` (with Python\ntype/range errors raised before calling native code where applicable). Add the\ninstalled `lib/iiXmlNative/python` directory to `PYTHONPATH`; the module finds\nthe installed library relative to that path, or from `IIXML_MATRIX_LIBRARY`.\n`IIXML_BUILD_MATRIX_PYTHON` controls this bridge and defaults off for iOS and\nEmscripten, where a Python-loadable shared library is not generally available.\nThe C++ matrix and XML APIs remain part of `iiXml::Native` on those platforms.\nFor applications using Core's embedded CPython, iiSDKBuilder can AOT compile\n`iixml_matrix.py` and attach it to an `iiSDKCore::CPython` host. The app supplies\nthe iiXml C library beside the compiled module or by `IIXML_MATRIX_LIBRARY`,\nand provides the compiled-module directory to Core. The installed native CMake\npackage exposes `iiXmlNative_MATRIX_PYTHON_SOURCE` for Builder's AOT input.\nThe module does not link directly to Builder or Core. See the Builder's\nCPython AOT contract.\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 133,
+      "end_line": 133,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "fenced_code",
+      "start_line": 134,
+      "end_line": 143,
+      "raw": "```python\nfrom iixml_matrix import Matrix\na = Matrix((2, 2), [1, 2, 3, 4])\nb = Matrix.from_xml(a.to_xml()).reshape((4,))\nassert (b / 2).values == [0.5, 1, 1.5, 2]\nc = Matrix((2, 2, 2), range(1, 9))\nassert c.sum(axis=-1).values == [3, 7, 11, 15]\nassert c.mean(axis=(0, 2)).values == [3.5, 5.5]\nassert c.tensordot(c, (1, 2), (1, 2)).shape == (2, 2)\n```\n",
+      "language": "python",
+      "code": "from iixml_matrix import Matrix\na = Matrix((2, 2), [1, 2, 3, 4])\nb = Matrix.from_xml(a.to_xml()).reshape((4,))\nassert (b / 2).values == [0.5, 1, 1.5, 2]\nc = Matrix((2, 2, 2), range(1, 9))\nassert c.sum(axis=-1).values == [3, 7, 11, 15]\nassert c.mean(axis=(0, 2)).values == [3.5, 5.5]\nassert c.tensordot(c, (1, 2), (1, 2)).shape == (2, 2)\n",
+      "closed": true
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Numeric matrices and XML",
+      "anchor": "numeric-matrices-and-xml",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Shape and values",
+      "anchor": "shape-and-values",
+      "start_line": 8
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Arithmetic",
+      "anchor": "arithmetic",
+      "start_line": 39
+    },
+    {
+      "block_id": "b000023",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "C interface",
+      "anchor": "c-interface",
+      "start_line": 77
+    },
+    {
+      "block_id": "b000027",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "XML representation",
+      "anchor": "xml-representation",
+      "start_line": 87
+    },
+    {
+      "block_id": "b000035",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Python",
+      "anchor": "python",
+      "start_line": 108
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 6,
+        "text": "REQUIRED)`. No Qt dependency is introduced.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000007",
+        "line": 12,
+        "text": "dimensions must equal the value count. An empty shape is a scalar containing",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 51,
+        "text": "`tensordot` contracts explicitly paired axes: the axis lists must have equal",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 52,
+        "text": "length and each paired dimension must match. The result dimensions are the",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

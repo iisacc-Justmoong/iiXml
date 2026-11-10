@@ -48,3 +48,5 @@ build*/
 **/.iisacc-temporary.lock
 **/.*.iisacc-preview
 **/*.iisacc.json
+
+/resources/.recovery/

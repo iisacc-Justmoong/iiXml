@@ -18,6 +18,10 @@ The C++23 Qt-free package `iiXmlNative` exports `iiXml::Native` and
 `-DIIXML_BUILD_QT_API=OFF` to avoid finding Qt. The existing QObject API remains
 available independently. See [native contracts](docs/native.md).
 
+`iiXml::Native` also provides typed multidimensional numeric matrices,
+checked arithmetic and an XML codec, with a Python interface on supported
+desktop platforms. See [numeric matrices](docs/Matrix.md).
+
 [Windows build and execution](docs/WindowsBuildAndRun.md)
 
 Package release: **0.1.1** (2026-10-19). This patch packages the current

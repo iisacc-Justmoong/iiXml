@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "docs/native.md",
-    "sha256": "865e45f560ae23be42ecf852ad9d16c9ff57bcd440788e4c5d83e4deca365e82",
-    "bytes": 2746,
-    "line_count": 25,
+    "sha256": "1c298bd93896ac443c06ed9032e4d6b2a633ed9789add6d3461e5dd9f00d765d",
+    "bytes": 2883,
+    "line_count": 27,
     "encoding": "utf-8",
     "language": "ko"
   },
@@ -105,7 +105,7 @@
       "kind": "paragraph",
       "start_line": 19,
       "end_line": 19,
-      "raw": "`Reader::open`은 UTF-8 소유 문자열을 유지하고 `next()`로 하나의 소유 이벤트를 반환한다. 종료는 성공한 빈 optional, 문법/정책/한도 위반은 expected 오류이다. 종료와 오류는 이후에도 유지된다. 이름, local name, namespace URI, 속성, 깊이, 빈 엘리먼트 여부를 구분한다. 빈 엘리먼트는 `empty=true`인 시작 이벤트 하나로 반환한다. 일반 텍스트·CDATA·공백, 주석, 처리 명령, 단순 DOCTYPE을 구분한다.\n"
+      "raw": "같은 패키지의 다차원 숫자 행렬, 산술 연산, XML 표현 및 Python 사용법은 [행렬 계약](Matrix.md)을 따른다.\n"
     },
     {
       "id": "b000012",
@@ -119,7 +119,7 @@
       "kind": "paragraph",
       "start_line": 21,
       "end_line": 21,
-      "raw": "입력/출력 8 MiB, 텍스트 항목 1 MiB, 속성 128개, 깊이 64, 이벤트 100,000개가 기본 한도이다. DOM 전체를 만드는 API가 아니다. libxml2의 모든 내부 할당을 합산 제한하는 할당기는 아니다. 네트워크나 파일에서 XML을 읽는 API를 제공하지 않는다. 외부 식별자, 내부 DTD subset과 사용자 엔티티는 파서 생성 전 거절한다. FCPXML의 `<!DOCTYPE fcpxml>` 같은 단순 루트 선언만 허용한다. 전역 엔티티 로더/오류 핸들러를 변경하지 않는다. 스키마/DTD 검증과 XInclude는 제공하지 않는다.\n"
+      "raw": "`Reader::open`은 UTF-8 소유 문자열을 유지하고 `next()`로 하나의 소유 이벤트를 반환한다. 종료는 성공한 빈 optional, 문법/정책/한도 위반은 expected 오류이다. 종료와 오류는 이후에도 유지된다. 이름, local name, namespace URI, 속성, 깊이, 빈 엘리먼트 여부를 구분한다. 빈 엘리먼트는 `empty=true`인 시작 이벤트 하나로 반환한다. 일반 텍스트·CDATA·공백, 주석, 처리 명령, 단순 DOCTYPE을 구분한다.\n"
     },
     {
       "id": "b000014",
@@ -133,7 +133,7 @@
       "kind": "paragraph",
       "start_line": 23,
       "end_line": 23,
-      "raw": "`Writer`는 명시적 start/text/end 호출을 받아 UTF-8과 속성 escaping을 수행한다. `finish()`는 하나의 닫힌 루트와 namespace/문법 유효성을 다시 검사한 후 완성된 바이트만 반환한다. 네임스페이스 선언은 `xmlns` 속성으로 명시한다. 파일 저장은 iiFileProvider에 위임한다. 이 추가는 SharedCanvas의 기존 SVG/FCPXML Qt 어댑터를 자동으로 변경하지 않는다.\n"
+      "raw": "입력/출력 8 MiB, 텍스트 항목 1 MiB, 속성 128개, 깊이 64, 이벤트 100,000개가 기본 한도이다. DOM 전체를 만드는 API가 아니다. libxml2의 모든 내부 할당을 합산 제한하는 할당기는 아니다. 네트워크나 파일에서 XML을 읽는 API를 제공하지 않는다. 외부 식별자, 내부 DTD subset과 사용자 엔티티는 파서 생성 전 거절한다. FCPXML의 `<!DOCTYPE fcpxml>` 같은 단순 루트 선언만 허용한다. 전역 엔티티 로더/오류 핸들러를 변경하지 않는다. 스키마/DTD 검증과 XInclude는 제공하지 않는다.\n"
     },
     {
       "id": "b000016",
@@ -147,6 +147,20 @@
       "kind": "paragraph",
       "start_line": 25,
       "end_line": 25,
+      "raw": "`Writer`는 명시적 start/text/end 호출을 받아 UTF-8과 속성 escaping을 수행한다. `finish()`는 하나의 닫힌 루트와 namespace/문법 유효성을 다시 검사한 후 완성된 바이트만 반환한다. 네임스페이스 선언은 `xmlns` 속성으로 명시한다. 파일 저장은 iiFileProvider에 위임한다. 이 추가는 SharedCanvas의 기존 SVG/FCPXML Qt 어댑터를 자동으로 변경하지 않는다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 27,
+      "end_line": 27,
       "raw": "`Test/native_test.cpp`는 네임스페이스·Unicode·escaping·빈 엘리먼트·단순 DOCTYPE 왕복, 잘못된 XML, 외부/내부 DTD 거절, 속성/깊이/이벤트/바이트 한도, 불완전한 writer를 실행 검증한다.\n"
     }
   ],
@@ -170,15 +184,15 @@
         "context": "paragraph"
       },
       {
-        "block_id": "b000013",
-        "line": 21,
+        "block_id": "b000015",
+        "line": 23,
         "text": "입력/출력 8 MiB, 텍스트 항목 1 MiB, 속성 128개, 깊이 64, 이벤트 100,000개가 기본 한도이다. DOM 전체를 만드는 API가 아니다. libxml2의 모든 내부 할당을 합산 제한하는 할당기는 아니다. 네트워크나 파일에서 XML을 읽는 API를 제공하지 않는다. 외부 식별자, 내부 DTD subset과 사용자 엔티티는 파서 생성 전 거절한다. FCPXML의 `<!DOCTYPE fcpxml>` 같은 단순 루트 선언만 허용한다. 전역 엔티티 로더/오류 핸들러를 변경하지 않는다. 스키마/DTD 검증과 XInclude는 제공하지 않는다.",
         "basis": "lexical_match",
         "context": "paragraph"
       },
       {
-        "block_id": "b000015",
-        "line": 23,
+        "block_id": "b000017",
+        "line": 25,
         "text": "`Writer`는 명시적 start/text/end 호출을 받아 UTF-8과 속성 escaping을 수행한다. `finish()`는 하나의 닫힌 루트와 namespace/문법 유효성을 다시 검사한 후 완성된 바이트만 반환한다. 네임스페이스 선언은 `xmlns` 속성으로 명시한다. 파일 저장은 iiFileProvider에 위임한다. 이 추가는 SharedCanvas의 기존 SVG/FCPXML Qt 어댑터를 자동으로 변경하지 않는다.",
         "basis": "lexical_match",
         "context": "paragraph"
@@ -191,7 +205,15 @@
         "code": "cmake -S . -B build -DIIXML_BUILD_QT_API=OFF -DCMAKE_DISABLE_FIND_PACKAGE_Qt6=ON\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build --prefix \"$PWD/build/install\"\n"
       }
     ],
-    "links": [],
+    "links": [
+      {
+        "block_id": "b000011",
+        "label": "행렬 계약",
+        "target": "Matrix.md",
+        "kind": "relative",
+        "line": 19
+      }
+    ],
     "tables": []
   },
   "provenance": {

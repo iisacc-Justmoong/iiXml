@@ -16,6 +16,8 @@ target_link_libraries(backend PRIVATE iiXml::Native)
 
 공개 include는 `<iiXml/Xml.h>`이다. 설치 경로는 기존 extensionless `<iiXml>` 파일과 충돌하지 않도록 `include/iiXmlNative/iiXml/`이며 타깃이 검색 경로를 전달한다. 기존 `<iiXml>`과 `iiXml::iiXml` 소비자는 `IIXML_BUILD_QT_API=ON`으로 유지할 수 있다. ON의 기존 Qt 6.8.3 제약은 그대로이다.
 
+같은 패키지의 다차원 숫자 행렬, 산술 연산, XML 표현 및 Python 사용법은 [행렬 계약](Matrix.md)을 따른다.
+
 `Reader::open`은 UTF-8 소유 문자열을 유지하고 `next()`로 하나의 소유 이벤트를 반환한다. 종료는 성공한 빈 optional, 문법/정책/한도 위반은 expected 오류이다. 종료와 오류는 이후에도 유지된다. 이름, local name, namespace URI, 속성, 깊이, 빈 엘리먼트 여부를 구분한다. 빈 엘리먼트는 `empty=true`인 시작 이벤트 하나로 반환한다. 일반 텍스트·CDATA·공백, 주석, 처리 명령, 단순 DOCTYPE을 구분한다.
 
 입력/출력 8 MiB, 텍스트 항목 1 MiB, 속성 128개, 깊이 64, 이벤트 100,000개가 기본 한도이다. DOM 전체를 만드는 API가 아니다. libxml2의 모든 내부 할당을 합산 제한하는 할당기는 아니다. 네트워크나 파일에서 XML을 읽는 API를 제공하지 않는다. 외부 식별자, 내부 DTD subset과 사용자 엔티티는 파서 생성 전 거절한다. FCPXML의 `<!DOCTYPE fcpxml>` 같은 단순 루트 선언만 허용한다. 전역 엔티티 로더/오류 핸들러를 변경하지 않는다. 스키마/DTD 검증과 XInclude는 제공하지 않는다.
