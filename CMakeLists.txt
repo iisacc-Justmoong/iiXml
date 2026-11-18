@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiXml VERSION 0.1.1 LANGUAGES CXX)
+include(./cmake/ModuleImports.cmake)
 option(BUILD_SHARED_LIBS "Build native XML components as shared libraries" ON)
 if(EMSCRIPTEN AND BUILD_SHARED_LIBS)
     set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)

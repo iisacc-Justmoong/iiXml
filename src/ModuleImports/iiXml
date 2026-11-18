@@ -1,0 +1,32 @@
+#pragma once
+
+// C++ public entry for iiXml; the linked components select the API.
+
+#if defined(IISDK_IMPORT_IIXML_HTML)
+#include <iiHtmlBlock.h>
+#endif
+
+#if defined(IISDK_IMPORT_IIXML_LEGACY)
+#include <iiXml.h>
+#endif
+
+#if defined(IISDK_IMPORT_IIXML_MARKUP)
+#include <iiXml/Markup/GetTagInfo.h>
+#include <iiXml/Markup/Doctype.h>
+#include <iiXml/Markup/BlockRangeTracker.h>
+#include <iiXml/Markup/DivideBlock.h>
+#include <iiXml/Markup/TagParser.h>
+#include <iiXml/Markup/Diagnostics.h>
+#include <iiXml/Markup/InlineProperties.h>
+#include <iiXml/Markup/OpenTag.h>
+#endif
+
+#if defined(IISDK_IMPORT_IIXML_MATRIXC)
+#include <iiXml/MatrixC.h>
+#endif
+
+#if defined(IISDK_IMPORT_IIXML_NATIVE)
+#include <iiXml/Xml.h>
+#include <iiXml/Matrix.h>
+#include <iiXml/MatrixXml.h>
+#endif
