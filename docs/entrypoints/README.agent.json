@@ -10,8 +10,8 @@
   },
   "source": {
     "path": "README.md",
-    "sha256": "b64dbe3a733c3effb9b0c4be339be67b67e2b9d742b36a689f1a3a20b3f90c92",
-    "bytes": 3252,
+    "sha256": "70a8bb5f8beae9ee33219dc1653ddf37ea9b676898529a1f51c5ae791e5b4dfe",
+    "bytes": 3271,
     "line_count": 64,
     "encoding": "utf-8",
     "language": "ko"
@@ -185,7 +185,7 @@
       "kind": "paragraph",
       "start_line": 38,
       "end_line": 38,
-      "raw": "SPDX-License-Identifier: MIT\n"
+      "raw": "SPDX-License-Identifier: Apache-2.0\n"
     },
     {
       "id": "b000024",
@@ -199,7 +199,7 @@
       "kind": "paragraph",
       "start_line": 40,
       "end_line": 40,
-      "raw": "The self-written code and documents of iiXml are distributed under the MIT License ( `MIT` ). The full terms follow [LICENSE](LICENSE).\n"
+      "raw": "The self-written code and documents of iiXml are distributed under the Apache License 2.0 (`Apache-2.0`). The full terms follow [LICENSE](LICENSE).\n"
     },
     {
       "id": "b000026",
