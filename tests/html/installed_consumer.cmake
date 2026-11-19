@@ -23,9 +23,13 @@ string(JSON _agent_source GET "${_agent_document}" source path)
 if(NOT _agent_source STREQUAL "docs/HtmlBlockIntegration.md")
     message(FATAL_ERROR "Installed agent documentation references the wrong source: ${_agent_source}")
 endif()
-run_checked("${CMAKE_COMMAND}" -S "${IIXML_SOURCE}/tests/html/consumer" -B "${_root}/build"
-    "-DCMAKE_PREFIX_PATH=${_prefix}" "-DQt6_DIR=${QT6_DIR}" "-DCMAKE_DISABLE_FIND_PACKAGE_iiFileProvider=TRUE")
-run_checked("${CMAKE_COMMAND}" --build "${_root}/build" --parallel 2)
-run_checked("${CMAKE_COMMAND}" -E env --unset=DYLD_LIBRARY_PATH --unset=DYLD_FRAMEWORK_PATH
-    --unset=DYLD_FALLBACK_LIBRARY_PATH ctest --test-dir "${_root}/build" --output-on-failure)
+foreach(_legacy IN ITEMS OFF ON)
+    set(_build "${_root}/${_legacy}/build")
+    run_checked("${CMAKE_COMMAND}" -S "${IIXML_SOURCE}/tests/html/consumer" -B "${_build}"
+        "-DCMAKE_PREFIX_PATH=${_prefix}" "-DQt6_DIR=${QT6_DIR}"
+        -DCMAKE_DISABLE_FIND_PACKAGE_iiFileProvider=TRUE "-DTEST_LEGACY_PACKAGE=${_legacy}")
+    run_checked("${CMAKE_COMMAND}" --build "${_build}" --parallel 2)
+    run_checked("${CMAKE_COMMAND}" -E env --unset=DYLD_LIBRARY_PATH --unset=DYLD_FRAMEWORK_PATH
+        --unset=DYLD_FALLBACK_LIBRARY_PATH ctest --test-dir "${_build}" --output-on-failure)
+endforeach()
 file(REMOVE_RECURSE "${_root}")

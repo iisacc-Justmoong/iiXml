@@ -1,10 +1,14 @@
 @PACKAGE_INIT@
-include(CMakeFindDependencyMacro)
-if((NOT DEFINED iiXml_DIR OR iiXml_DIR STREQUAL "" OR iiXml_DIR MATCHES "-NOTFOUND$")
-        AND EXISTS "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@/cmake/iiXml/iiXmlConfig.cmake")
-    set(iiXml_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@/cmake/iiXml")
+# The compatibility name is installed with iiXml. Load that installation's
+# targets through its config so that platform dispatch and Qt setup are shared.
+if(NOT TARGET iiXml::HtmlBlock)
+    include("${CMAKE_CURRENT_LIST_DIR}/../iiXml/iiXmlConfig.cmake" OPTIONAL)
 endif()
-find_dependency(iiXml 0.1 CONFIG COMPONENTS HtmlBlock)
+if(NOT TARGET iiXml::HtmlBlock)
+    set(iiHtmlBlock_FOUND FALSE)
+    set(iiHtmlBlock_NOT_FOUND_MESSAGE "The co-installed iiXml package must provide iiXml::HtmlBlock")
+    return()
+endif()
 if(NOT TARGET iiHtmlBlock::iiHtmlBlock)
     add_library(iiHtmlBlock::iiHtmlBlock INTERFACE IMPORTED)
     set_property(TARGET iiHtmlBlock::iiHtmlBlock PROPERTY INTERFACE_LINK_LIBRARIES iiXml::HtmlBlock)

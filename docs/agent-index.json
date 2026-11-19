@@ -28,7 +28,7 @@
       "document_id": "urn:iisacc:document:07d3531473c7fefa9647754aacac0a435579957780dce64d75dfb7adb2de1d38",
       "source": "README.md",
       "agent_json": "docs/entrypoints/README.agent.json",
-      "source_sha256": "70a8bb5f8beae9ee33219dc1653ddf37ea9b676898529a1f51c5ae791e5b4dfe",
+      "source_sha256": "1f0c57bb21c51a0827ddc86d5e99ca38220558eca58e87d1f2fbcf32d0f3ef30",
       "role": "overview"
     },
     {
@@ -154,7 +154,7 @@
       "document_id": "urn:iisacc:document:d5649de85d28c88d59efa471569041d05731fb11851d8a905c79ad0d6e5183a8",
       "source": "docs/HtmlBlockIntegration.md",
       "agent_json": "docs/HtmlBlockIntegration.agent.json",
-      "source_sha256": "9c80b31eafa3ef08f4325f62b53363ca98c4a8b654a7fd366dcecfe861029c77",
+      "source_sha256": "bd826dc99b1abc8481aeab4140d0202ff2375e17cf6fcca2c0bb0cd475a9baf9",
       "role": "guide"
     },
     {

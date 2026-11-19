@@ -8,9 +8,10 @@ iiGeneralDocument. It does not depend on iiGeneralDocument or libxml2. See
 [the markup contract](docs/Markup.md).
 
 HTML block parsing, conversion, range tracking, serialization and editing are
-owned by iiXml as the optional Qt component `iiXml::HtmlBlock`. Existing
+owned by iiXml 0.1.2 as the optional Qt component `iiXml::HtmlBlock`. Existing
 `<iiHtmlBlock>` headers, the `iiHtmlBlock` namespace and the
-`iiHtmlBlock::iiHtmlBlock` CMake package remain compatibility interfaces.
+`iiHtmlBlock::iiHtmlBlock` CMake target remain compatibility interfaces.
+The compatibility config loads the component exported by the same iiXml installation.
 See [HTML integration](docs/HtmlBlockIntegration.md).
 
 The C++23 Qt-free package `iiXmlNative` exports `iiXml::Native` and

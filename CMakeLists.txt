@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(iiXml VERSION 0.1.1 LANGUAGES CXX)
+project(iiXml VERSION 0.1.2 LANGUAGES CXX)
 include(./cmake/ModuleImports.cmake)
 option(BUILD_SHARED_LIBS "Build native XML components as shared libraries" ON)
 if(EMSCRIPTEN AND BUILD_SHARED_LIBS)
@@ -169,7 +169,8 @@ if(IIXML_BUILD_HTML_BLOCK)
     install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/install-compat/html/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
     configure_package_config_file(cmake/iiHtmlBlockConfig.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
-    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake VERSION 0.1.1 COMPATIBILITY SameMajorVersion)
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake
+        VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/iiHtmlBlockConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/iiHtmlBlock)
 endif()

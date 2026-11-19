@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "README.md",
-    "sha256": "70a8bb5f8beae9ee33219dc1653ddf37ea9b676898529a1f51c5ae791e5b4dfe",
-    "bytes": 3271,
-    "line_count": 64,
+    "sha256": "1f0c57bb21c51a0827ddc86d5e99ca38220558eca58e87d1f2fbcf32d0f3ef30",
+    "bytes": 3362,
+    "line_count": 65,
     "encoding": "utf-8",
     "language": "ko"
   },
@@ -70,105 +70,105 @@
       "id": "b000007",
       "kind": "paragraph",
       "start_line": 10,
-      "end_line": 14,
-      "raw": "HTML block parsing, conversion, range tracking, serialization and editing are\nowned by iiXml as the optional Qt component `iiXml::HtmlBlock`. Existing\n`<iiHtmlBlock>` headers, the `iiHtmlBlock` namespace and the\n`iiHtmlBlock::iiHtmlBlock` CMake package remain compatibility interfaces.\nSee [HTML integration](docs/HtmlBlockIntegration.md).\n"
+      "end_line": 15,
+      "raw": "HTML block parsing, conversion, range tracking, serialization and editing are\nowned by iiXml 0.1.2 as the optional Qt component `iiXml::HtmlBlock`. Existing\n`<iiHtmlBlock>` headers, the `iiHtmlBlock` namespace and the\n`iiHtmlBlock::iiHtmlBlock` CMake target remain compatibility interfaces.\nThe compatibility config loads the component exported by the same iiXml installation.\nSee [HTML integration](docs/HtmlBlockIntegration.md).\n"
     },
     {
       "id": "b000008",
       "kind": "blank",
-      "start_line": 15,
-      "end_line": 15,
+      "start_line": 16,
+      "end_line": 16,
       "raw": "\n"
     },
     {
       "id": "b000009",
       "kind": "paragraph",
-      "start_line": 16,
-      "end_line": 19,
+      "start_line": 17,
+      "end_line": 20,
       "raw": "The C++23 Qt-free package `iiXmlNative` exports `iiXml::Native` and\n`<iiXml/Xml.h>` for bounded UTF-8 pull reading and XML writing. Configure with\n`-DIIXML_BUILD_QT_API=OFF` to avoid finding Qt. The existing QObject API remains\navailable independently. See [native contracts](docs/native.md).\n"
     },
     {
       "id": "b000010",
       "kind": "blank",
-      "start_line": 20,
-      "end_line": 20,
+      "start_line": 21,
+      "end_line": 21,
       "raw": "\n"
     },
     {
       "id": "b000011",
       "kind": "paragraph",
-      "start_line": 21,
-      "end_line": 23,
+      "start_line": 22,
+      "end_line": 24,
       "raw": "`iiXml::Native` also provides typed multidimensional numeric matrices,\nchecked arithmetic and an XML codec, with a Python interface on supported\ndesktop platforms. See [numeric matrices](docs/Matrix.md).\n"
     },
     {
       "id": "b000012",
       "kind": "blank",
-      "start_line": 24,
-      "end_line": 24,
+      "start_line": 25,
+      "end_line": 25,
       "raw": "\n"
     },
     {
       "id": "b000013",
       "kind": "paragraph",
-      "start_line": 25,
-      "end_line": 25,
+      "start_line": 26,
+      "end_line": 26,
       "raw": "[Windows build and execution](docs/WindowsBuildAndRun.md)\n"
     },
     {
       "id": "b000014",
       "kind": "blank",
-      "start_line": 26,
-      "end_line": 26,
+      "start_line": 27,
+      "end_line": 27,
       "raw": "\n"
     },
     {
       "id": "b000015",
       "kind": "paragraph",
-      "start_line": 27,
-      "end_line": 29,
+      "start_line": 28,
+      "end_line": 30,
       "raw": "Package release: **0.1.1** (2026-10-19). This patch packages the current\nsource snapshot; build, test and installation evidence is recorded in the SDK\npatch-release report. Earlier versioned feature notes remain historical.\n"
     },
     {
       "id": "b000016",
       "kind": "blank",
-      "start_line": 30,
-      "end_line": 31,
+      "start_line": 31,
+      "end_line": 32,
       "raw": "\n\n"
     },
     {
       "id": "b000017",
       "kind": "paragraph",
-      "start_line": 32,
-      "end_line": 32,
+      "start_line": 33,
+      "end_line": 33,
       "raw": "iiXml is a C++ library for defining custom XML rules and producing input/output that follows those rules.\n"
     },
     {
       "id": "b000018",
       "kind": "blank",
-      "start_line": 33,
-      "end_line": 33,
+      "start_line": 34,
+      "end_line": 34,
       "raw": "\n"
     },
     {
       "id": "b000019",
       "kind": "paragraph",
-      "start_line": 34,
-      "end_line": 34,
+      "start_line": 35,
+      "end_line": 35,
       "raw": "Core parser element modules live under `Src/Elements/`. `OpenTag` tracks relaxed tag closure, while `ClosedTag` flags input that starts immediately with a `</tag>` closing marker before a matching opener appears in the same view.\n"
     },
     {
       "id": "b000020",
       "kind": "blank",
-      "start_line": 35,
-      "end_line": 35,
+      "start_line": 36,
+      "end_line": 36,
       "raw": "\n"
     },
     {
       "id": "b000021",
       "kind": "heading",
-      "start_line": 36,
-      "end_line": 36,
+      "start_line": 37,
+      "end_line": 37,
       "raw": "## License\n",
       "level": 2,
       "title": "License"
@@ -176,71 +176,71 @@
     {
       "id": "b000022",
       "kind": "blank",
-      "start_line": 37,
-      "end_line": 37,
+      "start_line": 38,
+      "end_line": 38,
       "raw": "\n"
     },
     {
       "id": "b000023",
       "kind": "paragraph",
-      "start_line": 38,
-      "end_line": 38,
+      "start_line": 39,
+      "end_line": 39,
       "raw": "SPDX-License-Identifier: Apache-2.0\n"
     },
     {
       "id": "b000024",
       "kind": "blank",
-      "start_line": 39,
-      "end_line": 39,
+      "start_line": 40,
+      "end_line": 40,
       "raw": "\n"
     },
     {
       "id": "b000025",
       "kind": "paragraph",
-      "start_line": 40,
-      "end_line": 40,
+      "start_line": 41,
+      "end_line": 41,
       "raw": "The self-written code and documents of iiXml are distributed under the Apache License 2.0 (`Apache-2.0`). The full terms follow [LICENSE](LICENSE).\n"
     },
     {
       "id": "b000026",
       "kind": "blank",
-      "start_line": 41,
-      "end_line": 41,
+      "start_line": 42,
+      "end_line": 42,
       "raw": "\n"
     },
     {
       "id": "b000027",
       "kind": "paragraph",
-      "start_line": 42,
-      "end_line": 42,
+      "start_line": 43,
+      "end_line": 43,
       "raw": "Third-party code, libraries, tools, and models retain their respective licenses and copyright notices, and the repository's license does not replace them.\n"
     },
     {
       "id": "b000028",
       "kind": "blank",
-      "start_line": 43,
-      "end_line": 43,
+      "start_line": 44,
+      "end_line": 44,
       "raw": "\n"
     },
     {
       "id": "b000029",
       "kind": "html",
-      "start_line": 44,
-      "end_line": 44,
+      "start_line": 45,
+      "end_line": 45,
       "raw": "<a id=\"파일-저장-소유권\"></a>\n"
     },
     {
       "id": "b000030",
       "kind": "blank",
-      "start_line": 45,
-      "end_line": 45,
+      "start_line": 46,
+      "end_line": 46,
       "raw": "\n"
     },
     {
       "id": "b000031",
       "kind": "heading",
-      "start_line": 46,
-      "end_line": 46,
+      "start_line": 47,
+      "end_line": 47,
       "raw": "## File storage ownership\n",
       "level": 2,
       "title": "File storage ownership"
@@ -248,36 +248,36 @@
     {
       "id": "b000032",
       "kind": "blank",
-      "start_line": 47,
-      "end_line": 47,
+      "start_line": 48,
+      "end_line": 48,
       "raw": "\n"
     },
     {
       "id": "b000033",
       "kind": "paragraph",
-      "start_line": 48,
-      "end_line": 55,
+      "start_line": 49,
+      "end_line": 56,
       "raw": "`FileParser` and `GetFile` accept an application-owned `iiXml::IO::FileReader`.\nThe XML library does not discover or link another SDK. The separate\n`example/FileProvider` consumer adapts iiFileProvider to that contract, retaining\nprovider-owned file reads and the existing file parsing checks. The default\nconstructor has no reader: path-based calls fail until a reader is supplied,\nwhile in-memory parsing is unchanged. Existing users must pass a reader and\nrebuild both the library and their application; object layout and behavior\nchanged. See [FileParser](docs/file_parser.md) and [GetFile](docs/get_file.md).\n"
     },
     {
       "id": "b000034",
       "kind": "blank",
-      "start_line": 56,
-      "end_line": 56,
+      "start_line": 57,
+      "end_line": 57,
       "raw": "\n"
     },
     {
       "id": "b000035",
       "kind": "html",
-      "start_line": 57,
-      "end_line": 57,
+      "start_line": 58,
+      "end_line": 58,
       "raw": "<!-- workspace-docs:readme:start -->\n"
     },
     {
       "id": "b000036",
       "kind": "heading",
-      "start_line": 58,
-      "end_line": 58,
+      "start_line": 59,
+      "end_line": 59,
       "raw": "## Documentation entry points\n",
       "level": 2,
       "title": "Documentation entry points"
@@ -285,15 +285,15 @@
     {
       "id": "b000037",
       "kind": "blank",
-      "start_line": 59,
-      "end_line": 59,
+      "start_line": 60,
+      "end_line": 60,
       "raw": "\n"
     },
     {
       "id": "b000038",
       "kind": "list",
-      "start_line": 60,
-      "end_line": 63,
+      "start_line": 61,
+      "end_line": 64,
       "raw": "- Human overview: this English `README.md`.\n- Agent instructions: [AGENT.md](AGENT.md).\n- Human documentation: [documentation index](docs/README.md).\n- Structured agent documentation: [agent index](docs/agent-index.json).\n",
       "items": [
         {
@@ -321,8 +321,8 @@
     {
       "id": "b000039",
       "kind": "html",
-      "start_line": 64,
-      "end_line": 64,
+      "start_line": 65,
+      "end_line": 65,
       "raw": "<!-- workspace-docs:readme:end -->\n"
     }
   ],
@@ -341,7 +341,7 @@
       "level": 2,
       "title": "License",
       "anchor": "license",
-      "start_line": 36
+      "start_line": 37
     },
     {
       "block_id": "b000031",
@@ -349,7 +349,7 @@
       "level": 2,
       "title": "File storage ownership",
       "anchor": "file-storage-ownership",
-      "start_line": 46
+      "start_line": 47
     },
     {
       "block_id": "b000036",
@@ -357,14 +357,14 @@
       "level": 2,
       "title": "Documentation entry points",
       "anchor": "documentation-entry-points",
-      "start_line": 58
+      "start_line": 59
     }
   ],
   "indexes": {
     "directive_candidates": [
       {
         "block_id": "b000033",
-        "line": 53,
+        "line": 54,
         "text": "while in-memory parsing is unchanged. Existing users must pass a reader and",
         "basis": "lexical_match",
         "context": "paragraph"
@@ -391,70 +391,70 @@
         "label": "HTML integration",
         "target": "docs/HtmlBlockIntegration.md",
         "kind": "relative",
-        "line": 14
+        "line": 15
       },
       {
         "block_id": "b000009",
         "label": "native contracts",
         "target": "docs/native.md",
         "kind": "relative",
-        "line": 19
+        "line": 20
       },
       {
         "block_id": "b000011",
         "label": "numeric matrices",
         "target": "docs/Matrix.md",
         "kind": "relative",
-        "line": 23
+        "line": 24
       },
       {
         "block_id": "b000013",
         "label": "Windows build and execution",
         "target": "docs/WindowsBuildAndRun.md",
         "kind": "relative",
-        "line": 25
+        "line": 26
       },
       {
         "block_id": "b000025",
         "label": "LICENSE",
         "target": "LICENSE",
         "kind": "relative",
-        "line": 40
+        "line": 41
       },
       {
         "block_id": "b000033",
         "label": "FileParser",
         "target": "docs/file_parser.md",
         "kind": "relative",
-        "line": 55
+        "line": 56
       },
       {
         "block_id": "b000033",
         "label": "GetFile",
         "target": "docs/get_file.md",
         "kind": "relative",
-        "line": 55
+        "line": 56
       },
       {
         "block_id": "b000038",
         "label": "AGENT.md",
         "target": "AGENT.md",
         "kind": "relative",
-        "line": 61
+        "line": 62
       },
       {
         "block_id": "b000038",
         "label": "documentation index",
         "target": "docs/README.md",
         "kind": "relative",
-        "line": 62
+        "line": 63
       },
       {
         "block_id": "b000038",
         "label": "agent index",
         "target": "docs/agent-index.json",
         "kind": "relative",
-        "line": 63
+        "line": 64
       }
     ],
     "tables": []
